@@ -21,9 +21,10 @@ Updated: 2026-10-24
 ## Latest work — 2026-10-24
 
 - Merged `origin/Mohit-Backend` into `main`.
+- Published the merged backend and finished website update in commit `518191e` on `origin/main`.
 - Increased text sizes and simplified visible report language; added a plain-language guide, glossary, quick answers, dark mode, and terms page.
 - Connected optional live search to the backend health check and search endpoint, with local-only defaults for preview and safe rendering of result links.
 - Tightened backend CORS defaults to local preview origins and disabled credentialed requests.
 - Reviewed the desktop and narrow browser layouts, confirmed the guide, terms page and interactive report controls load, and fixed small-screen horizontal overflow.
 - Checked JavaScript syntax and whitespace; the backend test suite and external provider were not run for this update.
-- Next: publish the merge and website changes, then connect file review and scorecard flows only after their data and privacy behavior are ready.
+- Next: verify the backend suite and provider behavior when ready, then connect file review and scorecard flows only after their data and privacy behavior are ready.
