@@ -30,6 +30,15 @@
           <p class="eyebrow">WELCOME BACK</p><h2 data-auth-title id="auth-title">Sign in</h2><p class="auth-intro">Use your email or continue with Google.</p>
           <button class="google-button" type="button" data-google-signin><span class="google-mark" aria-hidden="true">G</span> Continue with Google</button>
           <div class="auth-divider"><span>or use email</span></div>
+          <section class="demo-login-card" data-demo-account data-demo-email="cm@gmail.com" aria-labelledby="demo-login-title">
+            <div class="demo-login-heading"><div><p class="eyebrow">SHARED DEMO ACCOUNT</p><h3 id="demo-login-title">Try the workspace</h3></div><span class="demo-login-badge">DEMO</span></div>
+            <dl class="demo-login-credentials">
+              <div><dt>Email</dt><dd><code data-demo-email-value>cm@gmail.com</code></dd></div>
+            </dl>
+            <p class="demo-login-note">Enter the demo password privately. Anyone using this shared account can see its saved profile and tenders, so do not add private information.</p>
+            <button class="demo-login-fill" type="button" data-demo-fill>Fill demo email <span aria-hidden="true">↗</span></button>
+            <p class="demo-login-status" data-demo-status role="status" aria-live="polite"></p>
+          </section>
           <form class="auth-form" data-signin-form data-auth-form="signin">
             <label class="profile-field" for="signin-email">Email address<input id="signin-email" name="email" type="email" autocomplete="email" required placeholder="you@company.com"></label>
             <label class="profile-field" for="signin-password">Password<input id="signin-password" name="password" type="password" autocomplete="current-password" required minlength="8" placeholder="At least 8 characters"></label>

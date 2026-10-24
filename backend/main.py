@@ -33,9 +33,12 @@ from backend.engine.deterministic_gatekeeper import (
     TenderStatutoryCriteria
 )
 from backend.engine.qualification_engine import QualificationEngine
+from backend.engine.competitor_forensics import CompetitorForensicsEngine
 from contracts.schema import (
     BidderProfile,
-    QualificationScorecard
+    QualificationScorecard,
+    StrategyToolkitResponse,
+    CompetitorForensicsReport,
 )
 
 # Configure logging
@@ -58,6 +61,16 @@ app.add_middleware(
 )
 
 tinyfish = TinyFishService()
+
+
+def _has_configured_search_provider() -> bool:
+    candidates = (settings.TINYFISH_API_KEY, settings.TAVILY_API_KEY)
+    placeholders = ("your-key", "your_api_key", "placeholder", "replace-me", "changeme")
+    return any(
+        value.strip() and not any(marker in value.strip().lower() for marker in placeholders)
+        for value in candidates
+    )
+
 
 # In-memory pipeline task event bus for SSE streaming
 pipeline_task_events: Dict[str, asyncio.Queue] = {}
@@ -83,6 +96,14 @@ class AuditEvaluationRequest(BaseModel):
     source_portal: Optional[str] = "GeM"
     bidder_profile: BidderProfile
     explicit_criteria: Optional[TenderStatutoryCriteria] = None
+
+
+class StrategyPreviewRequest(BaseModel):
+    tender_id: Optional[str] = Field(default=None, max_length=100)
+    tender_title: str = Field(min_length=2, max_length=200)
+    source_portal: str = Field(default="Not specified", max_length=100)
+    bidder_profile: BidderProfile
+    criteria: TenderStatutoryCriteria
 
 
 @app.get("/healthz")
@@ -211,6 +232,47 @@ async def evaluate_tender_endpoint(payload: AuditEvaluationRequest, background_t
     except Exception as e:
         logger.error(f"Audit evaluation error: {e}")
         raise HTTPException(status_code=500, detail=f"Audit execution failed: {str(e)}")
+
+
+@app.post("/api/v1/strategy/preview", response_model=StrategyToolkitResponse)
+async def strategy_preview_endpoint(payload: StrategyPreviewRequest):
+    """Run the five strategy tools on entered values without fetching or storing data."""
+    tender_id = payload.tender_id or f"PREVIEW-{uuid.uuid4().hex[:8].upper()}"
+    return QualificationEngine.generate_strategy_toolkit(
+        tender_id=tender_id,
+        tender_title=payload.tender_title,
+        source_portal=payload.source_portal,
+        bidder_profile=payload.bidder_profile,
+        criteria=payload.criteria,
+    )
+
+
+@app.get("/api/v1/strategy/forensics", response_model=CompetitorForensicsReport)
+async def strategy_forensics_endpoint(
+    tender_title: str = Query(..., min_length=2, max_length=200),
+    source_portal: str = Query("Not specified", max_length=100),
+    live_search: bool = Query(False),
+):
+    """Return no historical claims by default; query configured public search only on request."""
+    if live_search:
+        if not _has_configured_search_provider():
+            report = CompetitorForensicsEngine.analyze_static_forensics(
+                tender_title=tender_title,
+                source_portal=source_portal,
+            )
+            report.strategic_bid_advice = (
+                "Public-source search is not configured. Add TINYFISH_API_KEY or TAVILY_API_KEY to the backend environment and restart the API."
+            )
+            return report
+        return await CompetitorForensicsEngine.analyze_with_live_archives(
+            tender_title=tender_title,
+            source_portal=source_portal,
+            tinyfish=tinyfish,
+        )
+    return CompetitorForensicsEngine.analyze_static_forensics(
+        tender_title=tender_title,
+        source_portal=source_portal,
+    )
 
 
 @app.get("/api/v1/audit/stream/{task_id}")

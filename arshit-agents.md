@@ -4,7 +4,7 @@
 > **Team**: Team Traxo · HackIIITD (Round 2)  
 > **Agent Owner**: Arshit  
 > **Domain**: Frontend (Next.js), Database (PostgreSQL / Migrations), Object Storage, Async Job Queues & UI Experience  
-> **Status**: Responsive website with optional FastAPI search and Supabase auth/profile/bookmark code; Supabase project setup and account verification remain pending
+> **Status**: Responsive website with optional FastAPI search and configured Supabase auth/profile/bookmark code; Google OAuth and demo-account verification remain pending
 
 ---
 
@@ -94,6 +94,12 @@ Recommended relational tables for Arshit's implementation:
 
 ## 4. Arshit's Progress Log & Milestones
 
+### Shared demo login — 2026-10-24
+- [x] Added a shared-demo account panel to the sign-in page with a one-tap autofill action, dark-theme styling and small-screen layout support.
+- [x] Warned users not to save private profile or tender details in a shared account; documented this in the README.
+- [ ] Supabase Auth rejected `cm@gmail.com` as invalid, so the requested login was not created and the shared credentials cannot authenticate yet.
+- [ ] Next: use an accepted inbox, create and verify the Supabase user, then confirm email/password sign-in.
+
 ### Presentation prototype update — 2026-10-24
 - [x] Added a responsive static website in the repository root with an illustrative qualification report, evidence details, and audience profiles.
 - [x] Made prototype limitations clear: optional live search is connected; uploads, automated audits, accounts, and saved reports are not connected.
@@ -104,7 +110,7 @@ Recommended relational tables for Arshit's implementation:
 - [x] Added an interactive five-layer precedence explorer and a local six-item bidder readiness checklist.
 - [x] Added Lenis smooth scrolling, reading progress, section reveals, active navigation, and a back-to-top control with reduced-motion support.
 - [x] Updated privacy and terms notices for the local-only interactions and locally bundled Lenis library.
-- [ ] Next application milestone remains a real frontend wired to implemented APIs; eligibility evaluation is not connected to the website.
+- [ ] Next milestone: connect tender fetching and a verified source-document audit after safe upload and data-retention behavior are designed; the current Strategy tools preview uses manually entered values only.
 
 ### Readability and guide update — 2026-10-24
 - [x] Increased body and control text sizes and rewrote the report labels and document-order explanation in plain language.
@@ -139,3 +145,11 @@ Recommended relational tables for Arshit's implementation:
 - [ ] Implement the Interactive Scorecard view (Badges, Deterministic Gate accordions, Clause Inspector)
 - [ ] Set up Docker Compose (`postgres`, `redis`, `minio`, `frontend`, `backend`)
 - [ ] Wire database models and save audit results history
+
+### Mohit backend strategy integration — 2026-10-24
+- [x] Added a responsive Strategy tools page linked from the site navigation and easy guide.
+- [x] Connected the page to the FastAPI preview route for entered values, checklist CSV export and explicit public-source search.
+- [x] Kept the Supabase profile separate from this form and documented the data sent, non-persistence behavior and limits in the privacy notice and terms.
+- [x] Added mobile-aware strategy layout and validated server-side numeric bounds for core bidder and tender criteria.
+- [ ] Verify the preview on desktop and Android-sized viewports; exercise the public-search provider only with a deliberate query.
+- [ ] Connect uploaded-source audit after source precedence, storage, consent and retention requirements are implemented.

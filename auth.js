@@ -230,6 +230,23 @@
     window.location.assign(accountRedirect());
   }
 
+  function initDemoLogin() {
+    document.querySelectorAll('[data-demo-fill]').forEach((button) => {
+      if (button.dataset.demoBound === 'true') return;
+      button.dataset.demoBound = 'true';
+      button.addEventListener('click', () => {
+        const card = button.closest('[data-demo-account]');
+        const form = document.querySelector('[data-signin-form]');
+        const email = form?.querySelector('[name="email"]');
+        if (!card || !email) return;
+        email.value = card.dataset.demoEmail || '';
+        form?.querySelector('[name="password"]')?.focus();
+        setStatus(card.querySelector('[data-demo-status]'), 'Demo email filled. Enter the password privately, then choose “Sign in”.', 'success');
+        password.focus({ preventScroll: true });
+      });
+    });
+  }
+
   async function handleSignUp(event) {
     event.preventDefault();
     const form = event.currentTarget;
@@ -291,6 +308,7 @@
   }
 
   async function init() {
+    initDemoLogin();
     if (!apiBaseUrl || !window.supabase?.createClient) {
       setConfigState(false, 'Account sign-in needs the TenderLens API and Supabase settings. Follow the account setup in the easy guide.');
       return null;

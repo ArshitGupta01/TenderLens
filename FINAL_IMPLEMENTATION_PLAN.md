@@ -164,3 +164,9 @@ Pure Python logic enforcing statutory procurement rules (zero math hallucination
 
 ---
 *Created for Team Traxo · TenderLens · HackIIITD Round 2*
+
+## Current integration status — 2026-10-24
+
+The repository now includes a static responsive website alongside the FastAPI backend described above. The Strategy tools page connects to POST /api/v1/strategy/preview for manually entered bidder and tender criteria, and exposes public-source search only as a separate user-triggered action through GET /api/v1/strategy/forensics. The preview does not fetch tender documents or persist its request. It produces clarification prompts, possible capability gaps, a draft checklist/CSV and an EMD cash scenario. These outputs are review aids, not verified eligibility findings or legal advice.
+
+The current integration uses existing Python 3.12, FastAPI and Pydantic dependencies; it adds no third-party package. Supabase remains responsible for account authentication and its row-level-protected profile and saved-notice data. Connecting source-file review, uploaded evidence and saved audit history remains a future milestone.

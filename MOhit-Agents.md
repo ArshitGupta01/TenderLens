@@ -105,8 +105,8 @@ TenderLens is divided across three clear, non-conflicting domains:
 
 ## 4. Current State & Next Actions
 
-- **Current State**: Backend routes and qualification logic are implemented. The website calls the tender-search route only when the optional service is configured. Current provider access and behavior have not been re-verified in this update.
-- **Next Step**: Validate the backend against real source documents, then connect tender fetching and qualification review through a production-ready frontend.
+- **Current State**: Backend routes and qualification logic are implemented. The website calls tender search when configured and connects an entered-value strategy preview. Current external provider access has not been re-verified in this update.
+- **Next Step**: Validate the backend against real source documents, then connect tender fetching and a source-grounded qualification review through the frontend.
 
 ## 5. Merge and website connection — 2026-10-24
 
@@ -129,6 +129,16 @@ TenderLens is divided across three clear, non-conflicting domains:
 - Tender evaluation now calls the asynchronous qualification engine with Gemini analysis enabled.
 - Added Gemini auditor and real end-to-end pipeline test modules, plus implementation notes and scope documentation.
 - The source branch reported 19 passing tests and live provider verification; those claims have not been independently re-run as part of this website update.
+
+## 8. Mohit backend strategy integration — 2026-10-24
+
+- Added the five strategy modules using the existing Python/FastAPI/Pydantic dependency set; no additional package was needed.
+- Extended shared contracts with strategy output models, optional bidder EMD/capability inputs and a review-required marker.
+- Added POST /api/v1/strategy/preview for manual values only, with no document fetch or persistence, and GET /api/v1/strategy/forensics for explicitly requested public-source search.
+- Added input bounds for turnover, experience, local-content percentage, EMD and supporting values. EMD, exemption and compliance labels now retain a manual-review caveat.
+- Public-source search now returns a clear configuration message instead of attempting an unauthenticated provider request when both TinyFish and Tavily keys are absent.
+- Updated the audit summary so unknown rule status requests review instead of implying a firm recommendation. Removed unsupported legal and evidence-verification wording.
+- No full test suite was run for this update. Python syntax compilation, API import/OpenAPI generation, a synthetic local preview response and page rendering passed. A sample-only provider request received HTTP 401 because the configured TinyFish value is a placeholder. GitHub publishing is pending because the workspace has no Git metadata and github.com could not be resolved from the environment. Next: configure a valid search key, verify Android-sized layout and then verify public search and audit paths with controlled examples.
 
 
 

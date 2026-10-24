@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f4f2e9">
+    <meta name="description" content="Build a TenderLens strategy preview from bidder details and tender requirements you provide.">
+    <meta name="tenderlens-api" content="">
+    <title>Strategy tools — TenderLens</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="styles.css">
+    <script src="theme.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0" defer></script>
+    <script src="auth.js" defer></script>
+    <script src="app.js" defer></script>
+    <script src="strategy.js" defer></script>
+  </head>
+  <body class="strategy-page account-page">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="container nav-shell">
+        <a class="brand" href="index.html" aria-label="TenderLens home"><span class="brand-mark" aria-hidden="true">⌕</span><span class="brand-name">Tender<span>Lens</span></span></a>
+        <div class="header-actions">
+          <a class="header-account-link" data-auth-signin href="signin.html">Sign in</a>
+          <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch theme" aria-pressed="false"><span class="theme-toggle-icon" aria-hidden="true">☾</span><span id="theme-toggle-label">Dark mode</span></button>
+          <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav"><span class="menu-toggle-label">Menu</span><span class="menu-lines" aria-hidden="true"><i></i><i></i></span></button>
+        </div>
+        <nav class="primary-nav" id="primary-nav" aria-label="Main navigation">
+          <a href="index.html#opportunities">Sample tenders</a>
+          <a href="index.html#precedence">Document order</a>
+          <a href="index.html#profile">Bidder profile</a>
+          <a href="guide.html">Easy guide</a>
+          <a href="strategy.html" aria-current="page">Strategy tools</a>
+          <a class="nav-cta nav-account-cta" data-auth-signup href="signup.html">Create account <span aria-hidden="true">↗</span></a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main" class="strategy-main">
+      <section class="strategy-hero">
+        <div class="container strategy-hero-inner">
+          <p class="eyebrow"><span class="eyebrow-mark"></span> FIVE STRATEGY TOOLS · EARLY PREVIEW</p>
+          <h1>Put the tender details<br><em>in a clearer order.</em></h1>
+          <p>Enter the requirements you see in a tender and your bidder figures. TenderLens builds a draft checklist, identifies values to double-check and prepares clarification questions.</p>
+          <div class="strategy-pillar-strip" aria-label="Included tools"><span>01 · Clarifications</span><span>02 · Capability gaps</span><span>03 · Checklist</span><span>04 · EMD scenario</span><span>05 · Public sources</span></div>
+        </div>
+      </section>
+
+      <section class="strategy-notice container" aria-label="Important information">
+        <span class="strategy-notice-icon" aria-hidden="true">i</span>
+        <p><strong>Review aid only.</strong> This page uses details you enter; it does not read the original tender or verify your documents. It does not decide eligibility, give legal advice, confirm exemptions or find real consortium partners. Verify every result against the official tender. Do not enter confidential business information.</p>
+      </section>
+
+      <section class="strategy-workspace container" aria-labelledby="strategy-form-title">
+        <div class="strategy-form-column">
+          <div class="strategy-section-heading"><p class="eyebrow">START WITH THE SOURCE</p><h2 id="strategy-form-title">Build a preview</h2><p>Only the values marked “optional” can be left blank. Figures are in Indian rupees or lakh as labeled.</p></div>
+          <form class="strategy-form" id="strategy-form">
+            <fieldset class="strategy-fieldset">
+              <legend><span>01</span> Tender details</legend>
+              <label class="profile-field" for="strategy-tender-title">Tender title<input id="strategy-tender-title" name="tender_title" required minlength="2" maxlength="200" placeholder="Example: supply and installation of solar panels"></label>
+              <div class="strategy-input-grid">
+                <label class="profile-field" for="strategy-tender-id">Tender reference <small>Optional</small><input id="strategy-tender-id" name="tender_id" maxlength="100" placeholder="Bid or notice number"></label>
+                <label class="profile-field" for="strategy-portal">Portal / buyer<select id="strategy-portal" name="source_portal"><option>Not specified</option><option>GeM</option><option>CPPP</option><option>BHEL</option><option>ICMR</option><option>State eProcurement</option><option>Other</option></select></label>
+              </div>
+            </fieldset>
+
+            <fieldset class="strategy-fieldset">
+              <legend><span>02</span> Bidder details</legend>
+              <label class="profile-field" for="strategy-company">Business name<input id="strategy-company" name="company_name" required maxlength="120" placeholder="Your company or business name"></label>
+              <div class="strategy-input-grid">
+                <label class="profile-field" for="strategy-entity">Business type<select id="strategy-entity" name="entity_type"><option>Manufacturer</option><option>OEM</option><option>Trader</option><option>EPC</option><option>Reseller</option><option>System Integrator</option><option>Other</option></select></label>
+                <label class="profile-field" for="strategy-years">Years in business<input id="strategy-years" name="years_in_business" type="number" min="0" max="150" step="1" required placeholder="0"></label>
+              </div>
+              <div class="strategy-checkbox-row">
+                <label class="strategy-check"><input name="is_msme_registered" type="checkbox"><span>Registered MSME</span></label>
+                <label class="strategy-check"><input name="is_startup_recognized" type="checkbox"><span>Recognized startup</span></label>
+              </div>
+              <p class="strategy-field-help">These details are sent to the configured TenderLens API to calculate this preview and are not saved by this feature.</p>
+              <p class="strategy-subheading">Average annual turnover figures</p>
+              <div class="strategy-input-grid strategy-input-grid-three">
+                <label class="profile-field" for="turnover-year-1">Year 1 · ₹ lakh<input id="turnover-year-1" name="turnover_year_1_lakhs" type="number" min="0" step="0.01" required placeholder="0"></label>
+                <label class="profile-field" for="turnover-year-2">Year 2 · ₹ lakh<input id="turnover-year-2" name="turnover_year_2_lakhs" type="number" min="0" step="0.01" required placeholder="0"></label>
+                <label class="profile-field" for="turnover-year-3">Year 3 · ₹ lakh<input id="turnover-year-3" name="turnover_year_3_lakhs" type="number" min="0" step="0.01" required placeholder="0"></label>
+              </div>
+              <div class="strategy-input-grid">
+                <label class="profile-field" for="local-content">Local content · %<input id="local-content" name="local_content_percentage" type="number" min="0" max="100" step="0.1" required placeholder="0"></label>
+                <label class="profile-field" for="certifications">Certifications held <small>Comma-separated</small><input id="certifications" name="held_certifications" maxlength="500" placeholder="For example: ISO 9001, BIS"></label>
+              </div>
+            </fieldset>
+
+            <fieldset class="strategy-fieldset">
+              <legend><span>03</span> Tender requirements</legend>
+              <div class="strategy-input-grid strategy-input-grid-three">
+                <label class="profile-field" for="min-turnover">Minimum turnover · ₹ lakh<input id="min-turnover" name="min_annual_turnover_lakhs" type="number" min="0" step="0.01" required placeholder="0"></label>
+                <label class="profile-field" for="min-experience">Minimum experience · years<input id="min-experience" name="min_experience_years" type="number" min="0" max="150" step="1" required placeholder="0"></label>
+                <label class="profile-field" for="estimated-value">Estimated value · ₹ lakh<input id="estimated-value" name="estimated_bid_value_lakhs" type="number" min="0" step="0.01" placeholder="Optional"></label>
+              </div>
+              <div class="strategy-input-grid">
+                <label class="profile-field" for="emd-amount">EMD amount · ₹<input id="emd-amount" name="emd_amount_inr" type="number" min="0" step="1" required placeholder="0"></label>
+                <label class="profile-field" for="min-local-content">Minimum local content · %<input id="min-local-content" name="min_local_content_percentage" type="number" min="0" max="100" step="0.1" required value="20"></label>
+              </div>
+              <label class="profile-field" for="required-certifications">Required certifications <small>Comma-separated</small><input id="required-certifications" name="mandatory_certifications" maxlength="500" placeholder="For example: ISO 9001, BIS"></label>
+              <div class="strategy-checkbox-list">
+                <label class="strategy-check"><input name="oem_authorization_mandatory" type="checkbox"><span>Tender requires OEM authorization</span></label>
+                <label class="strategy-check"><input name="emd_exemption_confirmed_by_tender" type="checkbox"><span>Official tender text confirms an EMD exemption</span></label>
+                <label class="strategy-check"><input name="msme_turnover_relaxation_allowed" type="checkbox"><span>Official tender text confirms turnover relief applies</span></label>
+                <label class="strategy-check"><input name="is_turnover_exemption_revoked_by_atc" type="checkbox"><span>Tender text says turnover relief does not apply</span></label>
+                <label class="strategy-check"><input name="msme_experience_relaxation_allowed" type="checkbox"><span>Official tender text confirms experience relief applies</span></label>
+                <label class="strategy-check"><input name="is_experience_exemption_revoked_by_atc" type="checkbox"><span>Tender text says experience relief does not apply</span></label>
+                <label class="strategy-check"><input name="proprietary_brand_lock_detected" type="checkbox"><span>Tender names a brand or model without an equivalent</span></label>
+              </div>
+              <label class="profile-field" for="brand-details">Exact clause excerpt <small>Optional</small><textarea id="brand-details" name="proprietary_brand_details" rows="3" maxlength="600" placeholder="Paste a short excerpt only if needed"></textarea></label>
+            </fieldset>
+
+            <fieldset class="strategy-fieldset">
+              <legend><span>04</span> Optional EMD scenario</legend>
+              <p class="strategy-field-help">These assumptions only estimate a possible cash cost. They do not decide which instrument or exemption the tender allows.</p>
+              <div class="strategy-input-grid strategy-input-grid-three">
+                <label class="profile-field" for="lockup-days">Lock-up period · days<input id="lockup-days" name="estimated_emd_lockup_days" type="number" min="1" max="3650" step="1" placeholder="Optional"></label>
+                <label class="profile-field" for="cost-rate">Annual capital cost · %<input id="cost-rate" name="annual_capital_cost_rate_pct" type="number" min="0" max="100" step="0.1" placeholder="Optional"></label>
+                <label class="profile-field" for="active-bids">Concurrent bids<input id="active-bids" name="active_simultaneous_bids_count" type="number" min="1" max="100" step="1" value="1"></label>
+              </div>
+              <div class="strategy-input-grid">
+                <label class="profile-field" for="working-capital">EMD working capital · ₹<small>Optional</small><input id="working-capital" name="available_emd_working_capital_inr" type="number" min="0" step="1" placeholder="Optional"></label>
+                <label class="profile-field" for="surety-permitted">Tender says surety bond is allowed<select id="surety-permitted" name="surety_bond_permitted_by_tender"><option value="">Not checked</option><option value="true">Yes</option><option value="false">No</option></select></label>
+              </div>
+            </fieldset>
+
+            <div class="strategy-submit-row"><button class="auth-submit" id="strategy-submit" type="submit">Create review preview <span aria-hidden="true">↗</span></button><button class="strategy-reset" type="reset">Clear form</button></div>
+            <p class="auth-status" id="strategy-status" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+
+        <aside class="strategy-side-note">
+          <p class="eyebrow">WHAT THE PREVIEW DOES</p>
+          <ol>
+            <li><strong>Uses your figures</strong><span>Calculations are based on values entered here.</span></li>
+            <li><strong>Shows what needs proof</strong><span>Self-reported figures are not verified documents.</span></li>
+            <li><strong>Keeps sources visible</strong><span>Search results include links to inspect yourself.</span></li>
+          </ol>
+          <p class="strategy-side-foot">The preview endpoint does not fetch tender files, call an AI provider or store this form.</p>
+          <a class="text-link" href="guide.html">Read the easy guide <span aria-hidden="true">→</span></a>
+        </aside>
+      </section>
+
+      <section class="strategy-results container" id="strategy-results" hidden aria-labelledby="strategy-results-title">
+        <div class="strategy-results-heading"><div><p class="eyebrow">YOUR REVIEW PACK</p><h2 id="strategy-results-title">Five tools, one source trail.</h2><p id="strategy-result-context"></p></div><button class="strategy-reset" type="button" data-new-preview>Start another preview</button></div>
+        <p class="strategy-output-note" data-limitations></p>
+        <div class="strategy-output-grid">
+          <article class="strategy-output-card"><p class="eyebrow">01 · CLARIFICATION QUESTIONS</p><h3>Potential points to verify</h3><p class="strategy-output-copy">These prompts are not legal conclusions.</p><ul data-prebid-list></ul><details class="strategy-draft-details"><summary>View draft wording</summary><pre data-prebid-letter></pre></details></article>
+          <article class="strategy-output-card"><p class="eyebrow">02 · CAPABILITY GAPS</p><h3>Possible partner requirements</h3><p class="strategy-output-copy" data-consortium-summary></p><ul data-consortium-gaps></ul></article>
+          <article class="strategy-output-card strategy-output-card-wide"><div class="strategy-card-heading"><div><p class="eyebrow">03 · COMPLIANCE CHECKLIST</p><h3>Entered values and source checks</h3></div><button class="demo-login-fill" type="button" data-download-csv disabled>Download CSV <span aria-hidden="true">↓</span></button></div><p class="strategy-output-copy" data-compliance-note></p><div class="strategy-table-scroll"><table class="strategy-table"><thead><tr><th>Requirement</th><th>Entered-value result</th><th>Evidence / next step</th></tr></thead><tbody data-compliance-rows></tbody></table></div></article>
+          <article class="strategy-output-card"><p class="eyebrow">04 · EMD SCENARIO</p><h3>Possible cash lock-up</h3><dl class="strategy-metrics" data-emd-metrics></dl><p class="strategy-output-copy" data-emd-note></p></article>
+          <article class="strategy-output-card"><p class="eyebrow">05 · PUBLIC RECORDS</p><h3>Search for published results</h3><p class="strategy-output-copy" data-forensics-advice></p><p class="strategy-external-note">If you search, the tender title and selected portal are sent to the configured public-search provider. Verify every result at its source.</p><button class="demo-login-fill" type="button" data-forensics-search>Search public sources <span aria-hidden="true">↗</span></button><ul class="strategy-source-list" data-forensics-results></ul><p class="auth-status" data-forensics-status role="status" aria-live="polite"></p></article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="auth-footer"><a href="index.html">← Back to TenderLens</a><span><a href="guide.html">Easy guide</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></span></footer>
+  </body>
+</html>

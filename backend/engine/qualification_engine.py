@@ -20,18 +20,79 @@ from contracts.schema import (
     BidderProfile,
     ClauseCitation,
     GateResult,
-    QualificationScorecard
+    QualificationScorecard,
+    StrategyToolkitResponse,
 )
 from backend.services.document_processor import ProcessedClauseChunk
 from backend.engine.deterministic_gatekeeper import (
     DeterministicGatekeeper,
     TenderStatutoryCriteria
 )
+from backend.engine.prebid_legal_generator import PreBidLegalGenerator
+from backend.engine.consortium_matchmaker import ConsortiumMatchmaker
+from backend.engine.compliance_matrix_engine import ComplianceMatrixEngine
+from backend.engine.emd_capital_optimizer import EMDCapitalOptimizer
+from backend.engine.competitor_forensics import CompetitorForensicsEngine
 
 logger = logging.getLogger("tenderlens.engine")
 
 
 class QualificationEngine:
+    @classmethod
+    def generate_strategy_toolkit(
+        cls,
+        tender_id: str,
+        tender_title: str,
+        source_portal: str,
+        bidder_profile: BidderProfile,
+        criteria: TenderStatutoryCriteria,
+        citations: Optional[List[ClauseCitation]] = None,
+        gate_results: Optional[List[GateResult]] = None,
+    ) -> StrategyToolkitResponse:
+        source_citations = citations or []
+        gates = gate_results or DeterministicGatekeeper.evaluate(
+            bidder=bidder_profile,
+            tender=criteria,
+        )
+        return StrategyToolkitResponse(
+            tender_id=tender_id,
+            tender_title=tender_title,
+            source_portal=source_portal,
+            limitations_note=(
+                "This preview uses entered values and available source excerpts only. It does not establish eligibility, "
+                "legal compliance, partner acceptance or an instrument exemption. Verify official tender documents and evidence."
+            ),
+            deterministic_gates=gates,
+            prebid_legal_pack=PreBidLegalGenerator.generate_representation_pack(
+                tender_id=tender_id,
+                tender_title=tender_title,
+                bidder=bidder_profile,
+                criteria=criteria,
+                citations=source_citations,
+            ),
+            consortium_recommendation=ConsortiumMatchmaker.analyze_and_match(
+                bidder=bidder_profile,
+                criteria=criteria,
+                gate_results=gates,
+            ),
+            compliance_binder=ComplianceMatrixEngine.generate_package(
+                tender_id=tender_id,
+                tender_title=tender_title,
+                bidder=bidder_profile,
+                criteria=criteria,
+                gates=gates,
+                citations=source_citations,
+            ),
+            emd_capital_report=EMDCapitalOptimizer.evaluate_capital_risk(
+                bidder=bidder_profile,
+                criteria=criteria,
+            ),
+            competitor_forensics=CompetitorForensicsEngine.analyze_static_forensics(
+                tender_title=tender_title,
+                source_portal=source_portal,
+            ),
+        )
+
     @classmethod
     async def analyze_clauses_with_gemini(
         cls,
@@ -269,10 +330,19 @@ class QualificationEngine:
 
         # Run Deterministic Gatekeeper
         gate_results = DeterministicGatekeeper.evaluate(bidder=bidder_profile, tender=criteria)
+        strategy = cls.generate_strategy_toolkit(
+            tender_id=tender_id,
+            tender_title=tender_title,
+            source_portal=source_portal,
+            bidder_profile=bidder_profile,
+            criteria=criteria,
+            citations=clause_citations,
+            gate_results=gate_results,
+        )
 
         # Analyze Failures & Hard Disqualifiers
         hard_failures = [g for g in gate_results if g.is_hard_disqualifier and not g.passed]
-        soft_failures = [g for g in gate_results if not g.is_hard_disqualifier and not g.passed]
+        review_required_gates = [g for g in gate_results if g.review_required]
         ambiguities = [c for c in clause_citations if c.status == "AMBIGUOUS_MANUAL_REVIEW"]
 
         # Calculate Score (0.0 to 5.0 scale)
@@ -280,16 +350,21 @@ class QualificationEngine:
             recommendation = "RED_FLAG_NO_BID"
             score = max(0.5, 2.0 - (len(hard_failures) * 0.5))
             summary = (
-                f"RED FLAG: Bidder is legally or technically disqualified due to {len(hard_failures)} "
-                f"unmet mandatory criteria: {', '.join([h.rule_name for h in hard_failures])}. "
-                f"Bidding will risk EMD forfeiture and rejection during technical evaluation."
+                f"Entered values fall short of {len(hard_failures)} criteria marked as hard requirements: "
+                f"{', '.join([h.rule_name for h in hard_failures])}. "
+                "Verify each criterion, exception and source clause in the current official tender before deciding."
             )
-        elif len(ambiguities) > 0 or criteria.is_turnover_exemption_revoked_by_atc:
+        elif (
+            len(ambiguities) > 0
+            or criteria.is_turnover_exemption_revoked_by_atc
+            or criteria.is_experience_exemption_revoked_by_atc
+            or review_required_gates
+        ):
             recommendation = "CONDITIONAL_BID"
             score = 3.2
             summary = (
-                f"CONDITIONAL BID: Financial and experience gates pass, but ambiguous buyer ATC clauses "
-                f"or special conditional mandates (such as OEM MAF upload or corrigendum revisions) require clarification prior to bid submission."
+                f"Review is required for {len(review_required_gates)} entered rule(s) and/or ambiguous source clauses. "
+                "This is not an eligibility decision; check the controlling tender documents and supporting evidence."
             )
         else:
             recommendation = "STRONG_BID"
@@ -297,8 +372,7 @@ class QualificationEngine:
             score = round(4.0 + (passed_count / max(len(gate_results), 1) * 1.0), 1)
             score = min(score, 5.0)
             summary = (
-                f"STRONG BID: High qualification confidence. Bidder meets or exceeds all turnover, "
-                f"experience, EMD exemption, Make in India local content, and mandatory certification requirements."
+                "Entered values meet the checks run by this preview. Tender wording, bidder documents and official eligibility have not been verified."
             )
 
         return QualificationScorecard(
@@ -310,7 +384,12 @@ class QualificationEngine:
             deterministic_gates=gate_results,
             clause_citations=clause_citations,
             discovered_atc_urls=discovered_atc_urls or [],
-            executive_summary=summary
+            executive_summary=summary,
+            prebid_legal_pack=strategy.prebid_legal_pack,
+            consortium_recommendation=strategy.consortium_recommendation,
+            compliance_binder=strategy.compliance_binder,
+            emd_capital_report=strategy.emd_capital_report,
+            competitor_forensics=strategy.competitor_forensics,
         )
 
     @classmethod

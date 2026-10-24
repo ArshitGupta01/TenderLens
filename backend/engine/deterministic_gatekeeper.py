@@ -17,18 +17,24 @@ from contracts.schema import BidderProfile, GateResult
 
 
 class TenderStatutoryCriteria(BaseModel):
-    min_annual_turnover_lakhs: float = 0.0
-    min_experience_years: int = 0
-    estimated_bid_value_lakhs: Optional[float] = None
-    emd_amount_inr: float = 0.0
-    min_local_content_percentage: float = 20.0
+    min_annual_turnover_lakhs: float = Field(default=0.0, ge=0)
+    min_experience_years: int = Field(default=0, ge=0, le=150)
+    estimated_bid_value_lakhs: Optional[float] = Field(default=None, ge=0)
+    emd_amount_inr: float = Field(default=0.0, ge=0)
+    min_local_content_percentage: float = Field(default=20.0, ge=0, le=100)
     mandatory_certifications: List[str] = Field(default_factory=list)
     oem_authorization_mandatory: bool = False
-    msme_turnover_relaxation_allowed: bool = True
-    msme_experience_relaxation_allowed: bool = True
+    msme_turnover_relaxation_allowed: Optional[bool] = None
+    msme_experience_relaxation_allowed: Optional[bool] = None
     is_turnover_exemption_revoked_by_atc: bool = False
     is_experience_exemption_revoked_by_atc: bool = False
+    emd_exemption_confirmed_by_tender: Optional[bool] = None
     allow_class_2_suppliers: bool = True
+    proprietary_brand_lock_detected: bool = False
+    proprietary_brand_details: Optional[str] = Field(default=None, max_length=600)
+    surety_bond_permitted_by_tender: Optional[bool] = None
+    estimated_emd_lockup_days: Optional[int] = Field(default=None, ge=1, le=3650)
+    annual_capital_cost_rate_pct: Optional[float] = Field(default=None, ge=0, le=100)
 
 
 class DeterministicGatekeeper:
@@ -55,6 +61,7 @@ class DeterministicGatekeeper:
 
         turnover_passed = avg_turnover >= tender.min_annual_turnover_lakhs
         turnover_hard_disqualifier = False
+        turnover_review_required = False
         statutory_note = "General Financial Rules (GFR) 2017 / GeM GTC"
         reason = ""
 
@@ -67,9 +74,8 @@ class DeterministicGatekeeper:
                 turnover_passed = True
                 statutory_note = "Public Procurement Policy for MSEs Order, 2012 / GFR Rule 173(i)"
                 reason = (
-                    f"Turnover relaxation granted under PPP-2012: Bidder is a registered "
-                    f"{'MSME (' + str(bidder.msme_category) + ')' if bidder.is_msme_registered else 'DPIIT Startup'}. "
-                    f"Minimum turnover criteria waived."
+                    "The entered criteria mark turnover relief as allowed for this bidder category. "
+                    "Verify the registration, exact tender clause and current applicable rules before relying on it."
                 )
             elif is_eligible_for_exemption and tender.is_turnover_exemption_revoked_by_atc:
                 turnover_passed = False
@@ -77,14 +83,23 @@ class DeterministicGatekeeper:
                 statutory_note = "Buyer Added ATC Override (Precedence Rank 3 / Corrigendum Rank 1)"
                 reason = (
                     f"Turnover below threshold (₹{avg_turnover:.2f} Lakhs < ₹{tender.min_annual_turnover_lakhs:.2f} Lakhs). "
-                    f"CRITICAL DISQUALIFIER: Buyer ATC / Corrigendum explicitly revokes MSME turnover relaxation for this procurement."
+                    f"The entered criteria say the tender does not allow turnover relief. Verify this against the current official tender and applicable rules."
+                )
+            elif is_eligible_for_exemption and tender.msme_turnover_relaxation_allowed is None:
+                turnover_passed = False
+                turnover_hard_disqualifier = False
+                turnover_review_required = True
+                statutory_note = "Eligibility rule not confirmed"
+                reason = (
+                    f"Turnover below the entered threshold (₹{avg_turnover:.2f} Lakhs < ₹{tender.min_annual_turnover_lakhs:.2f} Lakhs). "
+                    "Whether any exemption applies was not confirmed in the entered criteria; review the complete tender."
                 )
             else:
                 turnover_passed = False
                 turnover_hard_disqualifier = True
                 reason = (
                     f"Turnover below threshold: Bidder average of ₹{avg_turnover:.2f} Lakhs is less than required ₹{tender.min_annual_turnover_lakhs:.2f} Lakhs. "
-                    f"Bidder is not eligible for statutory exemptions."
+                    "No exemption category was marked in the entered profile; confirm applicable rules and tender wording."
                 )
 
         results.append(GateResult(
@@ -94,7 +109,8 @@ class DeterministicGatekeeper:
             bidder_value=f"₹{avg_turnover:.2f} Lakhs (Avg 3Y)",
             required_value=f"₹{tender.min_annual_turnover_lakhs:.2f} Lakhs",
             reason=reason,
-            statutory_citation=statutory_note
+            statutory_citation=statutory_note,
+            review_required=turnover_review_required,
         ))
 
         # -------------------------------------------------------------
@@ -102,6 +118,7 @@ class DeterministicGatekeeper:
         # -------------------------------------------------------------
         exp_passed = bidder.years_in_business >= tender.min_experience_years
         exp_hard_disqualifier = False
+        exp_review_required = False
         exp_statutory_note = "Standard Procurement Experience Baseline"
 
         if exp_passed:
@@ -111,16 +128,31 @@ class DeterministicGatekeeper:
             if is_eligible_for_exemption and tender.msme_experience_relaxation_allowed and not tender.is_experience_exemption_revoked_by_atc:
                 exp_passed = True
                 exp_statutory_note = "DPIIT Notification / GFR Rule 173(i) Startup Relaxation"
-                exp_reason = f"Experience criteria relaxed under DPIIT startup / MSE policy (bidder has {bidder.years_in_business} years vs {tender.min_experience_years} years required)."
+                exp_reason = (
+                    f"The entered criteria mark experience relief as allowed ({bidder.years_in_business} years entered "
+                    f"vs {tender.min_experience_years} years required). Verify the bidder category, tender clause and current rules."
+                )
             elif is_eligible_for_exemption and tender.is_experience_exemption_revoked_by_atc:
                 exp_passed = False
                 exp_hard_disqualifier = True
                 exp_statutory_note = "Buyer ATC Override"
-                exp_reason = f"Experience below threshold ({bidder.years_in_business} < {tender.min_experience_years} yrs). Buyer ATC explicitly prohibits experience relaxation."
+                exp_reason = f"Entered criteria say experience relief does not apply ({bidder.years_in_business} < {tender.min_experience_years} yrs); verify this against the current official tender and applicable rules."
+            elif is_eligible_for_exemption and tender.msme_experience_relaxation_allowed is None:
+                exp_passed = False
+                exp_hard_disqualifier = False
+                exp_review_required = True
+                exp_statutory_note = "Eligibility rule not confirmed"
+                exp_reason = (
+                    f"Experience is below the entered threshold ({bidder.years_in_business} < {tender.min_experience_years} years). "
+                    "Whether any exemption applies was not confirmed in the entered criteria; review the complete tender."
+                )
             else:
                 exp_passed = False
                 exp_hard_disqualifier = True
-                exp_reason = f"Insufficient experience: {bidder.years_in_business} years in business vs minimum {tender.min_experience_years} years mandated."
+                exp_reason = (
+                    f"Entered business experience ({bidder.years_in_business} years) is below the entered threshold "
+                    f"of {tender.min_experience_years} years. Confirm the tender's experience definition and evidence."
+                )
 
         results.append(GateResult(
             rule_name="Experience & Past Performance",
@@ -129,39 +161,45 @@ class DeterministicGatekeeper:
             bidder_value=f"{bidder.years_in_business} Years",
             required_value=f"{tender.min_experience_years} Years",
             reason=exp_reason,
-            statutory_citation=exp_statutory_note
+            statutory_citation=exp_statutory_note,
+            review_required=exp_review_required,
         ))
 
         # -------------------------------------------------------------
         # 3. Earnest Money Deposit (EMD) Exemption Gate
         # -------------------------------------------------------------
-        is_emd_exempt = bidder.is_msme_registered or bidder.is_startup_recognized
+        may_have_emd_exemption = bidder.is_msme_registered or bidder.is_startup_recognized
+        is_emd_exempt = may_have_emd_exemption and tender.emd_exemption_confirmed_by_tender is True
         emd_passed = True  # EMD is either exempt or an obligation to be paid
         emd_reason = ""
+        emd_review_required = tender.emd_amount_inr > 0
         emd_citation = "General Financial Rules (GFR) 2017 Rule 170(i)"
 
         if tender.emd_amount_inr <= 0:
             emd_reason = "No Earnest Money Deposit required for this bid."
+        elif may_have_emd_exemption and tender.emd_exemption_confirmed_by_tender is None:
+            emd_reason = (
+                f"₹{tender.emd_amount_inr:,.2f} EMD entered. The bidder profile indicates a possible exemption category, "
+                "but the tender's treatment was not confirmed; check the official terms."
+            )
+            emd_review_required = True
         elif is_emd_exempt:
             emd_reason = (
-                f"Exempt from ₹{tender.emd_amount_inr:,.2f} EMD under GFR Rule 170(i) "
-                f"as a registered {'MSME' if bidder.is_msme_registered else 'DPIIT Startup'}. "
-                f"A Bid Security Declaration must be submitted in lieu."
+                f"₹{tender.emd_amount_inr:,.2f} EMD exemption is marked as confirmed in the entered criteria. "
+                "Check the tender's exact exemption conditions, required proof and any alternative security."
             )
         else:
-            emd_reason = (
-                f"Mandatory EMD deposit required: ₹{tender.emd_amount_inr:,.2f}. "
-                f"Bidder is not exempt and must provide Bank Guarantee / DD prior to bid closing."
-            )
+            emd_reason = f"₹{tender.emd_amount_inr:,.2f} EMD entered. Check the official tender for permitted security types and deadlines."
 
         results.append(GateResult(
             rule_name="Earnest Money Deposit (EMD)",
             passed=emd_passed,
             is_hard_disqualifier=False,
-            bidder_value="MSE/Startup Exempt" if is_emd_exempt else "Commercial Bidder",
+            bidder_value="Exemption marked in inputs" if is_emd_exempt else "Entered profile",
             required_value=f"₹{tender.emd_amount_inr:,.2f}",
             reason=emd_reason,
-            statutory_citation=emd_citation
+            statutory_citation=emd_citation,
+            review_required=emd_review_required,
         ))
 
         # -------------------------------------------------------------
@@ -183,9 +221,11 @@ class DeterministicGatekeeper:
             bidder_value=f"{bidder_local_pct:.1f}% ({mii_class})",
             required_value=f"{tender.min_local_content_percentage:.1f}% (Min Local Content)",
             reason=(
-                f"Bidder qualifies as {mii_class} meeting the tender's {tender.min_local_content_percentage}% local content threshold."
+                f"Entered local-content value of {bidder_local_pct:.1f}% matches the entered {tender.min_local_content_percentage}% threshold ({mii_class}). "
+                "Verify the tender's calculation method and supporting declarations."
                 if mii_passed else
-                f"Bidder local content ({bidder_local_pct:.1f}%) fails the minimum {tender.min_local_content_percentage}% threshold required by DPIIT MII order."
+                f"Entered local-content value ({bidder_local_pct:.1f}%) is below the entered threshold of {tender.min_local_content_percentage}%. "
+                "Confirm the tender's calculation method and supporting declarations."
             ),
             statutory_citation="DPIIT Public Procurement (Preference to Make in India) Order, 2017"
         ))
@@ -243,9 +283,9 @@ class DeterministicGatekeeper:
             bidder_value=bidder.held_certifications if bidder.held_certifications else "None Registered",
             required_value=tender.mandatory_certifications if tender.mandatory_certifications else "None Specified",
             reason=(
-                "All mandatory technical, quality, and statutory certificates are verified."
+                "The certificate names entered in the bidder profile cover the certificate names entered as required. Supporting documents were not verified."
                 if certs_passed else
-                f"DISQUALIFIER: Missing {len(missing_certs)} required certification(s): {', '.join(missing_certs)}."
+                f"Entered profile does not list {len(missing_certs)} required certificate(s): {', '.join(missing_certs)}. Verify accepted forms and tender conditions."
             ),
             statutory_citation="Technical Specifications & Eligibility Annexure"
         ))
