@@ -200,3 +200,24 @@ ode --check) across all frontend scripts in both root and rontend/.
   - Team Alias: https://tenderlens-arshit-s-projects-680b94fa.vercel.app
 - [x] Verified 200 OK responses across all routes with clean multi-page URLs (/, /strategy, /signin, /account, /robots.txt, /404).
 - [x] Configured static multi-page rootDirectory rontend to bypass AWS Lambda 500MB function size limit while serving full responsive UI, Top Menu Banner, Supabase Auth, and client Strategy Studio.
+
+### Menu Flyout, shadcn/Tailwind/TypeScript Integration & TenderLens Doodle Hero - 2026-10-24
+- [x] Converted the top banner clutter into an interactive flyout menu that *only opens when clicked on Menu* across all 11 pages (index.html, strategy.html, signin.html, signup.html, account.html, saved-tenders.html, guide.html, privacy.html, terms.html, 404.html, 500.html). Added click-outside dismissal and Escape key handler.
+- [x] Integrated standard shadcn project architecture:
+  - Added components/ui/doodle-crew-footer.tsx (the zero-dependency interactive hand-drawn crew component with inline SVG, math layout, eye tracking, physics drift, and soundless speech bubbles).
+  - Added components/demo.tsx demo wrapper.
+  - Added components/tenderlens-hero.tsx tailored specifically for TenderLens procurement compliance intelligence.
+  - Added lib/utils.ts with standard cn() (clsx + tailwind-merge).
+  - Added components.json, tsconfig.json, tailwind.config.js, and package.json.
+  - Verified npm run typecheck (tsc --noEmit) passes with 0 errors.
+- [x] Adapted component as the primary TenderLens hero at the start of page load:
+  - Shifted all subsequent modules down so the giant ink-stamped "TENDERLENS" wordmark and hand-drawn compliance crew load first.
+  - Assigned characters across "TENDERLENS" with deterministic audit commentary (Bruno, Pip, Morel, Juno, Boo, Patch).
+  - Configured brand palette matching TenderLens navy canvas (#090e17), bright text (#f8fafc), and electric cyan (#38bdf8).
+- [x] Responsive desktop vs mobile scroll behavior:
+  - Desktop (@media (min-width: 769px)): Implemented a long-scroll cover-up effect with a 145vh stage, sticky 100vh hero, animated scroll cue, and elevated curtain layer (.tenderlens-curtain) that smoothly slides up and covers the hero as the user scrolls.
+  - Mobile (@media (max-width: 768px)): Completely disabled long-scroll pinning and scroll cues; users experience a fast, standard natural touch scroll with fluid wordmark scaling.
+- [x] Verified full local execution:
+  - FastAPI server running on http://127.0.0.1:8000/ serving HTML and bundled component (doodle-hero.bundle.js).
+  - Synced all files and configurations between root and frontend/.
+- [ ] Next milestone: Continue local feature development and connect multi-file PDF ingestion to the live compliance DAG.

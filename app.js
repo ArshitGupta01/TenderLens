@@ -147,7 +147,8 @@ audienceTabs.forEach((tab) => {
 const menuToggle = document.querySelector('.menu-toggle');
 const primaryNav = document.querySelector('.primary-nav');
 if (menuToggle && primaryNav) {
-  menuToggle.addEventListener('click', () => {
+  menuToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
     const open = menuToggle.getAttribute('aria-expanded') !== 'true';
     menuToggle.setAttribute('aria-expanded', String(open));
     primaryNav.classList.toggle('is-open', open);
@@ -157,6 +158,19 @@ if (menuToggle && primaryNav) {
       menuToggle.setAttribute('aria-expanded', 'false');
       primaryNav.classList.remove('is-open');
     });
+  });
+  document.addEventListener('click', (e) => {
+    if (primaryNav.classList.contains('is-open') && !primaryNav.contains(e.target) && !menuToggle.contains(e.target)) {
+      menuToggle.setAttribute('aria-expanded', 'false');
+      primaryNav.classList.remove('is-open');
+    }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && primaryNav.classList.contains('is-open')) {
+      menuToggle.setAttribute('aria-expanded', 'false');
+      primaryNav.classList.remove('is-open');
+      menuToggle.focus();
+    }
   });
 }
 
@@ -726,3 +740,60 @@ if (bidderProfileForm) {
     });
   }
 }
+
+
+/* ==========================================================================
+   TenderLens Doodle Crew Hero & Desktop Long-Scroll Interaction
+   ========================================================================== */
+function setupDoodleHero() {
+  const doodleCue = document.getElementById('doodle-scroll-cue');
+  const curtain = document.getElementById('tenderlens-curtain');
+  const stage = document.getElementById('tenderlens-hero-stage');
+  const sticky = document.getElementById('tenderlens-hero-sticky');
+
+  if (doodleCue && curtain) {
+    doodleCue.addEventListener('click', () => {
+      curtain.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+
+  // Desktop long-scroll parallax cover-up enhancer
+  if (stage && sticky) {
+    let ticking = false;
+    const updateScrollParallax = () => {
+      ticking = false;
+      if (window.innerWidth <= 768) {
+        sticky.style.transform = '';
+        sticky.style.opacity = '';
+        return;
+      }
+      const rect = stage.getBoundingClientRect();
+      const travel = stage.offsetHeight - window.innerHeight;
+      if (travel > 0) {
+        const scrolled = -rect.top;
+        const progress = Math.max(0, Math.min(1, scrolled / travel));
+        // Subtle depth: slight scale down and soft fade as curtain covers
+        const scale = 1 - progress * 0.05;
+        const opacity = 1 - progress * 0.35;
+        const translateY = progress * 24;
+        sticky.style.transform = scale() translateY(px);
+        sticky.style.opacity = opacity.toFixed(3);
+      } else {
+        sticky.style.transform = '';
+        sticky.style.opacity = '';
+      }
+    };
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(updateScrollParallax);
+        ticking = true;
+      }
+    }, { passive: true });
+
+    window.addEventListener('resize', () => {
+      updateScrollParallax();
+    }, { passive: true });
+  }
+}
+setupDoodleHero();

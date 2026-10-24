@@ -1,0 +1,26 @@
+{
+  "name": "tenderlens",
+  "version": "1.0.3",
+  "private": true,
+  "description": "Deterministic tender compliance intelligence and audit platform",
+  "scripts": {
+    "build:doodle": "esbuild components/tenderlens-hero.tsx --bundle --minify --outfile=doodle-hero.bundle.js --define:process.env.NODE_ENV=\\\"production\\\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.61.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "tailwind-merge": "^3.7.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "autoprefixer": "^10.6.1",
+    "esbuild": "^0.28.2",
+    "postcss": "^8.5.31",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^7.0.2"
+  }
+}
