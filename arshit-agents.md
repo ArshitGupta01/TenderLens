@@ -398,4 +398,9 @@ ode --check) across all frontend scripts in both root and rontend/.
 - [x] Purged legacy Google OAuth client ID cleanup routines from `auth.js` and `frontend/auth.js`.
 - [x] Cleaned Content Security Policy (CSP) in `vercel.json` to eliminate `https://accounts.google.com` and `https://apis.google.com` script/connect/frame whitelist exceptions.
 - [x] Updated legal policies (`privacy.html`, `terms.html`, and `frontend/` mirrors) and system documentation (`README.md`, `PROJECT_INFO.md`, `agent.md`, `supabase/README.md`, `docs/API.md`, `docs/SECURITY.md`, `TECH_STACK.md`) to reflect pure email/password authentication via Supabase Auth with RLS.
+### Legal & System Pages Dark Mode Contrast Fix & Typography Synchronization - 2026-10-25
+- [x] Resolved unreadable white-on-cream contrast bug on `terms.html`, `privacy.html`, `404.html`, and `500.html` by replacing hardcoded `#fbfaf4` with dynamic `var(--paper)` in `styles.css` and `frontend/styles.css`.
+- [x] Added explicit `:root[data-theme="dark"] .legal-main, :root[data-theme="dark"] .not-found { background: var(--paper); }` dark mode rules and high-contrast button hover.
+- [x] Injected Google Fonts (`DM Mono`, `DM Sans`, `Newsreader`) preconnect and stylesheet links across all 22 HTML pages for crisp, consistent typography across views.
+- [x] Cleaned duplicate `<meta name="theme-color">` tags.
 - [ ] Next milestone: Address Wave 1 high-priority remediations from the audit report.

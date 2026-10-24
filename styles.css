@@ -256,16 +256,16 @@ h1, h2, h3, p { margin-top: 0; }
 .footer-links a:hover { color: var(--coral); }
 .footer-bottom { display: flex; justify-content: space-between; padding-top: 15px; color: #86938b; font: 7px var(--mono); letter-spacing: .09em; }
 
-.legal-page { min-height: 100vh; }
-.legal-main { min-height: calc(100vh - 188px); padding: 75px 0 100px; background: #fbfaf4; }
+.legal-page { min-height: 100vh; background: var(--paper); }
+.legal-main { min-height: calc(100vh - 188px); padding: 75px 0 100px; background: var(--paper); }
 .legal-copy { max-width: 760px; }
-.legal-copy h1 { margin: 0 0 20px; font: 400 clamp(48px, 6vw, 76px)/1 var(--serif); letter-spacing: -.05em; }
+.legal-copy h1 { margin: 0 0 20px; font: 400 clamp(48px, 6vw, 76px)/1 var(--serif); letter-spacing: -.05em; color: var(--ink); }
 .legal-copy .legal-intro { max-width: 620px; margin: 0 0 45px; color: var(--ink-soft); font-size: 14px; line-height: 1.8; }
-.legal-copy h2 { margin: 34px 0 8px; font: 500 24px var(--serif); }
+.legal-copy h2 { margin: 34px 0 8px; font: 500 24px var(--serif); color: var(--ink); }
 .legal-copy p, .legal-copy li { color: var(--muted); font-size: 12px; line-height: 1.8; }
 .legal-copy ul { padding-left: 20px; }
 .legal-back { margin-top: 30px; }
-.not-found { min-height: calc(100vh - 188px); display: grid; place-items: center; padding: 60px 0; background: #fbfaf4; text-align: center; }
+.not-found { min-height: calc(100vh - 188px); display: grid; place-items: center; padding: 60px 0; background: var(--paper); text-align: center; }
 .not-found-inner { max-width: 600px; }
 .not-found-code { margin: 0 0 12px; color: var(--coral); font: 10px var(--mono); letter-spacing: .13em; }
 .not-found h1 { margin: 0; font: 400 clamp(54px, 7vw, 83px)/1 var(--serif); letter-spacing: -.055em; }
@@ -809,10 +809,13 @@ small { font-size: max(12px, 1em); line-height: 1.5; }
 :root[data-theme="dark"] .principles-section,
 :root[data-theme="dark"] .guide-section-muted { background: var(--paper-deep); }
 :root[data-theme="dark"] .precedence-section,
+:root[data-theme="dark"] .legal-main,
+:root[data-theme="dark"] .not-found,
 :root[data-theme="dark"] .guide-hero { background: var(--paper); }
 :root[data-theme="dark"] .report-topbar,
 :root[data-theme="dark"] .button-dark,
 :root[data-theme="dark"] .primary-nav .nav-cta { color: #f7fbf8; background: var(--green-dark); }
+:root[data-theme="dark"] .button-dark:hover { color: #10211a; background: var(--green); }
 :root[data-theme="dark"] .sample-notice { border-color: var(--line-strong); color: var(--ink-soft); background: var(--surface); }
 :root[data-theme="dark"] .decision-band { border-color: #67453b; background: #392923; }
 :root[data-theme="dark"] .decision-copy strong { color: #ffb092; }
