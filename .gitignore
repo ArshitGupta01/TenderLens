@@ -58,3 +58,8 @@ repomix-output.*
 tmp/
 *.tsbuildinfo
 artifacts/
+
+# Local Backups (Never commit to git)
+tenderlens back/
+*back*/
+*.bundle

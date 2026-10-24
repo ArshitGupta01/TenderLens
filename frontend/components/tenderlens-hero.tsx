@@ -2,13 +2,14 @@ import * as React from "react"
 import { createRoot } from "react-dom/client"
 import DoodleCrewFooter from "./ui/doodle-crew-footer"
 
-export function TenderLensHero() {
+export function TenderLensHero({ wordmarkOnly = true }: { wordmarkOnly?: boolean } = {}) {
   return (
     <div className="w-full">
       <DoodleCrewFooter
         wordmark="TENDERLENS"
-        wordmarkOnly={true}
+        wordmarkOnly={wordmarkOnly}
         crew={[]}
+        doodles={["building", "document", "shield", "seal", "building", "document", "briefcase", "check"]}
         tracking={-0.025}
         backToTop={false}
         palette={{
@@ -20,6 +21,8 @@ export function TenderLensHero() {
     </div>
   )
 }
+
+export default TenderLensHero
 
 if (typeof window !== "undefined") {
   const mountHero = () => {

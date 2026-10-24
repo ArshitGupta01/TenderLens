@@ -7,18 +7,35 @@
     <meta name="description" content="Sign in to TenderLens to view your bidder profile and saved tender notices.">
     <meta name="tenderlens-api" content="">
     <title>Sign in — TenderLens</title>
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2.0.2">
+    <link rel="alternate icon" type="image/x-icon" href="favicon.ico?v=2.0.2">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png?v=2.0.2">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png?v=2.0.2">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=2.0.2">
+    <link rel="manifest" href="site.webmanifest?v=2.0.2">
+    <meta name="theme-color" content="#0d1522">
+    <meta property="og:image" content="tenderlens-og.png?v=2.0.2">
+    <meta name="twitter:image" content="tenderlens-og.png?v=2.0.2">
     <link rel="stylesheet" href="styles.css">
     <script src="theme.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0" defer></script>
     <script src="auth.js" defer></script>
     <script src="app.js" defer></script>
+    <script>
+      (function() {
+        var params = new URLSearchParams(window.location.search);
+        var hash = window.location.hash || '';
+        if (params.get('mode') === 'reset' || hash.indexOf('type=recovery') !== -1) {
+          document.documentElement.classList.add('is-recovery-mode');
+        }
+      })();
+    </script>
   </head>
   <body class="account-page">
     <a class="skip-link" href="#main">Skip to content</a>
 <header class="site-header">
       <div class="container nav-shell">
-        <a class="brand" href="index.html" aria-label="TenderLens home"><span class="brand-mark" aria-hidden="true">⌕</span><span class="brand-name">Tender<span>Lens</span></span></a>
+        <a class="brand" href="index.html" aria-label="TenderLens home"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="9" fill="#0d1522"/><rect width="38" height="38" x="1" y="1" rx="8" stroke="rgba(255,255,255,0.14)" stroke-width="1"/><g transform="translate(4.2, 12.3) scale(0.1)"><path d="M 23 2 L 20 3 L 18 4 L 13 9 L 10 13 L 8 16 L 6 19 L 3 23 L 2 25 L 2 31 L 5 34 L 67 34 L 69 36 L 69 144 L 70 147 L 75 152 L 77 153 L 102 153 L 103 34 L 145 34 L 149 32 L 151 30 L 153 26 L 153 2 Z" fill="#FFFFFF"/><path d="M 166 2 L 166 110 L 167 116 L 168 119 L 169 122 L 173 130 L 175 133 L 179 138 L 182 141 L 186 144 L 189 145 L 191 147 L 195 149 L 197 149 L 200 151 L 204 152 L 209 153 L 301 153 L 303 152 L 308 147 L 309 144 L 311 142 L 313 139 L 315 135 L 315 131 L 314 128 L 310 124 L 308 123 L 220 123 L 214 122 L 208 119 L 201 112 L 198 106 L 197 102 L 196 2 Z" fill="#3B82F6"/></g></svg></span><span class="brand-name">Tender<span>Lens</span></span></a>
         <div class="header-actions">
           <a class="header-account-link" data-auth-signup href="signup.html">Create account</a>
           <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch theme" aria-pressed="false"><span class="theme-toggle-icon" aria-hidden="true">☾</span><span id="theme-toggle-label">Dark mode</span></button>
@@ -66,36 +83,146 @@
         </nav>
       </div>
     </header>
-    <main class="auth-main" id="main">
+        <main class="auth-main" id="main">
       <div class="auth-orbit auth-orbit-one" aria-hidden="true"></div><div class="auth-orbit auth-orbit-two" aria-hidden="true"></div>
       <section class="auth-layout" aria-labelledby="auth-title">
-        <div class="auth-story"><p class="eyebrow"><span class="eyebrow-mark"></span> YOUR TENDER WORKSPACE</p><h1>Good decisions start with a <em>clear record.</em></h1><p>Sign in to keep your bidder profile, statutory capacity figures, and live tender bookmarks together wherever you work.</p><div class="auth-story-note"><span>01</span><p>One account. Your profile and saved notice links travel with you under Supabase Row-Level Security.</p></div></div>
-        <div class="auth-card">
-          <p class="eyebrow">WELCOME BACK</p><h2 data-auth-title id="auth-title">Sign in</h2><p class="auth-intro">Use your email or the shared demo account to sign in.</p>
+        <div class="auth-story">
+          <div class="auth-story-badge"><span class="pulse-dot"></span> BIDDER COMPLIANCE WORKSPACE</div>
+          <h1>Good decisions start with a <em>clear record.</em></h1>
+          <p class="auth-story-lead">Sign in to access your bidder profile, statutory capacity figures, and live tender bookmarks under enterprise Row-Level Security.</p>
           
-          <section class="demo-login-card" data-demo-account data-demo-email="cm@gmail.com" aria-labelledby="demo-login-title">
-            <div class="demo-login-heading"><div><p class="eyebrow">SHARED DEMO ACCOUNT</p><h3 id="demo-login-title">Try the workspace</h3></div><span class="demo-login-badge">READY</span></div>
-            <dl class="demo-login-credentials">
-              <div><dt>Email</dt><dd><code data-demo-email-value>cm@gmail.com</code></dd></div>
-            </dl>
-            <p class="demo-login-note">Enter the demo password privately. Anyone using this shared account can see its saved profile and tenders, so do not add private information.</p>
-            <button class="demo-login-fill" type="button" data-demo-fill>Fill demo email <span aria-hidden="true">↗</span></button>
-            <p class="demo-login-status" data-demo-status role="status" aria-live="polite"></p>
-          </section>
+          <div class="auth-pillars">
+            <div class="auth-pillar-card">
+              <div class="auth-pillar-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+              </div>
+              <div class="auth-pillar-body">
+                <strong>PostgreSQL Row-Level Security</strong>
+                <p>Your financial balance sheets and capacity records are strictly isolated under Supabase RLS policies.</p>
+              </div>
+            </div>
+            <div class="auth-pillar-card">
+              <div class="auth-pillar-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="m9 15 2 2 4-4"/></svg>
+              </div>
+              <div class="auth-pillar-body">
+                <strong>Statutory Exemption Shields</strong>
+                <p>Automated GFR 173(i) and DPIIT relaxation mappings applied directly to your profile.</p>
+              </div>
+            </div>
+            <div class="auth-pillar-card">
+              <div class="auth-pillar-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1.5"/></svg>
+              </div>
+              <div class="auth-pillar-body">
+                <strong>Deterministic Evidence Vault</strong>
+                <p>All qualification checks reference verified clauses with zero hallucination.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="auth-stats-strip">
+            <div class="auth-stat-item"><strong>&#8377;40 Lakh Cr</strong><span>Market Tracked</span></div>
+            <div class="auth-stat-divider"></div>
+            <div class="auth-stat-item"><strong>&lt; 2.4s</strong><span>Audit Speed</span></div>
+            <div class="auth-stat-divider"></div>
+            <div class="auth-stat-item"><strong>100%</strong><span>Source Cited</span></div>
+          </div>
+        </div>
+
+        <div class="auth-card">
+          <div class="auth-card-brand">
+            <span class="auth-brand-badge" aria-hidden="true">
+              <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="9" fill="#0d1522"/><rect width="38" height="38" x="1" y="1" rx="8" stroke="rgba(255,255,255,0.14)" stroke-width="1"/><g transform="translate(4.2, 12.3) scale(0.1)"><path d="M 23 2 L 20 3 L 18 4 L 13 9 L 10 13 L 8 16 L 6 19 L 3 23 L 2 25 L 2 31 L 5 34 L 67 34 L 69 36 L 69 144 L 70 147 L 75 152 L 77 153 L 102 153 L 103 34 L 145 34 L 149 32 L 151 30 L 153 26 L 153 2 Z" fill="#FFFFFF"/><path d="M 166 2 L 166 110 L 167 116 L 168 119 L 169 122 L 173 130 L 175 133 L 179 138 L 182 141 L 186 144 L 189 145 L 191 147 L 195 149 L 197 149 L 200 151 L 204 152 L 209 153 L 301 153 L 303 152 L 308 147 L 309 144 L 311 142 L 313 139 L 315 135 L 315 131 L 314 128 L 310 124 L 308 123 L 220 123 L 214 122 L 208 119 L 201 112 L 198 106 L 197 102 L 196 2 Z" fill="#3B82F6"/></g></svg>
+            </span>
+            <div class="auth-brand-info">
+              <span class="auth-brand-name">Tender<span>Lens</span></span>
+              <span class="auth-badge-pill">SECURE PORTAL</span>
+            </div>
+          </div>
+
+          <div class="auth-card-header">
+            <h2 data-auth-title id="auth-title">Welcome back</h2>
+            <p class="auth-intro">Sign in to your bidder compliance workspace.</p>
+          </div>
+
           <form class="auth-form" data-signin-form data-auth-form="signin">
-            <label class="profile-field" for="signin-email">Email address<input id="signin-email" name="email" type="email" autocomplete="email" required placeholder="you@company.com"></label>
-            <label class="profile-field" for="signin-password">Password<input id="signin-password" name="password" type="password" autocomplete="current-password" required minlength="8" placeholder="At least 8 characters"></label>
-            <button class="auth-submit" data-auth-submit type="submit">Sign in <span aria-hidden="true">↗</span></button>
-            <button class="auth-text-button" data-password-reset type="button">Forgot password?</button>
+            <div class="profile-field">
+              <label for="signin-email">Work email address</label>
+              <div class="auth-input-wrapper">
+                <span class="auth-input-icon" aria-hidden="true">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                </span>
+                <input id="signin-email" name="email" type="email" autocomplete="email" required placeholder="you@company.com">
+              </div>
+            </div>
+
+            <div class="profile-field">
+              <div class="auth-field-header">
+                <label for="signin-password">Password</label>
+                <button class="auth-text-link" data-password-reset type="button">Forgot password?</button>
+              </div>
+              <div class="auth-input-wrapper">
+                <span class="auth-input-icon" aria-hidden="true">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>
+                </span>
+                <input id="signin-password" name="password" type="password" autocomplete="current-password" required minlength="8" placeholder="Enter your password">
+                <button class="auth-password-toggle" type="button" aria-label="Toggle password visibility" title="Show password">
+                  <span class="eye-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </span>
+                </button>
+              </div>
+            </div>
+
+            <button class="auth-submit" data-auth-submit type="submit">
+              <span>Sign in to workspace</span>
+              <span class="auth-arrow" aria-hidden="true">&nearr;</span>
+            </button>
+
             <p class="auth-status" data-auth-status role="status" aria-live="polite"></p>
           </form>
+
           <form class="auth-form" data-password-recovery hidden>
-            <label class="profile-field" for="new-password">New password<input id="new-password" name="password" type="password" autocomplete="new-password" required minlength="8"></label>
-            <label class="profile-field" for="new-password-confirm">Confirm new password<input id="new-password-confirm" name="password_confirm" type="password" autocomplete="new-password" required minlength="8"></label>
-            <button class="auth-submit" data-password-update type="submit">Update password <span aria-hidden="true">↗</span></button>
+            <div class="profile-field">
+              <label for="new-password">New password</label>
+              <div class="auth-input-wrapper">
+                <span class="auth-input-icon" aria-hidden="true">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>
+                </span>
+                <input id="new-password" name="password" type="password" autocomplete="new-password" required minlength="8" placeholder="At least 8 characters">
+                <button class="auth-password-toggle" type="button" aria-label="Toggle password visibility" title="Show password">
+                  <span class="eye-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </span>
+                </button>
+              </div>
+            </div>
+            <div class="profile-field">
+              <label for="new-password-confirm">Confirm new password</label>
+              <div class="auth-input-wrapper">
+                <span class="auth-input-icon" aria-hidden="true">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>
+                </span>
+                <input id="new-password-confirm" name="password_confirm" type="password" autocomplete="new-password" required minlength="8" placeholder="Type it again">
+                <button class="auth-password-toggle" type="button" aria-label="Toggle password visibility" title="Show password">
+                  <span class="eye-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </span>
+                </button>
+              </div>
+            </div>
+            <button class="auth-submit" data-password-update type="submit">
+              <span>Update password</span>
+              <span class="auth-arrow" aria-hidden="true">&nearr;</span>
+            </button>
             <p class="auth-status" data-auth-status role="status" aria-live="polite"></p>
           </form>
-          <p class="auth-switch">New to TenderLens? <a href="signup.html">Create an account</a></p>
+
+          <div class="auth-card-footer">
+            <p class="auth-switch" data-signin-switch>Don&#39;t have an account? <a href="signup.html">Create a free account</a></p>
+            <p class="auth-switch" data-recovery-footer><a href="signin.html">&larr; Back to sign in</a></p>
+          </div>
           <p class="auth-config-hint" data-auth-config-needed hidden>Local setup is needed before sign-in can work. <a href="guide.html#account-setup">See account setup</a>.</p>
         </div>
       </section>

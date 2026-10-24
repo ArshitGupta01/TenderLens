@@ -350,3 +350,37 @@ ode --check) across all frontend scripts in both root and rontend/.
   - Cleaned single.xml and memory trackers (rshit-agents.md, MOhit-Agents.md).
   - Replaced all footers, hero rulers, eyebrows, and credits with pure **TenderLens** branding.
   - Verified 0 remaining occurrences of 'traxo' or 'iiitd' across workspace.
+
+### Release v2.0.2 Integration & Full Suite Verification - 2026-10-25
+- [x] Fetched remote branch `release-v2.0.2` and tag `v2.0.2` from origin; loaded local branch `v2.0.2`.
+- [x] Verified and adopted v2.0.2 improvements:
+  - `HOW_TENDERLENS_WORKS_PLAIN_ENGLISH.md`: Added executive plain-English domain narrative for ₹40 Lakh Cr public procurement, CAG/Vigilance audit compliance, and technical equivalence proof substitution (Annexure-I QC proforma + NABL lab test reports).
+  - Cleaned user-facing UI surfaces: Eliminated developer stack clutter and raw terminal commands from `index.html` and `guide.html`.
+  - Streamlined drawer navigation with independent viewport scroll.
+- [x] Installed Playwright headless Chromium dependencies and verified full end-to-end frontend automated testing:
+  - `tests/test_frontend_playwright.py`: 3/3 passed (`test_index_clean_ux_no_tech_stack_clutter`, `test_guide_pure_user_tools_no_dev_commands`, `test_strategy_preset_and_precedence_rag`).
+- [x] Executed full test suite: **39/39 tests passed (100%)** across backend unit tests and Playwright frontend tests.
+- [x] Verified `npm run typecheck` passes with 0 TypeScript errors.
+- [x] Started local FastAPI backend daemon on `http://127.0.0.1:8000/` serving v2.0.2 with live health status (`/healthz`).
+- [x] Rolled out official "TL" brand monogram logo across all 22 HTML pages, Next.js application, favicon.svg, favicon.ico, and vector assets.
+- [x] Configured complete domain logo suite across root, `public/`, and `frontend/`:
+  - `apple-touch-icon.png` (180x180) & `apple-touch-icon-precomposed.png` for iOS / macOS Safari domain bookmarks.
+  - `favicon-32x32.png` & `favicon-16x16.png` for browser tab domain icons.
+  - `android-chrome-192x192.png` & `android-chrome-512x512.png` with `site.webmanifest`.
+  - `tenderlens-og.png` (1200x630) domain preview card for OpenGraph & Twitter cards.
+  - Synchronized `<head>` metadata in all 22 HTML pages and `app/layout.tsx`.
+- [x] Replaced playful doodle animations ("flame", "sandwich", "star", "heart", "bolt", "sparkle") in DoodleCrew component with professional procurement & tender domain icons (`building`, `document`, `shield`, `seal`, `briefcase`, `check`). Rebuilt `doodle-hero.bundle.js` cleanly across root, `frontend/`, and `public/`.
+- [x] Removed shared demo account autofill box (`cm@gmail.com` / "Fill demo email") from `signin.html` and `frontend/signin.html`.
+- [x] Overhauled Sign In & Sign Up experience into an enterprise SaaS authentication portal:
+  - Added official TL brand monogram header & "SECURE PORTAL" pill badge inside auth cards.
+  - Modernized input fields with contextual icons (email, lock, user) and interactive password visibility reveal toggles.
+  - Added dynamic 3-tier password strength calculation meter for registration.
+  - Redesigned left-hand trust storytelling column with PostgreSQL RLS isolation, Statutory Exemption Shields, Deterministic Evidence Vault, and ₹40L Cr procurement stats.
+  - Refined layout, elevated glassmorphic shadow, rounded inputs (10px), and responsive mobile grid across `signin.html`, `signup.html`, and their `frontend/` mirrors.
+- [x] Isolated Password Recovery View & Fixed Character Encoding:
+  - Implemented single-card focused recovery mode (`is-recovery-mode`): when resetting password (`?mode=reset` or Supabase `PASSWORD_RECOVERY` event), the left story column (trust cards and stats from Image 2) is completely hidden.
+  - The password reset card is automatically centered and focused on updating the password.
+  - Added early `<head>` script to avoid layout shifts.
+  - Fixed character encoding bugs across `signin.html`, `signup.html`, `auth.js`, and `styles.css` (both root and `frontend/`), replacing corrupted `??` characters with inline SVG icons (shield, legal seal, vault, mail, key, eye toggle).
+- [x] Executed full-codebase architectural, security, and algorithmic audit; documented all 18 findings in `codebase_mistakes_and_weakpoints_audit.md`.
+- [ ] Next milestone: Address Wave 1 high-priority remediations from the audit report.

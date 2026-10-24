@@ -55,8 +55,18 @@ export default function HomePage() {
       {/* 1. TOP HEADER BANNER */}
       <header className="sticky top-0 z-50 flex items-center justify-between border-b border-white/10 bg-[#090e17]/90 px-6 py-4 backdrop-blur-md">
         <div className="flex items-center gap-3">
+          <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg shadow-md overflow-hidden flex-shrink-0">
+            <svg viewBox="0 0 40 40" fill="none" className="w-full h-full">
+              <rect width="40" height="40" rx="9" fill="#0d1522"/>
+              <rect width="38" height="38" x="1" y="1" rx="8" stroke="rgba(255,255,255,0.14)" strokeWidth="1"/>
+              <g transform="translate(4.2, 12.3) scale(0.1)">
+                <path d="M 23 2 L 20 3 L 18 4 L 13 9 L 10 13 L 8 16 L 6 19 L 3 23 L 2 25 L 2 31 L 5 34 L 67 34 L 69 36 L 69 144 L 70 147 L 75 152 L 77 153 L 102 153 L 103 34 L 145 34 L 149 32 L 151 30 L 153 26 L 153 2 Z" fill="#FFFFFF"/>
+                <path d="M 166 2 L 166 110 L 167 116 L 168 119 L 169 122 L 173 130 L 175 133 L 179 138 L 182 141 L 186 144 L 189 145 L 191 147 L 195 149 L 197 149 L 200 151 L 204 152 L 209 153 L 301 153 L 303 152 L 308 147 L 309 144 L 311 142 L 313 139 L 315 135 L 315 131 L 314 128 L 310 124 L 308 123 L 220 123 L 214 122 L 208 119 L 201 112 L 198 106 L 197 102 L 196 2 Z" fill="#3B82F6"/>
+              </g>
+            </svg>
+          </span>
           <span className="text-xl font-black tracking-tight text-white">TENDERLENS</span>
-          <span className="rounded bg-sky-500/20 px-2 py-0.5 text-xs font-bold text-sky-400">v2.0.0</span>
+          <span className="rounded bg-sky-500/20 px-2 py-0.5 text-xs font-bold text-sky-400">v2.0.2</span>
         </div>
         <nav className="flex items-center gap-4 text-sm font-semibold">
           <a href="#architecture" className="text-slate-300 hover:text-sky-400">Architecture</a>
