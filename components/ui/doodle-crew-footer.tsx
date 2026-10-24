@@ -570,7 +570,7 @@ const DEFAULT_ACTIONS: FooterAction[] = [
 
 
 
-const DEFAULT_DOODLES: DoodleKind[] = ["building", "document", "shield", "seal", "building", "document", "briefcase", "check"]
+const DEFAULT_DOODLES: DoodleKind[] = []
 
 
 

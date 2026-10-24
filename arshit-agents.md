@@ -407,4 +407,9 @@ ode --check) across all frontend scripts in both root and rontend/.
 - [x] Resolved unreadable dark-ink on pitch-black contrast bug on `index.html` hero section by removing hardcoded `#090e17` from `.tenderlens-curtain` and setting `background: var(--paper)` on both `.hero` and `.tenderlens-curtain`.
 - [x] Added theme-aware curtain elevation (`box-shadow: 0 -20px 45px rgba(24, 51, 47, 0.12), 0 -1px 0 var(--line);` in light mode, deep obsidian shadow in dark mode).
 - [x] Updated both `styles.css` and `frontend/styles.css`.
+### Doodle & Navigation Menu Purification (0 Emojis, 0 AI Buzzwords) - 2026-10-25
+- [x] Completely purged floating doodle icons ('emojis') from `components/tenderlens-hero.tsx` and `components/ui/doodle-crew-footer.tsx` (`doodles={[]}`), rendering a pure, clean, majestic architectural wordmark.
+- [x] Rebuilt production bundle `doodle-hero.bundle.js` across root, `frontend/`, and `public/`.
+- [x] Replaced all emojis in drawer navigation menu across all 18 HTML pages with crisp, 15x15 vector SVGs for enterprise consistency across devices.
+- [x] Verified zero 'AI' mentions in navigation menu options.
 - [ ] Next milestone: Address Wave 1 high-priority remediations from the audit report.

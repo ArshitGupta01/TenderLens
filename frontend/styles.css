@@ -2274,9 +2274,22 @@ body.is-recovery-mode [data-recovery-footer] {
   gap: 10px;
 }
 .menu-item-icon {
-  font-size: 15px;
-  width: 20px;
-  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: var(--green);
+  opacity: .85;
+}
+.menu-item-icon svg {
+  width: 15px;
+  height: 15px;
+  display: block;
+}
+.menu-item:hover .menu-item-icon {
+  opacity: 1;
 }
 .menu-item-featured {
   background: color-mix(in srgb, var(--green-pale) 75%, var(--surface));
