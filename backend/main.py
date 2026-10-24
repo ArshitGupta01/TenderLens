@@ -68,7 +68,7 @@ logger = logging.getLogger("tenderlens.api")
 app = FastAPI(
     title="TenderLens Engine API",
     description="AI-Powered Tender Qualification & Disqualification Engine for Indian Public Procurement",
-    version="1.0.3"
+    version="2.0.2"
 )
 
 # Enable CORS for Arshit's Frontend and local origins
