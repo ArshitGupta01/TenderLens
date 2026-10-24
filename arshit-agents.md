@@ -166,3 +166,21 @@ Recommended relational tables for Arshit's implementation:
 - [x] Upgraded `account.html` so signed-in users can sync both basic organization details and statutory/financial capacity metrics (`is_msme_registered`, `msme_category`, `is_startup_recognized`, 3-year turnover, `years_in_business`, `local_content_percentage`, `held_certifications`) to `public.profiles` under RLS.
 - [x] Synchronized all root HTML/CSS/JS files with `frontend/` so both FastAPI port `8000` and static server port `4177` serve the unified application.
 - [ ] Next milestone: configure production Google Cloud OAuth Client ID & Secret in Supabase Dashboard and connect multi-PDF file upload to the source-document audit view.
+
+### Vercel Multi-Page Deployment, Security Standard & Mobile Menu Banner — 2026-10-24
+- [x] Configured production Vercel deployment with clean multi-page routing, custom error pages (`404.html`, `500.html`), static caching, and HTTP security headers (CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy) in `vercel.json`.
+- [x] Implemented responsive `<aside class="top-menu-banner">` quick navigation menu across all HTML pages (`index.html`, `strategy.html`, `signin.html`, `signup.html`, `account.html`, `saved-tenders.html`, `guide.html`, `privacy.html`, `terms.html`, `404.html`, `500.html`) with live status badge (`TENDERLENS v1.0.3 LIVE`), one-tap access to all key modules, and swipeable horizontal overflow on mobile devices.
+- [x] Enhanced mobile responsiveness across all screen sizes (max-width 600px):
+  - Prevented horizontal bouncing (`overflow-x: hidden; width: 100%`).
+  - Added `-webkit-overflow-scrolling: touch;` and horizontal containment on compliance matrix and strategy tables.
+  - Stacked action buttons, preset chips, and scorecard headings vertically on narrow viewports for thumb-friendly touch interactions.
+  - Set minimum 16px font size on inputs to avoid automatic zoom on iOS Safari.
+- [x] Implemented comprehensive security and development documentation adhering to the 20-point security specification and vibe coding guides:
+  - `docs/SECURITY.md`: 20 security principles (RLS, secrets isolation, CSP, CORS, input validation, audit trail, automated gatekeeper).
+  - `docs/CODE_STYLE.md`: Code style guidelines and architectural patterns.
+  - `docs/DATABASE.md`: Supabase PostgreSQL schema, RLS policies, indexing, and migration reference.
+  - `docs/API.md`: API reference for all endpoints, request/response models, SSE streaming, and error handling.
+  - `SECURITY.md`: Repository root security declaration.
+  - `robots.txt` and `sitemap.xml`: SEO and crawler directives for production deployment.
+- [x] Synced all static assets and configuration files between repository root and `frontend/`.
+- [ ] Next milestone: Deploy to Vercel via `npx vercel` or GitHub integration and connect custom domain.
