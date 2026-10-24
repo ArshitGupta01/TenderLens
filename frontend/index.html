@@ -51,6 +51,17 @@
             <span class="menu-pulse" aria-hidden="true"></span>
             <span class="menu-status-text">TENDERLENS v1.0.3 LIVE</span>
           </div>
+                    <div class="menu-group">
+            <div class="menu-section-heading">ARCHITECTURE &amp; ENGINE</div>
+            <a class="menu-item menu-item-featured" href="index.html#architecture">
+              <span class="menu-item-lead"><span class="menu-item-icon">🧠</span><span class="menu-item-text">AI Procurement Engine</span></span>
+              <span class="menu-tag">5-Step Pipeline</span>
+            </a>
+            <a class="menu-item" href="index.html#tech-stack">
+              <span class="menu-item-lead"><span class="menu-item-icon">🛠️</span><span class="menu-item-text">Production Tech Stack</span></span>
+              <span class="menu-tag">6 Layers</span>
+            </a>
+          </div>
           <div class="menu-group">
             <div class="menu-section-heading">EXPLORE &amp; REVIEW</div>
             <a class="menu-item" href="index.html#demo">
@@ -216,7 +227,438 @@
         <div class="hero-ruler" aria-hidden="true"><span>HACKIIITD · TEAM TRAXO</span><span>PROCUREMENT, READ WITH CONTEXT</span><span>INDIA</span></div>
       </section>
 
-      <section class="opportunity-section section-rule" id="opportunities">
+      
+    <!-- =====================================================================
+         SECTION 02: TENDERLENS AI PROCUREMENT ENGINE & ARCHITECTURE (IMAGE 2)
+         ===================================================================== -->
+    <section class="architecture-section section-rule" id="architecture" aria-labelledby="arch-title">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow"><span class="eyebrow-mark"></span> CORE ARCHITECTURAL COMPARISON</p>
+          <h2 id="arch-title">TenderLens: AI-Powered Government Procurement Engine</h2>
+          <p class="section-lead">Why legacy keyword search and flat RAG tools fail on Indian public procurement—and how TenderLens delivers deterministic qualification with source-cited audit trails.</p>
+        </div>
+
+        <!-- DUAL PANEL ARCHITECTURE COMPARISON (LEFT: THE FLAWED WAY vs RIGHT: THE INTELLIGENT WAY) -->
+        <div class="engine-comparison-grid">
+          <!-- LEFT PANEL: EXISTING TOOLS (THE FLAWED WAY) -->
+          <div class="engine-panel engine-panel-flawed">
+            <div class="panel-badge panel-badge-flawed">LEFT PANEL · THE FLAWED WAY</div>
+            <h3 class="panel-title">Existing Tools</h3>
+            <p class="panel-subtitle">Legacy scraper, and tender search (BidAssist or flat RAG tools)</p>
+
+            <div class="flawed-flow-diagram">
+              <div class="flawed-input-row">
+                <div class="flawed-box">
+                  <span class="flawed-icon">🔍</span>
+                  <span>Keyword query</span>
+                </div>
+                <span class="flawed-or">or</span>
+                <div class="flawed-box">
+                  <span class="flawed-icon">🔗</span>
+                  <span>Tender link</span>
+                </div>
+              </div>
+
+              <div class="flawed-alert-pill">
+                <span class="alert-icon">⚠️</span>
+                <span>Legacy scraper · Broken content link</span>
+              </div>
+
+              <div class="flawed-hazards-grid">
+                <div class="hazard-card">
+                  <span class="hazard-icon">⚠️</span>
+                  <h4>Math Hallucination</h4>
+                  <p class="hazard-formula">F = π₀ · (m₁ + α) / X</p>
+                  <p class="hazard-desc">Generative LLMs invent turnover ratios and miscalculate GFR 170 thresholds without deterministic gates.</p>
+                </div>
+                <div class="hazard-card">
+                  <span class="hazard-icon">⚠️</span>
+                  <h4>Ignores Linked ATCs</h4>
+                  <p class="hazard-formula">Missing Addenda</p>
+                  <p class="hazard-desc">Fails to crawl nested buyer terms; Buyer ATC overrides and Corrigenda are completely ignored.</p>
+                </div>
+              </div>
+
+              <div class="hazard-bottom-row">
+                <div class="hazard-card hazard-card-warning">
+                  <span class="hazard-icon">⚠️</span>
+                  <h4>EMD Risk &amp; Disqualification</h4>
+                  <p class="hazard-desc">Misses mandatory MSME exemption proof formats, causing outright statutory bid rejection.</p>
+                </div>
+              </div>
+
+              <div class="flawed-footer-alerts">
+                <div class="flawed-alert-item">
+                  <span class="red-cross">❌</span>
+                  <span>Simple keyword search lacks an audit trail</span>
+                </div>
+                <div class="flawed-alert-item">
+                  <span class="red-cross">❌</span>
+                  <span>Simple keyword alerts lack an audit trail</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT & CENTER PANEL: TENDERLENS ARCHITECTURE (THE INTELLIGENT WAY) -->
+          <div class="engine-panel engine-panel-intelligent">
+            <div class="panel-badge panel-badge-intelligent">RIGHT &amp; CENTER PANEL · THE INTELLIGENT WAY</div>
+            <h3 class="panel-title">TenderLens Architecture</h3>
+            <p class="panel-subtitle">Bidder Profile · TinyFish Web Intelligence · Precedence DAG · Clause Citations</p>
+
+            <!-- 5-STEP PIPELINE CARDS -->
+            <div class="intelligent-pipeline-stepper">
+              <!-- STEP 1 -->
+              <div class="pipeline-step-card" data-step="1">
+                <div class="step-header">
+                  <span class="step-num">Step 1</span>
+                  <h4>Bidder Profile</h4>
+                </div>
+                <div class="step-visual">
+                  <div class="step-avatar-icon">👤✓</div>
+                  <p class="step-caption">MSME status, turnover, various certifications</p>
+                </div>
+                <div class="step-tags">
+                  <span class="tag">PPP-2012 MSME</span>
+                  <span class="tag">3-Yr Turnover</span>
+                  <span class="tag">Local Content %</span>
+                </div>
+              </div>
+
+              <div class="pipeline-connector">➔</div>
+
+              <!-- STEP 2 -->
+              <div class="pipeline-step-card highlight-step" data-step="2">
+                <div class="step-header">
+                  <span class="step-num">Step 2</span>
+                  <h4>Web Intelligence <span class="engine-label">(TinyFish Engine)</span></h4>
+                </div>
+                <div class="step-visual">
+                  <ul class="tinyfish-subroutines">
+                    <li><span class="tf-bullet">🔍</span> <strong>TinySearch</strong>: Portal Discovery</li>
+                    <li><span class="tf-bullet">↗</span> <strong>Recursive TinyFetch</strong>: Discovers child ATCs</li>
+                    <li><span class="tf-bullet">🕵️</span> <strong>Stealth TinyAgent</strong>: Headless SSE fallback</li>
+                  </ul>
+                  <div class="portal-badges">
+                    <span class="portal-badge">GeM Portal</span>
+                    <span class="portal-badge">CPPP Portal</span>
+                  </div>
+                </div>
+                <p class="step-caption">Extract live files from GeM &amp; CPPP with zero proxy errors</p>
+              </div>
+
+              <div class="pipeline-connector">➔</div>
+
+              <!-- STEP 3 -->
+              <div class="pipeline-step-card" data-step="3">
+                <div class="step-header">
+                  <span class="step-num">Step 3</span>
+                  <h4>Document Intelligence</h4>
+                </div>
+                <div class="step-visual">
+                  <div class="doc-tools">
+                    <span class="tool-tag">📄 PyMuPDF (fitz)</span>
+                    <span class="tool-tag">📑 Docling</span>
+                  </div>
+                  <p class="step-caption">Extract hidden hyperlinks, embedded ATC PDF tables, and bilingual text content.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- ROW 2: STEP 4 & STEP 5 -->
+            <div class="intelligent-pipeline-bottom">
+              <!-- STEP 4 -->
+              <div class="pipeline-step-card wide-card" data-step="4">
+                <div class="step-header">
+                  <span class="step-num">Step 4</span>
+                  <h4>Hybrid Verification Engine</h4>
+                </div>
+                <div class="verification-subgrid">
+                  <div class="deterministic-gates-box">
+                    <h5>Strict Python Deterministic Gates</h5>
+                    <ul class="gates-checklist">
+                      <li><span class="green-check">✓</span> <strong>Guarantee Zero Math Hallucination</strong></li>
+                      <li><span class="green-check">✓</span> <strong>Manage GFR 170 EMD requirements</strong></li>
+                      <li><span class="green-check">✓</span> <strong>DPIIT Make in India compliance</strong></li>
+                    </ul>
+                  </div>
+                  <div class="precedence-dag-box">
+                    <div class="dag-network-icon">🕸️</div>
+                    <h5>Semantic LLM Precedence DAG</h5>
+                    <p>Rank 1 Corrigendum &gt; Rank 3 Buyer ATC &gt; Rank 5 Main RFP</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pipeline-connector">➔</div>
+
+              <!-- STEP 5 -->
+              <div class="pipeline-step-card scorecard-card" data-step="5">
+                <div class="step-header">
+                  <span class="step-num">Step 5</span>
+                  <h4>Qualification Scorecard</h4>
+                </div>
+                <div class="scorecard-badge-box">
+                  <div class="scorecard-decision-stamp">
+                    <span class="decision-label">Strong Bid</span>
+                    <span class="decision-score">4.8 / 5.0</span>
+                  </div>
+                  <div class="citation-cards-stack">
+                    <div class="citation-mini-card">
+                      <span class="citation-pill">Rank 1 Corrigendum</span>
+                      <p>Clause Citation Card 1 · Page 3</p>
+                    </div>
+                    <div class="citation-mini-card">
+                      <span class="citation-pill">Rank 3 Buyer ATC</span>
+                      <p>Clause Citation Card 2 · Page 18</p>
+                    </div>
+                    <div class="citation-mini-card">
+                      <span class="citation-pill">Rank 5 Main RFP</span>
+                      <p>Clause Citation Card 3 · Page 42</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- INTERACTIVE PIPELINE TEST BENCH (RUN LIVE TINYFISH AUDIT) -->
+            <div class="pipeline-interactive-bench">
+              <div class="bench-header">
+                <div>
+                  <span class="live-dot">●</span>
+                  <strong>LIVE PIPELINE TEST BENCH</strong>
+                  <span class="bench-sub">Powered by TinyFish Service ($0.00 TinySearch &amp; TinyFetch) + PyMuPDF + Python Gates</span>
+                </div>
+                <span class="bench-badge" id="bench-api-badge">API READY</span>
+              </div>
+              <div class="bench-controls">
+                <div class="bench-input-wrap">
+                  <label for="bench-tender-query">Live Tender Keywords or GeM Notice URL</label>
+                  <input id="bench-tender-query" type="text" value="solar rooftop installation haryana" placeholder="e.g. medical oxygen supply, transformers, or GeM URL">
+                </div>
+                <div class="bench-actions">
+                  <button class="button button-secondary" id="bench-fetch-button" type="button">
+                    <span>🐟</span> <span>Fetch with TinyFish</span>
+                  </button>
+                  <button class="button button-primary" id="bench-audit-button" type="button">
+                    <span>⚡</span> <span>Run 5-Step Evaluation</span>
+                  </button>
+                </div>
+              </div>
+              <!-- LIVE BENCH OUTPUT DRAWER -->
+              <div class="bench-output" id="bench-output" hidden>
+                <div class="bench-progress-stepper" id="bench-progress-stepper">
+                  <span class="b-step" data-step="1">1. Profile</span>
+                  <span class="b-step" data-step="2">2. TinyFish Web Intel</span>
+                  <span class="b-step" data-step="3">3. PyMuPDF Docs</span>
+                  <span class="b-step" data-step="4">4. Deterministic Gates</span>
+                  <span class="b-step" data-step="5">5. Scorecard</span>
+                </div>
+                <div class="bench-console" id="bench-console"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         SECTION 03: FULL PRODUCTION TECH STACK (IMAGE 1 - DOCKER EXCLUDED)
+         ===================================================================== -->
+    <section class="techstack-section section-rule" id="tech-stack" aria-labelledby="techstack-title">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow"><span class="eyebrow-mark"></span> END-TO-END SYSTEM ARCHITECTURE</p>
+          <h2 id="techstack-title">TenderLens Production Tech Stack</h2>
+          <p class="section-lead">A resilient, zero-hallucination engineering architecture engineered for legal document precedence, asynchronous crawling, and statutory compliance.</p>
+        </div>
+
+        <div class="techstack-layers-stack">
+          <!-- LAYER 1: USER EXPERIENCE -->
+          <div class="techstack-layer layer-ux">
+            <div class="layer-meta">
+              <span class="layer-title">USER EXPERIENCE</span>
+              <span class="layer-desc">Frontend (Web Application)</span>
+            </div>
+            <div class="layer-components">
+              <div class="tech-card">
+                <span class="tech-icon">▲</span>
+                <div class="tech-info">
+                  <strong>Next.js</strong>
+                  <span>App &amp; SSR Routing</span>
+                </div>
+              </div>
+              <div class="tech-card">
+                <span class="tech-icon">TS</span>
+                <div class="tech-info">
+                  <strong>TypeScript</strong>
+                  <span>Strict Type Contracts</span>
+                </div>
+              </div>
+              <div class="tech-card">
+                <span class="tech-icon">🌊</span>
+                <div class="tech-info">
+                  <strong>Tailwind CSS</strong>
+                  <span>Responsive Design Tokens</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- LAYER 2: API & ORCHESTRATION -->
+          <div class="techstack-layer layer-api">
+            <div class="layer-meta">
+              <span class="layer-title">API &amp; ORCHESTRATION</span>
+              <span class="layer-desc">Backend &amp; Orchestration</span>
+            </div>
+            <div class="layer-components">
+              <div class="tech-card">
+                <span class="tech-icon">⚡</span>
+                <div class="tech-info">
+                  <strong>FastAPI</strong>
+                  <span>Async Python ASGI</span>
+                </div>
+              </div>
+              <div class="tech-card">
+                <span class="tech-icon">🛡️</span>
+                <div class="tech-info">
+                  <strong>Pydantic</strong>
+                  <span>Schema Validation</span>
+                </div>
+              </div>
+              <div class="tech-card">
+                <span class="tech-icon">⚙️</span>
+                <div class="tech-info">
+                  <strong>Celery</strong>
+                  <span>Async Job Queues</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- LAYER 3: WEB INTELLIGENCE -->
+          <div class="techstack-layer layer-web-intel">
+            <div class="layer-meta">
+              <span class="layer-title">WEB INTELLIGENCE</span>
+              <span class="layer-desc">Search &amp; Data Retrieval</span>
+            </div>
+            <div class="layer-components">
+              <div class="tech-card">
+                <span class="tech-icon">🔍</span>
+                <div class="tech-info">
+                  <strong>SerpAPI</strong>
+                  <span>Search API Fallback</span>
+                </div>
+              </div>
+              <div class="tech-card">
+                <span class="tech-icon">🌐</span>
+                <div class="tech-info">
+                  <strong>HTTPX</strong>
+                  <span>Web Requests</span>
+                </div>
+              </div>
+              <div class="tech-card tech-card-highlight">
+                <span class="tech-icon">🐟</span>
+                <div class="tech-info">
+                  <strong>TinyFish</strong>
+                  <span class="tinyfish-subtag">TinySearch · TinyFetch · Stealth Agent</span>
+                </div>
+                <span class="tech-status-badge">ACTIVE KEY</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- LAYER 4: DOCUMENT INTELLIGENCE -->
+          <div class="techstack-layer layer-doc-intel">
+            <div class="layer-meta">
+              <span class="layer-title">DOCUMENT INTELLIGENCE</span>
+              <span class="layer-desc">Document Processing</span>
+            </div>
+            <div class="layer-components">
+              <div class="tech-card">
+                <span class="tech-icon">📄</span>
+                <div class="tech-info">
+                  <strong>PyMuPDF</strong>
+                  <span>PDF Processing &amp; Coordinates</span>
+                </div>
+              </div>
+              <div class="tech-card">
+                <span class="tech-icon">📑</span>
+                <div class="tech-info">
+                  <strong>Docling</strong>
+                  <span>Structured Table Extraction</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- LAYER 5: QUALIFICATION ENGINE -->
+          <div class="techstack-layer layer-qualification">
+            <div class="layer-meta">
+              <span class="layer-title">QUALIFICATION ENGINE</span>
+              <span class="layer-desc">Rules &amp; AI Processing</span>
+            </div>
+            <div class="layer-components">
+              <div class="tech-card">
+                <span class="tech-icon">🐍</span>
+                <div class="tech-info">
+                  <strong>Python</strong>
+                  <span>Deterministic Business Rules</span>
+                </div>
+              </div>
+              <div class="tech-card">
+                <span class="tech-icon">🤖</span>
+                <div class="tech-info">
+                  <strong>LLM</strong>
+                  <span>Structured Outputs &amp; Conflict DAG</span>
+                </div>
+              </div>
+              <div class="tech-card">
+                <span class="tech-icon">⚖️</span>
+                <div class="tech-info">
+                  <strong>Rules Engine</strong>
+                  <span>Validation &amp; Statutory Scoring</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- LAYER 6: DATA & OPERATIONS (DOCKER EXCLUDED PER USER SPECIFICATION) -->
+          <div class="techstack-layer layer-data-ops">
+            <div class="layer-meta">
+              <span class="layer-title">DATA &amp; OPERATIONS</span>
+              <span class="layer-desc">Database, Storage &amp; Infra</span>
+            </div>
+            <div class="layer-components">
+              <div class="tech-card">
+                <span class="tech-icon">🐘</span>
+                <div class="tech-info">
+                  <strong>PostgreSQL</strong>
+                  <span>Relational DB &amp; Row-Level Security</span>
+                </div>
+              </div>
+              <div class="tech-card">
+                <span class="tech-icon">📦</span>
+                <div class="tech-info">
+                  <strong>Object Storage</strong>
+                  <span>S3 / MinIO Document Vault</span>
+                </div>
+              </div>
+              <div class="tech-card">
+                <span class="tech-icon">⚡</span>
+                <div class="tech-info">
+                  <strong>Redis</strong>
+                  <span>Atomic Cache &amp; Task Broker</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+<section class="opportunity-section section-rule" id="opportunities">
         <div class="container">
           <div class="section-heading opportunity-heading" data-reveal>
             <div>

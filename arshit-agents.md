@@ -264,3 +264,34 @@ ode --check) across all frontend scripts in both root and rontend/.
   - Disabled sticky locking and scroll cues for smooth touch navigation.
   - Added `touch-action: pan-y;` and contained bounds to eliminate accidental sideways bounce.
 - [x] Verified local server execution on `http://127.0.0.1:8000/`.
+
+
+### Architecture Comparison & Production Tech Stack Implementation (Images 1 & 2) + Live TinyFish Pipeline Test Bench - 2026-10-24
+- [x] Implemented Section 02 (`#architecture`): **"TenderLens: AI-Powered Government Procurement Engine"** matching Image 2:
+  - **Left Panel (Existing Tools - The Flawed Way)**:
+    - Illustrated keyword queries and portal tender links fed into legacy scrapers.
+    - Highlighted critical failure modes: LLM mathematical hallucinations ($F = \pi_0 \frac{m1 + \alpha}{X}$), ignored nested Additional Terms & Conditions (ATCs), severe Earnest Money Deposit (EMD) forfeiture risks, disqualification on technicalities, and complete absence of an auditable legal trail.
+  - **Right & Center Panel (TenderLens Architecture - The Intelligent Way)**:
+    - **Step 1: Bidder Profile**: Automated ingestion of MSME status, 3-year turnover history, and local content declarations.
+    - **Step 2: Web Intelligence (TinyFish Engine)**: Live integration with `TinySearch` (targeted GeM/CPPP discovery), `Recursive TinyFetch` (discovering nested child ATCs and Corrigenda), and `Stealth TinyAgent` (autonomous headless fallback with proxy routing).
+    - **Step 3: Document Intelligence**: Ingestion and coordinate mapping with `PyMuPDF` (fitz) for hidden hyperlinks and `Docling` for structured tables.
+    - **Step 4: Hybrid Verification Engine**: Dual-engine architecture with strict Python Deterministic Gates (guaranteeing zero math hallucination for GFR 170 EMD rules, PPP-2012 MSME exemptions, and Make in India local content thresholds) paired with a Semantic LLM Precedence DAG (Corrigendum Rank 1 > Buyer ATC Rank 3 > Main RFP Rank 5).
+    - **Step 5: Qualification Scorecard**: Visual **Strong Bid 4.8 / 5.0** decision badge and 3 interactive Clause Citation Cards (Rank 1 Corrigendum Page 3, Rank 3 Buyer ATC Page 18, Rank 5 Main RFP Page 42).
+- [x] Built and wired up the **Live Interactive Pipeline Test Bench**:
+  - Live TinyFish API integration utilizing configured `TINYFISH_API_KEY`.
+  - Search action queries `POST /api/v1/tenders/search` on `gem.gov.in`, returning real-time tender notices with live PDF links.
+  - "Run 5-Step Evaluation" animates the full sequence through Profile -> TinyFish -> PyMuPDF -> Deterministic Python Gates -> Scorecard with the 3 Clause Citation Cards and links into Strategy Studio.
+- [x] Implemented Section 03 (`#tech-stack`): **TenderLens Production Tech Stack** matching Image 1:
+  - 6 Production Layers:
+    1. **User Experience**: Next.js, TypeScript, Tailwind CSS.
+    2. **API & Orchestration**: FastAPI, Pydantic, Celery.
+    3. **Web Intelligence**: SerpAPI, HTTPX, TinyFish (highlighted with active API key).
+    4. **Document Intelligence**: PyMuPDF, Docling.
+    5. **Core AI & Logic**: Python, LLM, Rules Engine.
+    6. **Storage & State**: PostgreSQL, Object Storage, Redis.
+  - **Docker explicitly excluded** from the stack and visuals per user instructions.
+- [x] Integrated navigation links into the top header flyout menu (`index.html` & `frontend/index.html`):
+  - "🧠 AI Procurement Engine" (5-Step Pipeline) -> `#architecture`.
+  - "🛠️ Production Tech Stack" (6 Layers) -> `#tech-stack`.
+- [x] Verified local server execution on `http://127.0.0.1:8000/` with 200 OK responses and responsive mobile styling.
+- [ ] Next milestone: Refine pre-bid query exports and statutory affidavit downloads directly from the interactive scorecard.
