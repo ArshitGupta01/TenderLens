@@ -55,7 +55,7 @@ logger = logging.getLogger("tenderlens.api")
 app = FastAPI(
     title="TenderLens Engine API",
     description="AI-Powered Tender Qualification & Disqualification Engine for Indian Public Procurement",
-    version="2.0.0"
+    version="1.0.1"
 )
 
 # Enable CORS for Arshit's Next.js Frontend
@@ -100,7 +100,7 @@ async def health_check():
     return {
         "status": "healthy",
         "service": "TenderLens Backend Engine",
-        "version": "2.0.0",
+        "version": "1.0.1",
         "environment": settings.ENVIRONMENT,
         "tinyfish_configured": bool(settings.TINYFISH_API_KEY and not settings.TINYFISH_API_KEY.startswith("sk-tinyfish-your-key"))
     }

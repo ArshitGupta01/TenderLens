@@ -1,11 +1,11 @@
 """
-TenderLens Shared Contract Schema (Pydantic & JSON) — v3.0
-==========================================================
+TenderLens Shared Contract Schema (Pydantic & JSON) — v1.0.1
+============================================================
 This file defines the shared contract between Research/Evaluation (Argon)
 and Backend/Frontend Engineering (Mohit & Arshit).
 
-Rule: All v3.0 additions use safe default factories to remain 100% backwards
-compatible with v2.0 tests and callers.
+Rule: All v1.0.1 additions use safe default factories to remain 100% backwards
+compatible with baseline tests and callers.
 """
 
 from typing import List, Optional, Dict, Any
@@ -41,7 +41,7 @@ class BidderProfile(BaseModel):
     local_content_percentage: float = 20.0  # Make in India compliance
     held_certifications: List[str] = Field(default_factory=list)  # e.g., ["ISO-9001", "BIS"]
 
-    # --- v3.0 Optional Extensions (Backwards-Compatible Defaults) ---
+    # --- v1.0.1 Optional Extensions (Backwards-Compatible Defaults) ---
     past_similar_project_values_lakhs: List[float] = Field(
         default_factory=list,
         description="Completed similar project values (in ₹ Lakhs) over last 7 years for CPWD 80/50/40 check"
@@ -200,7 +200,7 @@ class CompetitorForensicsReport(BaseModel):
 
 
 # ---------------------------------------------------------------------------
-# Master Output Scorecard (v2.0 Core + v3.0 Strategic Pillars)
+# Master Output Scorecard (v1.0.1 Core & Strategic Pillars)
 # ---------------------------------------------------------------------------
 class QualificationScorecard(BaseModel):
     """The master output report displayed on frontend and evaluated in benchmarks."""
@@ -214,7 +214,7 @@ class QualificationScorecard(BaseModel):
     discovered_atc_urls: List[str] = Field(default_factory=list)
     executive_summary: str
 
-    # --- v3.0 Active Execution & Strategy Pillars (Optional for backwards compatibility) ---
+    # --- v1.0.1 Active Execution & Strategy Pillars (Optional for backwards compatibility) ---
     prebid_legal_pack: Optional[PreBidLegalRepresentationPack] = None
     consortium_recommendation: Optional[ConsortiumMatchRecommendation] = None
     compliance_binder: Optional[ComplianceAndBinderPackage] = None

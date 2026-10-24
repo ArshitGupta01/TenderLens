@@ -1,5 +1,5 @@
 """
-TenderLens - Qualification Engine: Hybrid Scorecard & 5-Pillar Synthesizer (v3.0)
+TenderLens - Qualification Engine: Hybrid Scorecard & 5-Pillar Synthesizer (v1.0.1)
 =================================================================================
 Synthesizes:
 1. Precedence DAG conflict resolution (Rank 1 Corr -> Rank 5 Main PDF)
@@ -265,7 +265,7 @@ class QualificationEngine:
         gemini_citations: Optional[List[ClauseCitation]] = None
     ) -> QualificationScorecard:
         """
-        Executes end-to-end qualification audit + synthesizes all 5 v3.0 Strategic Pillars.
+        Executes end-to-end qualification audit + synthesizes all 5 v1.0.1 Strategic Pillars.
         """
         if explicit_criteria:
             criteria = explicit_criteria

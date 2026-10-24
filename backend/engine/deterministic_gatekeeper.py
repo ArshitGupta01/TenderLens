@@ -1,5 +1,5 @@
 """
-TenderLens - Qualification Engine: Deterministic Gatekeeper (v3.0)
+TenderLens - Qualification Engine: Deterministic Gatekeeper (v1.0.1)
 ==================================================================
 Executes pure-Python mathematical and statutory checks with zero hallucination:
 1. 3-Year Average Turnover + MSE PPP-2012 / GFR 173(i) exemption (with JV aggregation)

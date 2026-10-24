@@ -1,5 +1,5 @@
 """
-TenderLens v3.0 — Comprehensive Unit & Integration Tests for Pillars A–E
+TenderLens v1.0.1 — Comprehensive Unit & Integration Tests for Pillars A–E
 """
 
 import pytest
