@@ -11,10 +11,4 @@
     ? savedTheme
     : (systemPrefersDark ? 'dark' : 'light');
   document.documentElement.dataset.theme = theme;
-
-  try {
-    if (window.sessionStorage.getItem('tenderlens-ribbon-dismissed') === 'true') {
-      document.documentElement.classList.add('ribbon-dismissed');
-    }
-  } catch (e) {}
 })();

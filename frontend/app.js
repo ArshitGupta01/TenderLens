@@ -727,26 +727,46 @@ if (bidderProfileForm) {
   }
 }
 
-// Top Ribbon Announcement & Status Banner
+// Floating Navigation Drawer Handler
 (() => {
-  const topRibbon = document.getElementById('top-ribbon');
-  const ribbonClose = document.getElementById('ribbon-close');
+  const menuToggle = document.getElementById('floating-menu-toggle');
+  const navDrawer = document.getElementById('floating-nav-drawer');
+  const drawerClose = document.getElementById('drawer-close-btn');
+  const drawerBackdrop = document.getElementById('drawer-backdrop');
 
-  if (topRibbon) {
-    try {
-      if (window.sessionStorage.getItem('tenderlens-ribbon-dismissed') === 'true') {
-        topRibbon.classList.add('is-hidden');
+  if (menuToggle && navDrawer) {
+    const openDrawer = () => {
+      navDrawer.classList.add('is-open');
+      navDrawer.setAttribute('aria-hidden', 'false');
+      menuToggle.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    };
+
+    const closeDrawer = () => {
+      navDrawer.classList.remove('is-open');
+      navDrawer.setAttribute('aria-hidden', 'true');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    };
+
+    menuToggle.addEventListener('click', () => {
+      const isOpen = navDrawer.classList.contains('is-open');
+      if (isOpen) closeDrawer();
+      else openDrawer();
+    });
+
+    if (drawerClose) drawerClose.addEventListener('click', closeDrawer);
+    if (drawerBackdrop) drawerBackdrop.addEventListener('click', closeDrawer);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && navDrawer.classList.contains('is-open')) {
+        closeDrawer();
       }
-    } catch (e) {}
+    });
 
-    if (ribbonClose) {
-      ribbonClose.addEventListener('click', () => {
-        topRibbon.classList.add('is-hidden');
-        try {
-          window.sessionStorage.setItem('tenderlens-ribbon-dismissed', 'true');
-        } catch (e) {}
-      });
-    }
+    navDrawer.querySelectorAll('.drawer-nav-item').forEach((item) => {
+      item.addEventListener('click', closeDrawer);
+    });
   }
 })();
 
