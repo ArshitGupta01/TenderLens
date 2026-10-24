@@ -1450,6 +1450,16 @@ small { font-size: max(12px, 1em); line-height: 1.5; }
   background: #10b981;
   color: #0d1a16;
 }
+.menu-group-auth {
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+}
+.menu-group-auth .menu-actions {
+  margin-top: 2px;
+}
+.menu-group-auth .menu-section-heading {
+  margin: 0 4px 6px;
+}
 .menu-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;

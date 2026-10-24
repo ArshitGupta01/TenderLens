@@ -47,51 +47,48 @@
           </button>
         </div>
         <nav class="primary-nav" id="primary-nav" aria-label="Main navigation">
+          <!-- 1. SIGN IN & CREATE ACCOUNT (SHOWN FIRST) -->
+          <div class="menu-group menu-group-auth">
+            <div class="menu-section-heading">ACCOUNT ACCESS</div>
+            <div class="menu-actions">
+              <a class="button button-dark menu-btn" data-auth-signin href="signin.html">Sign in</a>
+              <a class="button menu-btn" data-auth-signup href="signup.html">Create account</a>
+            </div>
+          </div>
+
+          <!-- 2. STATUS BADGE -->
           <div class="menu-status-bar">
             <span class="menu-pulse" aria-hidden="true"></span>
-            <span class="menu-status-text">TENDERLENS v1.0.3 LIVE</span>
+            <span class="menu-status-text">TENDERLENS PLATFORM LIVE</span>
           </div>
-                    <div class="menu-group">
-            <div class="menu-section-heading">ARCHITECTURE &amp; ENGINE</div>
-            <a class="menu-item menu-item-featured" href="index.html#architecture">
-              <span class="menu-item-lead"><span class="menu-item-icon">🧠</span><span class="menu-item-text">AI Procurement Engine</span></span>
-              <span class="menu-tag">5-Step Pipeline</span>
-            </a>
-          </div>
+
+          <!-- 3. PLATFORM TOOLS (ESSENTIAL WORKFLOWS) -->
           <div class="menu-group">
-            <div class="menu-section-heading">EXPLORE &amp; REVIEW</div>
+            <div class="menu-section-heading">PLATFORM &amp; TOOLS</div>
+            <a class="menu-item menu-item-featured" href="strategy.html">
+              <span class="menu-item-lead"><span class="menu-item-icon">⚡</span><span class="menu-item-text">Strategy Studio</span></span>
+              <span class="menu-tag">Equalizer Suite</span>
+            </a>
+            <a class="menu-item" href="index.html#opportunities">
+              <span class="menu-item-lead"><span class="menu-item-icon">🔍</span><span class="menu-item-text">Tenders Desk</span></span>
+            </a>
             <a class="menu-item" href="index.html#demo">
               <span class="menu-item-lead"><span class="menu-item-icon">📋</span><span class="menu-item-text">Qualification Report</span></span>
             </a>
-            <a class="menu-item" href="index.html#opportunities">
-              <span class="menu-item-lead"><span class="menu-item-icon">🔍</span><span class="menu-item-text">Sample Tenders Desk</span></span>
-            </a>
-            <a class="menu-item" href="index.html#precedence">
-              <span class="menu-item-lead"><span class="menu-item-icon">📑</span><span class="menu-item-text">Document Order (Precedence DAG)</span></span>
+            <a class="menu-item" href="saved-tenders.html">
+              <span class="menu-item-lead"><span class="menu-item-icon">⭐</span><span class="menu-item-text">Saved Tenders Shortlist</span></span>
             </a>
             <a class="menu-item" href="index.html#profile">
               <span class="menu-item-lead"><span class="menu-item-icon">🏢</span><span class="menu-item-text">Bidder Profile</span></span>
             </a>
           </div>
-          <div class="menu-group">
-            <div class="menu-section-heading">STRATEGY &amp; TOOLS</div>
-            <a class="menu-item menu-item-featured" href="strategy.html">
-              <span class="menu-item-lead"><span class="menu-item-icon">⚡</span><span class="menu-item-text">Strategy Studio</span></span>
-              <span class="menu-tag">5 Pillars</span>
-            </a>
-            <a class="menu-item" href="guide.html">
-              <span class="menu-item-lead"><span class="menu-item-icon">📖</span><span class="menu-item-text">Easy Guide &amp; FAQ</span></span>
-            </a>
-            <a class="menu-item" href="saved-tenders.html">
-              <span class="menu-item-lead"><span class="menu-item-icon">⭐</span><span class="menu-item-text">Saved Tenders Shortlist</span></span>
-            </a>
-          </div>
+
+          <!-- 4. RESOURCES & LEGAL -->
           <div class="menu-group menu-group-footer">
-            <div class="menu-section-heading">WORKSPACE &amp; ACCOUNT</div>
-            <div class="menu-actions">
-              <a class="button button-dark menu-btn" data-auth-signin href="signin.html">Sign in</a>
-              <a class="button menu-btn" data-auth-signup href="signup.html">Create account</a>
-            </div>
+            <div class="menu-section-heading">RESOURCES</div>
+            <a class="menu-item" href="guide.html">
+              <span class="menu-item-lead"><span class="menu-item-icon">📖</span><span class="menu-item-text">Guide &amp; Documentation</span></span>
+            </a>
             <div class="menu-legal-links">
               <a href="privacy.html">Privacy</a>
               <span>·</span>
