@@ -66,7 +66,8 @@ def verify_tinyfish():
     print("[INFO] Endpoint 1: Testing TinyFish Search API (https://api.search.tinyfish.ai)...")
 
     params = urllib.parse.urlencode({
-        "query": "site:gem.gov.in tender solar",
+        "query": "solar rooftop tender",
+        "include_domains": "gem.gov.in",
         "location": "IN",
         "language": "en"
     })
