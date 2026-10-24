@@ -465,6 +465,118 @@
     document.querySelector('[data-forensics-advice]').textContent = data.competitor_forensics.strategic_bid_advice;
     renderForensicsItems(document.querySelector('[data-forensics-results]'), data.competitor_forensics.historical_patterns);
     setStatus(document.querySelector('[data-forensics-status]'), '');
+    
+    
+    // Card 06: Startup Statutory Shield (Fair Play Equalizer)
+    const shield = data.startup_statutory_shield || data.startup_exemption_audit;
+    if (shield && document.querySelector('[data-shield-summary]')) {
+      const summaryText = shield.legal_protection_summary || shield.legal_shield_summary || 'Statutory protection active under GFR 2017 Rule 173(i) and GeM GTC Clause 4(xiii)(h).';
+      document.querySelector('[data-shield-summary]').textContent = summaryText;
+
+      const vContainer = document.querySelector('[data-shield-verdict-container]');
+      if (vContainer) {
+        vContainer.replaceChildren();
+        const verdict = shield.overall_shield_verdict || shield.audit_verdict || 'SHIELD_ACTIVE';
+        const vBadge = textNode('span', `SHIELD STATUS: ${verdict.replaceAll('_', ' ')}`, 'strategy-status-pill');
+        vBadge.style.fontSize = '0.82rem';
+        vBadge.style.fontWeight = '700';
+        vBadge.style.padding = '0.4rem 0.8rem';
+        vBadge.style.borderRadius = '4px';
+        if (verdict.includes('VOID') || verdict.includes('SHIELDED') || verdict.includes('OVERRIDDEN')) {
+          vBadge.style.background = 'rgba(37, 99, 235, 0.15)';
+          vBadge.style.color = '#2563eb';
+          vBadge.style.border = '1px solid #2563eb';
+        } else {
+          vBadge.style.background = 'rgba(5, 150, 105, 0.15)';
+          vBadge.style.color = '#059669';
+          vBadge.style.border = '1px solid #059669';
+        }
+        vContainer.append(vBadge);
+      }
+
+      const shieldMetrics = document.querySelector('[data-shield-metrics]');
+      if (shieldMetrics) {
+        shieldMetrics.replaceChildren();
+        const statutes = Array.isArray(shield.governing_statutes) ? shield.governing_statutes.join(' · ') : (shield.governing_statute_citation || 'MoF OM No. F.20/2/2014-PPD & GFR 173(i)');
+        const sMetrics = [
+          ['Statutory Shield Invoked', (shield.statutory_shield_invoked ?? true) ? 'YES (Legally Protected)' : 'NO'],
+          ['Turnover Waived', shield.turnover_waived_lakhs != null ? `₹${shield.turnover_waived_lakhs} Lakhs` : 'Full Exemption'],
+          ['Experience Waived', shield.experience_waived_years != null ? `${shield.experience_waived_years} Years` : 'Full Exemption'],
+          ['EMD Waived', shield.emd_waived_inr != null ? `₹${shield.emd_waived_inr.toLocaleString('en-IN')}` : 'Rule 170(i) Exempt'],
+          ['Governing Authority', statutes]
+        ];
+        for (const [lbl, val] of sMetrics) {
+          shieldMetrics.append(textNode('dt', lbl), textNode('dd', val));
+        }
+      }
+
+      const alertsList = document.querySelector('[data-shield-alerts]');
+      if (alertsList) {
+        alertsList.replaceChildren();
+        const violations = shield.active_violations || data.fair_play_violations || [];
+        if (!violations.length) {
+          alertsList.append(textNode('li', 'Zero illegal cartel restrictions detected. All statutory exemptions intact.'));
+        } else {
+          for (const alert of violations) {
+            const li = document.createElement('li');
+            li.style.marginBottom = '0.6rem';
+            li.append(
+              textNode('strong', `[${alert.severity_level || 'CRITICAL'}] ${alert.violation_type}: `),
+              textNode('span', `${alert.impugned_tender_clause || alert.specific_clause_reference || ''} — ${alert.statutory_countermeasure || alert.countermeasure_action || ''}`)
+            );
+            alertsList.append(li);
+          }
+        }
+      }
+    }
+
+    // Card 07: Zero-History Competency Engine
+    const tech = data.technical_equivalence_proof;
+    if (tech && document.querySelector('[data-tech-proof-note]')) {
+      document.querySelector('[data-tech-proof-note]').textContent = tech.evaluator_justification_note;
+      const techMetrics = document.querySelector('[data-tech-proof-metrics]');
+      if (techMetrics) {
+        techMetrics.replaceChildren();
+        const tMetrics = [
+          ['Composite Merit Score', `${tech.overall_competency_score} / 100 (${tech.qualifies_for_technical_equivalence ? 'QUALIFIED' : 'DEFICIENT'})`],
+          ['Vector 1: Lab & Standards', `${tech.lab_and_standards_score} / 40.0 pts`],
+          ['Vector 2: Plant & Capacity', `${tech.plant_and_capacity_score} / 25.0 pts`],
+          ['Vector 3: IP & Local Content', `${tech.ip_and_mii_content_score} / 20.0 pts`],
+          ['Vector 4: Founder Pedigree', `${tech.founder_pedigree_score} / 15.0 pts`]
+        ];
+        for (const [lbl, val] of tMetrics) {
+          techMetrics.append(textNode('dt', lbl), textNode('dd', val));
+        }
+      }
+      const proformaEl = document.querySelector('[data-tech-proof-proforma]');
+      if (proformaEl) {
+        proformaEl.textContent = tech.proforma_for_equipment_and_qc_markdown;
+      }
+    }
+
+    // Card 08: Mandatory 25% MSE Subcontracting Quota Gateway
+    const mse = data.mse_subcontracting_match;
+    if (mse && document.querySelector('[data-mse-quota-scope]')) {
+      document.querySelector('[data-mse-quota-scope]').textContent = mse.subcontract_scope_description;
+      const mseMetrics = document.querySelector('[data-mse-quota-metrics]');
+      if (mseMetrics) {
+        mseMetrics.replaceChildren();
+        const mMetrics = [
+          ['Entry Mode', (mse.recommended_entry_mode || '').replaceAll('_', ' ')],
+          ['25% Reserved Allocation', `₹${(mse.mandatory_25pct_allocation_lakhs || 0).toFixed(2)} Lakhs (Total: ₹${(mse.estimated_tender_value_lakhs || 0).toFixed(1)}L)`],
+          ['L1+15% Split-Order Right', mse.l1_plus_15pct_price_preference_eligible ? 'Eligible to match L1' : 'Not Eligible'],
+          ['Matched Prime Partner', mse.matched_prime_epc_partner ? `${mse.matched_prime_epc_partner.company_name} (${mse.matched_prime_epc_partner.entity_type}, ₹${mse.matched_prime_epc_partner.avg_annual_turnover_lakhs}L Turnover)` : 'None Required']
+        ];
+        for (const [lbl, val] of mMetrics) {
+          mseMetrics.append(textNode('dt', lbl), textNode('dd', val));
+        }
+      }
+      const mouEl = document.querySelector('[data-mse-mou-markdown]');
+      if (mouEl) {
+        mouEl.textContent = mse.tripartite_mou_draft_markdown;
+      }
+    }
+
     submittedTitle = data.tender_title;
     submittedPortal = data.source_portal;
     results.hidden = false;
@@ -750,4 +862,37 @@
       runPrecedenceRag();
     });
   }
+
+  // Live Hackathon Demo Preset Listener
+  const presetBtn = document.querySelector('[data-load-zero-history-preset]');
+  if (presetBtn) {
+    presetBtn.addEventListener('click', () => {
+      field('tender_title').value = 'Supply & Commissioning of Indigenous Smart LV Switchgear Panels';
+      field('tender_id').value = 'GEM/2026/B/9941208';
+      field('source_portal').value = 'GeM';
+      field('company_name').value = 'AetherGrid Hardware Labs Pvt. Ltd.';
+      field('entity_type').value = 'OEM';
+      field('years_in_business').value = '0';
+      field('is_msme_registered').checked = true;
+      field('is_startup_recognized').checked = true;
+      field('turnover_year_1_lakhs').value = '0';
+      field('turnover_year_2_lakhs').value = '0';
+      field('turnover_year_3_lakhs').value = '0';
+      field('local_content_percentage').value = '82';
+      field('held_certifications').value = 'ISO 9001, BIS, NABL Type-Test, STQC';
+      field('min_annual_turnover_lakhs').value = '200';
+      field('min_experience_years').value = '3';
+      field('estimated_bid_value_lakhs').value = '500';
+      field('emd_amount_inr').value = '1000000';
+      field('min_local_content_percentage').value = '50';
+      field('mandatory_certifications').value = 'ISO 9001, BIS';
+      field('is_turnover_exemption_revoked_by_atc').checked = true;
+      field('is_experience_exemption_revoked_by_atc').checked = true;
+      field('proprietary_brand_lock_detected').checked = true;
+      field('proprietary_brand_details').value = 'Clause 14.2 Buyer ATC: Only imported Make-X switchgear permitted; no MSME/Startup relaxation.';
+      setStatus(status, 'Zero-History Startup vs. ₹5 Cr Cartel Tender loaded! Click "Create review preview" to run.', 'success');
+      form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+
 })();

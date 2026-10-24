@@ -87,7 +87,8 @@ class ConsortiumMatchmaker:
 
         for gate in gate_results:
             # 1. Turnover Shortfall
-            if gate.rule_name == "3-Year Average Annual Turnover" and not gate.passed:
+            turnover_needs_bridge = (not gate.passed) or (criteria.is_turnover_exemption_revoked_by_atc and criteria.min_annual_turnover_lakhs > avg_turnover)
+            if gate.rule_name == "3-Year Average Annual Turnover" and turnover_needs_bridge:
                 shortfall = max(0.0, round(criteria.min_annual_turnover_lakhs - avg_turnover, 2))
                 gaps.append(ShortfallGapItem(
                     gate_name=gate.rule_name,
@@ -102,7 +103,7 @@ class ConsortiumMatchmaker:
                 ))
 
             # 2. Experience Shortfall
-            elif gate.rule_name == "Experience & Past Performance" and not gate.passed:
+            elif gate.rule_name == "Experience & Past Performance" and ((not gate.passed) or (criteria.is_experience_exemption_revoked_by_atc and criteria.min_experience_years > bidder.years_in_business)):
                 yr_gap = max(0, criteria.min_experience_years - bidder.years_in_business)
                 gaps.append(ShortfallGapItem(
                     gate_name=gate.rule_name,

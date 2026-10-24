@@ -1,14 +1,20 @@
 """
-TenderLens Shared Contract Schema (Pydantic & JSON) — v1.0.3
+TenderLens Shared Contract Schema (Pydantic & JSON) — v2.0.0
 ============================================================
 This file defines the shared contract between Research/Evaluation (Argon)
 and Backend/Frontend Engineering (Mohit & Arshit).
 
-Rule: All v1.0.3 additions use safe default factories to remain 100% backwards
+Rule: All additions use safe default factories to remain 100% backwards
 compatible with baseline tests and callers.
+
+v2.0.0 Additions (Zero-History Pipeline):
+- ZeroHistoryCompetencyProfile  : Alternative evidence map for DPIIT startups
+- MSESubcontractingOpportunity  : PPP-2012 Section 4 mandatory 25% subcontracting
+- StartupRunwayTender           : GeM/CPPP tenders accessible to zero-history firms
+- BidderProfile.competency_profile (optional, backwards-compatible)
 """
 
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Literal
 from pydantic import BaseModel, Field
 
 
@@ -25,6 +31,238 @@ class ConsortiumPartnerProfile(BaseModel):
     local_content_percentage: float = 50.0
     held_certifications: List[str] = Field(default_factory=list)
     synergy_rationale: str = ""
+
+
+# ---------------------------------------------------------------------------
+# v2.0.0 — Zero-History Pipeline: Alternative Competency Evidence
+# ---------------------------------------------------------------------------
+
+class ZeroHistoryCompetencySignal(BaseModel):
+    """A single piece of alternative competency evidence for a zero-history startup."""
+    signal_type: str  # "NABL_ACCREDITATION", "STQC_CERT", "DPIIT_RECOGNITION", "IP_PATENT",
+                      # "INCUBATOR_LETTER", "GEM_SELLER_RATING", "PILOT_PROJECT", "AWARD"
+    evidence_id: str  # Certificate number, patent number, recognition number, etc.
+    issuing_authority: str  # "NABL", "STQC", "MeitY", "DPIIT", "IIT Delhi Incubation Cell", etc.
+    validity_date: Optional[str] = None  # ISO date string "YYYY-MM-DD"
+    statutory_exemption_mapped: str = ""  # e.g. "GFR Rule 173(i) — Startup Turnover Waiver"
+    trust_tier: int = 1  # 1 = Highest (NABL/STQC), 2 = High (DPIIT/IP), 3 = Medium (Incubator)
+    description: str = ""
+
+
+class ZeroHistoryCompetencyProfile(BaseModel):
+    """
+    Alternative evidence map replacing financial history for DPIIT-recognized startups.
+    Implements the 'Startup Statutory Shield' — a zero-history bidder proves capability
+    through technical certifications and statutory recognition rather than balance sheets.
+
+    Legal Basis:
+    - GFR 2017 Rule 173(i): Central Government may relax prior turnover/experience for startups
+    - DPIIT Startup India Procurement Policy: Allows GoI entities to procure from recognized startups
+    - MoF OM F.20/2/2014-PPD: Prohibits buyers from imposing conditions beyond GFR
+    """
+    dpiit_recognition_number: Optional[str] = Field(
+        default=None,
+        description="DPIIT Startup India recognition certificate number (e.g. DIPP12345)"
+    )
+    dpiit_recognition_date: Optional[str] = Field(
+        default=None,
+        description="ISO date YYYY-MM-DD of DPIIT recognition grant"
+    )
+    years_since_incorporation: int = Field(
+        default=0,
+        description="Company age in years (must be <= 10 for startup status under DPIIT)"
+    )
+    competency_signals: List[ZeroHistoryCompetencySignal] = Field(
+        default_factory=list,
+        description="Ordered list of alternative evidence signals (NABL, STQC, IP, incubator, etc.)"
+    )
+    gem_seller_rating: Optional[float] = Field(
+        default=None,
+        ge=0.0, le=5.0,
+        description="Current GeM seller rating (0–5), if registered on GeM portal"
+    )
+    incubator_name: Optional[str] = Field(
+        default=None,
+        description="Name of recognized incubator (IIT/NIT/NASSCOM/FICCI/SIDBI)"
+    )
+    pilot_project_count: int = Field(
+        default=0,
+        description="Number of documented pilot projects (PoC letters from govt/PSU accepted)"
+    )
+    # Computed fields (populated by StartupStatutoryShield engine)
+    applicable_exemptions: List[str] = Field(
+        default_factory=list,
+        description="Statutory exemptions provably applicable to this bidder"
+    )
+    shield_strength_score: float = Field(
+        default=0.0,
+        ge=0.0, le=10.0,
+        description="0-10 shield strength: how robustly the bidder can invoke startup exemptions"
+    )
+    shield_override_risk: str = Field(
+        default="UNKNOWN",
+        description="SAFE / ATC_OVERRIDE_RISK / SHIELD_FULLY_BLOCKED"
+    )
+
+
+class MSESubcontractingOpportunity(BaseModel):
+    """
+    An opportunity for a zero-history MSE/startup to obtain work via mandatory
+    25% MSE subcontracting under PPP-MSE Order 2012, Section 4.
+
+    When a startup cannot bid directly on a large tender, prime contractors who win
+    that tender are legally required to subcontract ≥25% of the contract value to MSEs.
+    TenderLens surfaces these opportunities to zero-history firms.
+    """
+    tender_title: str
+    tender_id: str
+    tender_estimated_value_lakhs: float
+    mandatory_mse_share_lakhs: float  # 25% of tender value
+    domain_category: str  # "IT_SERVICES", "CIVIL", "GOODS_SUPPLY", "CONSULTING"
+    domain_match_score: float = Field(ge=0.0, le=1.0)  # How well startup matches
+    statutory_basis: str = "Public Procurement Policy for MSEs Order 2012, Section 4"
+    prime_contractor_guidance: str = ""  # What to say to the prime contractor
+    outreach_template: str = ""  # Auto-generated pitch message
+
+
+class StartupRunwayTender(BaseModel):
+    """
+    A tender identified as accessible to zero-history DPIIT-recognized startups.
+    These tenders have explicitly relaxed norms under GeM Startup Policy or GFR 173(i).
+    """
+    tender_id: str
+    title: str
+    estimated_value_lakhs: float
+    portal: str  # "GeM", "CPPP", "BHEL", etc.
+    startup_accessibility_score: float = Field(ge=0.0, le=10.0)  # 10 = fully accessible
+    accessibility_factors: List[str] = Field(default_factory=list)
+    blocking_factors: List[str] = Field(default_factory=list)
+    recommended_action: str  # "DIRECT_BID", "CONSORTIUM_BID", "SUBCONTRACT_SEEK"
+    shield_applicable: bool = False
+
+
+class StartupShieldReport(BaseModel):
+    """Full output of the Startup Statutory Shield analysis engine."""
+    company_name: str
+    is_shield_active: bool
+    shield_strength_score: float  # 0-10
+    shield_override_risk: str  # SAFE / ATC_OVERRIDE_RISK / SHIELD_FULLY_BLOCKED
+    statutory_basis_summary: str
+    applicable_exemptions: List[str] = Field(default_factory=list)
+    competency_evidence_map: List[ZeroHistoryCompetencySignal] = Field(default_factory=list)
+    runway_tenders: List[StartupRunwayTender] = Field(default_factory=list)
+    subcontracting_opportunities: List[MSESubcontractingOpportunity] = Field(default_factory=list)
+    pre_bid_shield_letter: str = ""  # Auto-generated legal letter invoking GFR 173(i)
+    actionable_next_steps: List[str] = Field(default_factory=list)
+
+
+# ===========================================================================
+# v1.1.0 ADDITIONS TO contracts/schema.py — FAIR PLAY & ZERO-HISTORY EQUALIZER
+# ===========================================================================
+
+class LabTestReportItem(BaseModel):
+    """Third-party laboratory or statutory quality test certificate held by a zero-history bidder."""
+    certificate_id: str = Field(description="e.g., NABL-TC-2026-8841, STQC-IOT-402, BIS-CM/L-7712")
+    issuing_agency: str = Field(description="e.g., NABL Accredited Lab, STQC MeitY, BIS, CSIR, CPRI")
+    standard_tested: str = Field(description="e.g., IS 13252 (Part 1), IEC 60947-2, ISO/IEC 27001")
+    product_or_model_covered: str
+    issue_date: str = "2026-06-15"
+    is_valid_and_active: bool = True
+    parameter_match_score_pct: float = Field(default=100.0, ge=0.0, le=100.0)
+
+
+class FairPlayViolationAlert(BaseModel):
+    """Alert flagging anti-competitive, cartel-driven, or statutorily void buyer clauses."""
+    alert_id: str
+    violation_type: Literal[
+        "ULTRA_VIRES_STARTUP_MSE_REVOCATION",
+        "DISPROPORTIONATE_TURNOVER_RATIO",
+        "PROPRIETARY_BRAND_LOCK_WITHOUT_EQUIVALENT",
+        "RESTRICTIVE_GEOGRAPHIC_OR_INCUMBENT_LOCK",
+        "FOREIGN_CERTIFICATION_WITHOUT_INDIAN_STANDARD",
+        "ILLEGAL_EMD_DEMAND_ON_EXEMPT_ENTITY"
+    ]
+    severity: Literal["CRITICAL", "HIGH", "MODERATE"] = "CRITICAL"
+    source_document: str
+    page_number: int = 1
+    clause_id: str
+    impugned_text: str
+    violated_statute: str = Field(
+        description="Exact rule violated, e.g., GeM GTC Clause 4(xiii)(h), GFR 2017 Rule 173(i), CVC OM 12-02-1-CTE-6"
+    )
+    is_clause_ab_initio_void: bool = True
+    cartel_risk_index: float = Field(default=0.85, ge=0.0, le=1.0)
+    recommended_remedy: str
+
+
+class StartupExemptionAudit(BaseModel):
+    """Audit output of the Startup Statutory Shield (Feature 1A)."""
+    bidder_company: str
+    is_dpiit_startup: bool
+    dpiit_recognition_number: Optional[str] = "DIPP-STARTUP-REC-94182"
+    is_udyam_msme: bool
+    msme_category: Optional[str] = None  # MICRO, SMALL, MEDIUM
+    bidder_role_eligible_for_exemption: bool = True
+    gem_bid_baseline_grants_exemption: bool = True
+    atc_attempts_revocation: bool = False
+    is_public_safety_or_national_security_tender: bool = False
+    has_competent_authority_prior_approval: bool = False
+    revocation_legally_valid: bool = False
+    statutory_shield_invoked: bool = False
+    governing_statutes: List[str] = Field(
+        default_factory=lambda: [
+            "GFR 2017 Rule 173(i) (Startup & MSE Prior Turnover/Experience Relaxation)",
+            "MoF DoE OM No. F.20/2/2014-PPD(Pt.) dated 25.07.2016 & 20.09.2016",
+            "GeM General Terms & Conditions (GTC) Clause 4(xiii)(h) & Clause 4(xxii)",
+            "GFR 2017 Rule 170(i) (100% EMD Waiver for Startups & MSEs)"
+        ]
+    )
+    turnover_waived_lakhs: float = 0.0
+    experience_waived_years: int = 0
+    emd_waived_inr: float = 0.0
+    audit_verdict: Literal[
+        "EXEMPTION_GRANTED_CLEAN",
+        "ILLEGAL_ATC_REVOCATION_OVERRIDDEN_BY_SHIELD",
+        "LAWFUL_SAFETY_SECURITY_EXCEPTION_APPLIES",
+        "INELIGIBLE_ENTITY_OR_TRADER_EXCLUSION"
+    ] = "EXEMPTION_GRANTED_CLEAN"
+    legal_shield_summary: str
+
+
+class TechnicalEquivalenceProof(BaseModel):
+    """Output of the Zero-History Competency Engine (Feature 1B) proving capability without balance sheets."""
+    is_zero_history_bidder: bool = True
+    overall_competency_score: float = Field(ge=0.0, le=100.0, description="Composite score out of 100")
+    qualifies_for_technical_equivalence: bool = True
+    lab_and_standards_score: float = Field(default=40.0, ge=0.0, le=40.0)
+    plant_and_capacity_score: float = Field(default=25.0, ge=0.0, le=25.0)
+    ip_and_mii_content_score: float = Field(default=20.0, ge=0.0, le=20.0)
+    founder_pedigree_score: float = Field(default=15.0, ge=0.0, le=15.0)
+    verified_lab_reports: List[LabTestReportItem] = Field(default_factory=list)
+    matched_tender_specifications: List[str] = Field(default_factory=list)
+    proforma_for_equipment_and_qc_markdown: str = Field(
+        default="",
+        description="Auto-drafted statutory Annexure: Proforma for Equipment and Quality Control under MoF OM F.20/2/2014-PPD"
+    )
+    evaluator_justification_note: str
+
+
+class MSESubcontractingMatch(BaseModel):
+    """Output of the Mandatory 25% MSE Subcontracting & Split-Order Quota Gateway (Feature 1C)."""
+    eligible_for_25pct_mse_quota: bool = True
+    governing_policy: str = "Public Procurement Policy for Micro and Small Enterprises (MSEs) Order, 2012 (as amended)"
+    estimated_tender_value_lakhs: float = 0.0
+    mandatory_25pct_allocation_lakhs: float = 0.0
+    sc_st_mse_subquota_applicable: bool = False
+    l1_plus_15pct_price_preference_eligible: bool = True
+    recommended_entry_mode: Literal[
+        "DIRECT_BID_WITH_L1_PLUS_15_SPLIT_RIGHT",
+        "MANDATORY_25PCT_EPC_SUBCONTRACTOR",
+        "CLASS_I_MII_COMPONENT_OEM_PARTNER"
+    ] = "DIRECT_BID_WITH_L1_PLUS_15_SPLIT_RIGHT"
+    matched_prime_epc_partner: Optional[ConsortiumPartnerProfile] = None
+    subcontract_scope_description: str = ""
+    tripartite_mou_draft_markdown: str = ""
 
 
 class BidderProfile(BaseModel):
@@ -58,6 +296,21 @@ class BidderProfile(BaseModel):
         default_factory=list,
         description="Optional JV / Consortium partner entities evaluated jointly"
     )
+
+    # --- v2.0.0 Zero-History Pipeline (Backwards-Compatible, Optional) ---
+    competency_profile: Optional[ZeroHistoryCompetencyProfile] = Field(
+        default=None,
+        description="Alternative competency evidence for DPIIT-recognized startups with zero financial history"
+    )
+
+    # --- v1.1.0 Fair Play & Zero-History Additions ---
+    dpiit_recognition_number: Optional[str] = Field(default="DIPP-STARTUP-REC-94182")
+    founder_domain_experience_years: int = Field(default=5, ge=0, le=60)
+    held_patents_count: int = Field(default=1, ge=0)
+    lab_test_reports: List[LabTestReportItem] = Field(default_factory=list)
+    plant_and_machinery_valuation_lakhs: float = Field(default=35.0, ge=0.0)
+    max_monthly_production_capacity_units: int = Field(default=500, ge=0)
+    is_sc_st_owned_mse: bool = False
 
 
 class ClauseCitation(BaseModel):
@@ -225,6 +478,22 @@ class QualificationScorecard(BaseModel):
     emd_capital_report: Optional[EMDCapitalOptimizationReport] = None
     competitor_forensics: Optional[CompetitorForensicsReport] = None
 
+    # --- v2.0.0 Pillar F: Startup Statutory Shield (Zero-History Pipeline) ---
+    startup_shield: Optional["StartupShieldReport"] = Field(
+        default=None,
+        description=(
+            "Startup Statutory Shield — activated for DPIIT-recognised startups and MSMEs. "
+            "Maps zero-history firms to GFR 173(i) exemptions, detects ATC override risk, "
+            "surfaces MSE 25% subcontracting opportunities under PPP-MSE Order 2012."
+        )
+    )
+
+    # --- v1.1.0 Fair Play & Zero-History Equalizer Outputs ---
+    startup_exemption_audit: Optional[StartupExemptionAudit] = None
+    technical_equivalence_proof: Optional[TechnicalEquivalenceProof] = None
+    mse_subcontracting_match: Optional[MSESubcontractingMatch] = None
+    fair_play_violations: List[FairPlayViolationAlert] = Field(default_factory=list)
+
 
 class StrategyToolkitResponse(BaseModel):
     """Combined strategy response model."""
@@ -238,6 +507,12 @@ class StrategyToolkitResponse(BaseModel):
     compliance_binder: ComplianceAndBinderPackage
     emd_capital_report: EMDCapitalOptimizationReport
     competitor_forensics: CompetitorForensicsReport
+
+    # --- v1.1.0 Fair Play & Zero-History Equalizer Outputs ---
+    startup_exemption_audit: Optional[StartupExemptionAudit] = None
+    technical_equivalence_proof: Optional[TechnicalEquivalenceProof] = None
+    mse_subcontracting_match: Optional[MSESubcontractingMatch] = None
+    fair_play_violations: List[FairPlayViolationAlert] = Field(default_factory=list)
 
 
 # ---------------------------------------------------------------------------
@@ -303,4 +578,3 @@ class PrecedenceDAGGraph(BaseModel):
     edges: List[PrecedenceDAGEdge] = Field(default_factory=list)
     total_overrides: int = 0
     detected_conflicts: int = 0
-

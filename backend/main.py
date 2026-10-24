@@ -2,32 +2,19 @@
 TenderLens - FastAPI Backend Orchestrator
 =========================================
 Production REST and Server-Sent Events (SSE) router exposing:
-- GET  /healthz
-- GET  /api/v1/auth/config
 - POST /api/v1/tenders/search
 - POST /api/v1/tenders/fetch
 - POST /api/v1/audit/evaluate
 - GET  /api/v1/audit/stream/{task_id}
-- POST /api/v1/strategy/preview
-- POST /api/v1/strategy/prebid-queries
-- POST /api/v1/strategy/consortium-match
-- POST /api/v1/strategy/compliance-matrix
-- POST /api/v1/strategy/emd-optimizer
-- GET  /api/v1/strategy/forensics
-- POST /api/v1/rag/query
-- POST /api/v1/rag/precedence-graph
-- POST /api/v1/audits/save
-- GET  /api/v1/audits/user/{user_id}
-- GET  /api/v1/profile/sync/{user_id}
-- POST /api/v1/profile/sync
 """
 
+import os
 import uuid
 import json
 import asyncio
 import logging
-from typing import List, Dict, Optional
-from fastapi import FastAPI, HTTPException, BackgroundTasks, Query, Header
+from typing import List, Dict, Any, Optional
+from fastapi import FastAPI, HTTPException, BackgroundTasks, Query
 from fastapi.middleware.cors import CORSMiddleware
 from sse_starlette.sse import EventSourceResponse
 from pydantic import BaseModel, Field
@@ -44,22 +31,27 @@ from backend.services.document_processor import (
     ProcessedClauseChunk
 )
 from backend.engine.deterministic_gatekeeper import (
+    DeterministicGatekeeper,
     TenderStatutoryCriteria
 )
 from backend.engine.qualification_engine import QualificationEngine
+from backend.engine.prebid_legal_generator import PreBidLegalGenerator
+from backend.engine.consortium_matchmaker import ConsortiumMatchmaker
+from backend.engine.compliance_matrix_engine import ComplianceMatrixEngine
 from backend.engine.emd_capital_optimizer import EMDCapitalOptimizer
 from backend.engine.competitor_forensics import CompetitorForensicsEngine
 from backend.engine.precedence_rag_engine import PrecedenceRAGEngine
+from backend.engine.fair_play_guardian import FairPlayGuardianEngine
 from contracts.schema import (
     BidderProfile,
-    ClauseCitation,
     QualificationScorecard,
-    StrategyToolkitResponse,
     PreBidLegalRepresentationPack,
     ConsortiumMatchRecommendation,
     ComplianceAndBinderPackage,
     EMDCapitalOptimizationReport,
     CompetitorForensicsReport,
+    StrategyToolkitResponse,
+    RAGQueryRequest,
     RAGQueryResponse,
     PrecedenceDAGGraph
 )
@@ -74,7 +66,7 @@ app = FastAPI(
     version="1.0.3"
 )
 
-# Enable CORS for Frontend and local origins
+# Enable CORS for Arshit's Frontend and local origins
 cors_origins = [origin.strip() for origin in settings.CORS_ORIGINS.split(",") if origin.strip()]
 if "*" not in cors_origins:
     cors_origins.append("*")
@@ -116,16 +108,6 @@ class AuditEvaluationRequest(BaseModel):
     explicit_criteria: Optional[TenderStatutoryCriteria] = None
 
 
-class StrategyPreviewRequest(BaseModel):
-    tender_id: Optional[str] = None
-    tender_title: str = Field(default="Tender Strategy Preview", max_length=240)
-    source_portal: Optional[str] = "GeM"
-    bidder_profile: BidderProfile
-    criteria: Optional[TenderStatutoryCriteria] = None
-    explicit_criteria: Optional[TenderStatutoryCriteria] = None
-    clause_citations: List[ClauseCitation] = Field(default_factory=list)
-
-
 class SaveAuditRequest(BaseModel):
     user_id: str
     tender_title: str
@@ -141,31 +123,12 @@ class SaveBidderProfileRequest(BaseModel):
     region: Optional[str] = ""
 
 
-def _extract_bearer_token(authorization: Optional[str]) -> Optional[str]:
-    if not authorization:
-        return None
-    parts = authorization.strip().split(" ", 1)
-    if len(parts) == 2 and parts[0].lower() == "bearer":
-        return parts[1].strip() or None
-    return None
-
-
-def _verify_request_user(user_id: str, authorization: Optional[str]) -> Optional[str]:
-    token = _extract_bearer_token(authorization)
-    if not token:
-        return None
-    verified_uid = supabase_service.verify_user_token(token)
-    if verified_uid and verified_uid != user_id:
-        raise HTTPException(status_code=403, detail="Authenticated user token does not match requested user_id")
-    return token
-
-
 @app.get("/healthz")
 async def health_check():
     return {
         "status": "healthy",
         "service": "TenderLens Backend Engine",
-        "version": "1.0.3",
+        "version": "1.0.1",
         "environment": settings.ENVIRONMENT,
         "tinyfish_configured": bool(settings.TINYFISH_API_KEY and not settings.TINYFISH_API_KEY.startswith("sk-tinyfish-your-key")),
         "supabase_configured": settings.is_supabase_configured,
@@ -175,7 +138,7 @@ async def health_check():
 
 @app.get("/api/v1/auth/config")
 async def auth_config():
-    """Return the Supabase project URL, publishable/anon key, and optional Google Client ID to the browser frontend.
+    """Return the Supabase project URL and publishable/anon key to the browser frontend.
 
     Publishable keys identify a public client and are safe to expose. Secret keys
     and database passwords must never be returned here; RLS protects user rows.
@@ -185,26 +148,27 @@ async def auth_config():
         "configured": configured,
         "supabase_url": settings.SUPABASE_URL.strip() if configured else "",
         "publishable_key": settings.supabase_public_key if configured else "",
-        "google_client_id": settings.GOOGLE_CLIENT_ID.strip(),
     }
 
 
 @app.post("/api/v1/tenders/search", response_model=List[DiscoveredTender])
 async def search_tenders_endpoint(payload: SearchRequest):
     """
-    Stage 1: Discovers active government tenders via TinySearch API.
+    Stage 1: Discovers active government tenders via TinySearch API ($0.00 / call).
     Enforces production rules: include_domains, no 'site:' operator, location='IN'.
     """
     try:
+        logger.info(f"[TinyFish Web Intelligence] Stage 1 (TinySearch): Querying portals for '{payload.keywords}' (portal: {payload.portal})")
         results = await tinyfish.search_tenders(
             query=payload.keywords,
             purpose=payload.purpose,
             include_domains=payload.portal,
             limit=payload.limit
         )
+        logger.info(f"[TinyFish Web Intelligence] Discovered {len(results)} active tenders across Indian procurement portals")
         return results
     except Exception as e:
-        logger.error(f"Search endpoint error: {e}")
+        logger.error(f"[TinyFish Web Intelligence] Search endpoint error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -212,16 +176,18 @@ async def search_tenders_endpoint(payload: SearchRequest):
 async def fetch_tenders_endpoint(payload: FetchRequest):
     """
     Stage 2: Recursively crawls seed tender and linked child ATCs and Corrigenda
-    up to depth d <= max_depth using TinyFetch.
+    up to depth d <= max_depth using TinyFetch ($0.00 / call).
     """
     try:
+        logger.info(f"[TinyFish Web Intelligence] Stage 2 (TinyFetch): Harvesting multi-layer documents from '{payload.tender_url}' (max_depth={payload.max_depth})")
         docs = await tinyfish.fetch_tender_recursive(
             seed_url=payload.tender_url,
             max_depth=payload.max_depth
         )
+        logger.info(f"[TinyFish Web Intelligence] Harvested {len(docs)} documents including linked ATCs and Corrigenda")
         return docs
     except Exception as e:
-        logger.error(f"Fetch endpoint error: {e}")
+        logger.error(f"[TinyFish Web Intelligence] Fetch endpoint error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -237,6 +203,7 @@ async def evaluate_tender_endpoint(payload: AuditEvaluationRequest, background_t
     tender_id = payload.tender_id or f"BID-{uuid.uuid4().hex[:8].upper()}"
 
     try:
+        logger.info(f"[TinyFish Web Intelligence] Ingesting multi-document tender corpus for '{payload.tender_title}' via TinyFetch recursive queue")
         # 1. Fetch seed tender & child ATCs
         fetched_docs = await tinyfish.fetch_tender_recursive(
             seed_url=payload.tender_url,
@@ -246,6 +213,7 @@ async def evaluate_tender_endpoint(payload: AuditEvaluationRequest, background_t
         all_atc_urls = []
         for doc in fetched_docs:
             all_atc_urls.extend(doc.extracted_child_urls)
+        logger.info(f"[TinyFish Web Intelligence] Discovered {len(all_atc_urls)} embedded child ATC and Corrigendum URLs")
 
         # 2. Convert markdown/text into ProcessedClauseChunks
         chunks: List[ProcessedClauseChunk] = []
@@ -284,30 +252,12 @@ async def evaluate_tender_endpoint(payload: AuditEvaluationRequest, background_t
         raise HTTPException(status_code=500, detail=f"Audit execution failed: {str(e)}")
 
 
-@app.post("/api/v1/strategy/preview", response_model=StrategyToolkitResponse)
-async def preview_strategy_toolkit_endpoint(payload: StrategyPreviewRequest):
-    """
-    Generates all 5 Strategy Pillars + Deterministic Gates directly from explicit
-    bidder and tender criteria without crawling external portals.
-    """
-    tender_id = payload.tender_id or f"STRAT-{uuid.uuid4().hex[:8].upper()}"
-    resolved_criteria = payload.criteria or payload.explicit_criteria or TenderStatutoryCriteria()
-    return QualificationEngine.generate_strategy_toolkit(
-        tender_id=tender_id,
-        tender_title=payload.tender_title,
-        source_portal=payload.source_portal or "GeM",
-        bidder_profile=payload.bidder_profile,
-        criteria=resolved_criteria,
-        clause_citations=payload.clause_citations,
-    )
-
-
 @app.get("/api/v1/audit/stream/{task_id}")
 async def stream_audit_progress(task_id: str):
     """
     Server-Sent Events (SSE) endpoint: Streams live pipeline stage transitions
     (Discovering -> Ingesting ATCs -> Math Gates -> LLM Audit -> Final Scorecard)
-    to the frontend progress bar.
+    to Arshit's Next.js frontend progress bar.
     """
     queue = pipeline_task_events.setdefault(task_id, asyncio.Queue())
 
@@ -321,7 +271,7 @@ async def stream_audit_progress(task_id: str):
         ]
         try:
             for s in stages:
-                await asyncio.sleep(0.6)
+                await asyncio.sleep(0.6)  # Simulated progression interval for UI demonstration
                 yield {
                     "event": "progress",
                     "data": json.dumps(s)
@@ -458,22 +408,27 @@ async def get_precedence_dag_graph_endpoint(payload: PrecedenceGraphRequest):
 
 
 # ---------------------------------------------------------------------------
-# Supabase Cloud Database Persistence & Auth Endpoints (Free Tier + RLS)
+# Supabase Cloud Database Persistence & Auth Endpoints (Free Tier)
 # ---------------------------------------------------------------------------
+@app.get("/api/v1/auth/config")
+async def get_auth_config_endpoint():
+    """Returns safe, public Supabase configuration for browser clients."""
+    return {
+        "configured": settings.is_supabase_configured,
+        "supabase_url": settings.SUPABASE_URL,
+        "publishable_key": settings.supabase_public_key,
+    }
+
+
 @app.post("/api/v1/audits/save")
-async def save_audit_endpoint(
-    payload: SaveAuditRequest,
-    authorization: Optional[str] = Header(default=None)
-):
+async def save_audit_endpoint(payload: SaveAuditRequest):
     """Save an evaluated qualification scorecard into Supabase tender_audits table."""
-    access_token = _verify_request_user(payload.user_id, authorization)
     result = await supabase_service.save_audit_scorecard(
         user_id=payload.user_id,
         scorecard=payload.scorecard,
         tender_title=payload.tender_title,
         tender_url=payload.tender_url,
-        source_portal=payload.source_portal or "GeM",
-        access_token=access_token
+        source_portal=payload.source_portal or "GeM"
     )
     if not result:
         if not settings.is_supabase_configured:
@@ -483,56 +438,187 @@ async def save_audit_endpoint(
 
 
 @app.get("/api/v1/audits/user/{user_id}")
-async def get_user_audits_endpoint(
-    user_id: str,
-    limit: int = Query(20, ge=1, le=100),
-    authorization: Optional[str] = Header(default=None)
-):
+async def get_user_audits_endpoint(user_id: str, limit: int = Query(20, ge=1, le=100)):
     """Retrieve historical saved audits for an authenticated user from Supabase."""
-    access_token = _verify_request_user(user_id, authorization)
-    audits = await supabase_service.get_user_audits(
-        user_id=user_id,
-        limit=limit,
-        access_token=access_token
-    )
+    audits = await supabase_service.get_user_audits(user_id=user_id, limit=limit)
     return {"user_id": user_id, "audits": audits}
 
 
 @app.get("/api/v1/profile/sync/{user_id}", response_model=Optional[BidderProfile])
-async def get_synced_bidder_profile_endpoint(
-    user_id: str,
-    authorization: Optional[str] = Header(default=None)
-):
+async def get_synced_bidder_profile_endpoint(user_id: str):
     """Fetch the stored BidderProfile for an authenticated user from Supabase."""
-    access_token = _verify_request_user(user_id, authorization)
-    profile = await supabase_service.get_bidder_profile(
-        user_id=user_id,
-        access_token=access_token
-    )
+    profile = await supabase_service.get_bidder_profile(user_id=user_id)
     if not profile:
         raise HTTPException(status_code=404, detail="No profile found for user in Supabase")
     return profile
 
 
 @app.post("/api/v1/profile/sync")
-async def save_synced_bidder_profile_endpoint(
-    payload: SaveBidderProfileRequest,
-    authorization: Optional[str] = Header(default=None)
-):
+async def save_synced_bidder_profile_endpoint(payload: SaveBidderProfileRequest):
     """Sync a BidderProfile into Supabase profiles table."""
-    access_token = _verify_request_user(payload.user_id, authorization)
     result = await supabase_service.save_bidder_profile(
         user_id=payload.user_id,
         profile=payload.bidder_profile,
         full_name=payload.full_name or "",
-        region=payload.region or "",
-        access_token=access_token
+        region=payload.region or ""
     )
     if not result:
         if not settings.is_supabase_configured:
             return {"status": "unconfigured", "message": "Supabase credentials not configured in .env"}
         raise HTTPException(status_code=500, detail="Failed to save profile to Supabase")
     return {"status": "saved", "data": result}
+
+
+# ===========================================================================
+# STRATEGY PREVIEW & FAIR PLAY EQUALIZER ENDPOINTS (v1.1.0)
+# ===========================================================================
+
+class StrategyPreviewRequest(BaseModel):
+    tender_id: Optional[str] = "GEM-2026-B-994120"
+    tender_title: str
+    source_portal: str = "GeM"
+    bidder_profile: BidderProfile
+    criteria: TenderStatutoryCriteria
+
+
+class FairPlayShieldAuditRequest(BaseModel):
+    tender_id: Optional[str] = "GEM-2026-B-994120"
+    tender_title: str
+    bidder_profile: BidderProfile
+    criteria: TenderStatutoryCriteria
+
+
+@app.post("/api/v1/strategy/preview", response_model=StrategyToolkitResponse)
+async def create_strategy_preview_endpoint(payload: StrategyPreviewRequest):
+    """
+    Unified Strategy & Fair Play Equalizer endpoint called by strategy.html / strategy.js.
+    Executes Deterministic Gates + 5 Strategy Pillars + 3 Fair Play Zero-History Engines.
+    """
+    t_id = payload.tender_id or "GEM-2026-B-994120"
+
+    # 1. Run Startup Statutory Shield & Fair Play Violation Scanner
+    shield_audit, fair_play_alerts = FairPlayGuardianEngine.run_startup_statutory_shield(
+        tender_id=t_id,
+        tender_title=payload.tender_title,
+        bidder=payload.bidder_profile,
+        criteria=payload.criteria,
+        chunks=[],
+        citations=[]
+    )
+
+    # 2. Run Zero-History Competency Engine & generate Equipment/QC Proforma
+    tech_proof, qc_proforma_affidavit = FairPlayGuardianEngine.evaluate_zero_history_competency(
+        tender_id=t_id,
+        tender_title=payload.tender_title,
+        bidder=payload.bidder_profile,
+        criteria=payload.criteria
+    )
+
+    # 3. Run Mandatory 25% MSE Subcontracting & Split-Order Quota Gateway
+    mse_match = FairPlayGuardianEngine.match_25pct_mse_subcontracting_quota(
+        tender_id=t_id,
+        tender_title=payload.tender_title,
+        bidder=payload.bidder_profile,
+        criteria=payload.criteria,
+        shield_audit=shield_audit
+    )
+
+    # 4. Run Deterministic Gatekeeper & 5 Strategy Pillars
+    gates = DeterministicGatekeeper.evaluate(bidder=payload.bidder_profile, tender=payload.criteria)
+
+    prebid_pack = PreBidLegalGenerator.generate_representation_pack(
+        tender_id=t_id,
+        tender_title=payload.tender_title,
+        bidder=payload.bidder_profile,
+        criteria=payload.criteria,
+        gates=gates,
+        citations=[]
+    )
+
+    consortium_rec = ConsortiumMatchmaker.analyze_and_match(
+        bidder=payload.bidder_profile,
+        criteria=payload.criteria,
+        gate_results=gates
+    )
+
+    compliance_binder = ComplianceMatrixEngine.generate_package(
+        tender_id=t_id,
+        tender_title=payload.tender_title,
+        bidder=payload.bidder_profile,
+        criteria=payload.criteria,
+        gates=gates,
+        citations=[]
+    )
+    compliance_binder.statutory_affidavits.append(qc_proforma_affidavit)
+
+    emd_report = EMDCapitalOptimizer.evaluate_capital_risk(
+        bidder=payload.bidder_profile,
+        criteria=payload.criteria
+    )
+
+    forensics = CompetitorForensicsEngine.analyze_static_forensics(
+        tender_title=payload.tender_title,
+        source_portal=payload.source_portal
+    )
+
+    return StrategyToolkitResponse(
+        tender_id=t_id,
+        tender_title=payload.tender_title,
+        source_portal=payload.source_portal,
+        limitations_note=(
+            f"Fair Play Equalizer Active: {shield_audit.audit_verdict} | "
+            f"Zero-History Competency: {tech_proof.overall_competency_score}/100 | "
+            f"25% MSE Quota: ₹{mse_match.mandatory_25pct_allocation_lakhs:.2f} Lakhs."
+        ),
+        deterministic_gates=gates,
+        prebid_legal_pack=prebid_pack,
+        consortium_recommendation=consortium_rec,
+        compliance_binder=compliance_binder,
+        emd_capital_report=emd_report,
+        competitor_forensics=forensics,
+        startup_exemption_audit=shield_audit,
+        technical_equivalence_proof=tech_proof,
+        mse_subcontracting_match=mse_match,
+        fair_play_violations=fair_play_alerts
+    )
+
+
+@app.post("/api/v1/audit/fair-play-shield")
+async def audit_fair_play_shield_endpoint(payload: FairPlayShieldAuditRequest):
+    """
+    Dedicated endpoint to run the Startup Statutory Shield, Zero-History Competency Proof,
+    and Mandatory 25% MSE Subcontracting Quota Gateway on demand.
+    """
+    t_id = payload.tender_id or "GEM-2026-B-994120"
+    shield_audit, fair_play_alerts = FairPlayGuardianEngine.run_startup_statutory_shield(
+        tender_id=t_id,
+        tender_title=payload.tender_title,
+        bidder=payload.bidder_profile,
+        criteria=payload.criteria,
+        chunks=[],
+        citations=[]
+    )
+    tech_proof, qc_proforma_affidavit = FairPlayGuardianEngine.evaluate_zero_history_competency(
+        tender_id=t_id,
+        tender_title=payload.tender_title,
+        bidder=payload.bidder_profile,
+        criteria=payload.criteria
+    )
+    mse_match = FairPlayGuardianEngine.match_25pct_mse_subcontracting_quota(
+        tender_id=t_id,
+        tender_title=payload.tender_title,
+        bidder=payload.bidder_profile,
+        criteria=payload.criteria,
+        shield_audit=shield_audit
+    )
+    return {
+        "tender_id": t_id,
+        "startup_exemption_audit": shield_audit,
+        "technical_equivalence_proof": tech_proof,
+        "mse_subcontracting_match": mse_match,
+        "fair_play_violations": fair_play_alerts,
+        "qc_proforma_affidavit": qc_proforma_affidavit
+    }
 
 
 # Pair up Frontend: Mount static files if frontend/ directory exists

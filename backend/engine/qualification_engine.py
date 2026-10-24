@@ -1,5 +1,5 @@
 """
-TenderLens - Qualification Engine: Hybrid Scorecard & 5-Pillar Synthesizer (v1.0.3)
+TenderLens - Qualification Engine: Hybrid Scorecard & 5-Pillar Synthesizer (v1.0.1)
 =================================================================================
 Synthesizes:
 1. Precedence DAG conflict resolution (Rank 1 Corr -> Rank 5 Main PDF)
@@ -20,8 +20,7 @@ from contracts.schema import (
     BidderProfile,
     ClauseCitation,
     GateResult,
-    QualificationScorecard,
-    StrategyToolkitResponse
+    QualificationScorecard
 )
 from backend.services.document_processor import ProcessedClauseChunk
 from backend.engine.deterministic_gatekeeper import (
@@ -33,8 +32,38 @@ from backend.engine.consortium_matchmaker import ConsortiumMatchmaker
 from backend.engine.compliance_matrix_engine import ComplianceMatrixEngine
 from backend.engine.emd_capital_optimizer import EMDCapitalOptimizer
 from backend.engine.competitor_forensics import CompetitorForensicsEngine
+from backend.engine.startup_statutory_shield import StartupStatutoryShield
+from backend.engine.fair_play_guardian import FairPlayGuardianEngine
 
 logger = logging.getLogger("tenderlens.engine")
+
+FAIR_PLAY_GEMINI_PROMPT_TEMPLATE = """You are the TenderLens v1.1.0 Statutory Fair Play & Technical Equivalence Auditor running on {model_name}.
+### 1. BIDDER ZERO-HISTORY PROFILE
+- Company: {company_name} ({entity_type})
+- DPIIT Recognized Startup: {is_startup} | Udyam Registered MSE: {is_msme}
+- 3-Year Avg Turnover: ₹{avg_turnover_lakhs} Lakhs | Years in Business: {years_in_business}
+- Held Certifications & Lab Reports: {certifications}
+- Local Content (DPIIT Make in India): {local_content_pct}%
+### 2. HIERARCHICAL TENDER CLAUSES (PRECEDENCE DAG ORDERED: RANK 1 -> RANK 5)
+{formatted_precedence_chunks}
+### 3. YOUR AUDIT MANDATE
+Analyze the clauses under Indian Public Procurement Law (GFR 2017 Rule 173(i), Rule 170(i), Rule 144(i), MoF DoE OM No. F.20/2/2014-PPD(Pt.) dated 20.09.2016, GeM GTC Clause 4(xiii)(h), and CVC Guidelines) and output ONLY valid JSON matching this exact structure:
+{{
+  "atc_revokes_startup_mse_exemption": true/false,
+  "has_valid_public_safety_or_security_justification": true/false,
+  "is_atc_revocation_ab_initio_void_under_gem_gtc_4_xiii_h": true/false,
+  "detected_cartel_clauses": [
+    {{
+      "clause_id": "string",
+      "violation_type": "ULTRA_VIRES_STARTUP_MSE_REVOCATION | DISPROPORTIONATE_TURNOVER_RATIO | PROPRIETARY_BRAND_LOCK_WITHOUT_EQUIVALENT | RESTRICTIVE_GEOGRAPHIC_OR_INCUMBENT_LOCK",
+      "impugned_excerpt": "string",
+      "violated_statute": "string"
+    }}
+  ],
+  "technical_parameter_equivalence_pct": 0.0 to 100.0,
+  "recommended_gem_incident_argument": "string"
+}}
+"""
 
 
 class QualificationEngine:
@@ -266,7 +295,7 @@ class QualificationEngine:
         gemini_citations: Optional[List[ClauseCitation]] = None
     ) -> QualificationScorecard:
         """
-        Executes end-to-end qualification audit + synthesizes all 5 Strategic Pillars.
+        Executes end-to-end qualification audit + synthesizes all 5 v1.0.1 Strategic Pillars.
         """
         if explicit_criteria:
             criteria = explicit_criteria
@@ -340,6 +369,52 @@ class QualificationEngine:
             source_portal=source_portal
         )
 
+        # Pillar F (v2.0.0): Startup Statutory Shield — Zero-History-to-First-Win Pipeline
+        # Activated automatically for DPIIT startups and MSMEs
+        startup_shield_report = None
+        if bidder_profile.is_startup_recognized or bidder_profile.is_msme_registered or bidder_profile.competency_profile:
+            try:
+                startup_shield_report = StartupStatutoryShield.evaluate(
+                    bidder=bidder_profile,
+                    tender=criteria,
+                    tender_id=tender_id,
+                    tender_title=tender_title,
+                    tender_value_lakhs=criteria.estimated_bid_value_lakhs or 0.0,
+                )
+                logger.info(
+                    f"Startup Shield evaluated for {bidder_profile.company_name}: "
+                    f"active={startup_shield_report.is_shield_active}, "
+                    f"strength={startup_shield_report.shield_strength_score}/10"
+                )
+            except Exception as e:
+                logger.warning(f"Startup Statutory Shield evaluation failed: {e}")
+
+        # Fair Play & Zero-History Equalizer Engine (v1.1.0)
+        shield_audit, fair_play_alerts = FairPlayGuardianEngine.run_startup_statutory_shield(
+            tender_id=tender_id,
+            tender_title=tender_title,
+            bidder=bidder_profile,
+            criteria=criteria,
+            chunks=chunks,
+            citations=clause_citations
+        )
+        tech_proof, qc_proforma_affidavit = FairPlayGuardianEngine.evaluate_zero_history_competency(
+            tender_id=tender_id,
+            tender_title=tender_title,
+            bidder=bidder_profile,
+            criteria=criteria
+        )
+        mse_match = FairPlayGuardianEngine.match_25pct_mse_subcontracting_quota(
+            tender_id=tender_id,
+            tender_title=tender_title,
+            bidder=bidder_profile,
+            criteria=criteria,
+            shield_audit=shield_audit
+        )
+
+        if qc_proforma_affidavit and not any(a.doc_code == qc_proforma_affidavit.doc_code for a in compliance_binder.statutory_affidavits):
+            compliance_binder.statutory_affidavits.append(qc_proforma_affidavit)
+
         return QualificationScorecard(
             tender_id=tender_id,
             tender_title=tender_title,
@@ -354,72 +429,12 @@ class QualificationEngine:
             consortium_recommendation=consortium_rec,
             compliance_binder=compliance_binder,
             emd_capital_report=emd_report,
-            competitor_forensics=forensics_report
-        )
-
-    @classmethod
-    def generate_strategy_toolkit(
-        cls,
-        tender_id: str,
-        tender_title: str,
-        source_portal: str,
-        bidder_profile: BidderProfile,
-        criteria: TenderStatutoryCriteria,
-        clause_citations: Optional[List[ClauseCitation]] = None,
-        gate_results: Optional[List[GateResult]] = None,
-    ) -> StrategyToolkitResponse:
-        """
-        Generates the 5-Pillar Bid-Preparation Strategy Toolkit response used by
-        both the interactive Strategy Studio (/api/v1/strategy/preview) and tests.
-        """
-        citations = clause_citations or []
-        gates = gate_results or DeterministicGatekeeper.evaluate(bidder=bidder_profile, tender=criteria)
-
-        prebid_pack = PreBidLegalGenerator.generate_representation_pack(
-            tender_id=tender_id,
-            tender_title=tender_title,
-            bidder=bidder_profile,
-            criteria=criteria,
-            gates=gates,
-            citations=citations
-        )
-        consortium_rec = ConsortiumMatchmaker.analyze_and_match(
-            bidder=bidder_profile,
-            criteria=criteria,
-            gate_results=gates
-        )
-        compliance_binder = ComplianceMatrixEngine.generate_package(
-            tender_id=tender_id,
-            tender_title=tender_title,
-            bidder=bidder_profile,
-            criteria=criteria,
-            gates=gates,
-            citations=citations
-        )
-        emd_report = EMDCapitalOptimizer.evaluate_capital_risk(
-            bidder=bidder_profile,
-            criteria=criteria
-        )
-        forensics_report = CompetitorForensicsEngine.analyze_static_forensics(
-            tender_title=tender_title,
-            source_portal=source_portal
-        )
-
-        return StrategyToolkitResponse(
-            tender_id=tender_id,
-            tender_title=tender_title,
-            source_portal=source_portal,
-            deterministic_gates=gates,
-            prebid_legal_pack=prebid_pack,
-            consortium_recommendation=consortium_rec,
-            compliance_binder=compliance_binder,
-            emd_capital_report=emd_report,
             competitor_forensics=forensics_report,
-            limitations_note=(
-                "These outputs are deterministic calculations and structured review drafts derived from explicit inputs "
-                "and parsed tender clauses. They do not replace legal counsel, a chartered accountant's certificate, "
-                "or the procuring authority's final decision under the governing tender documents and corrigenda."
-            )
+            startup_shield=startup_shield_report,
+            startup_exemption_audit=shield_audit,
+            technical_equivalence_proof=tech_proof,
+            mse_subcontracting_match=mse_match,
+            fair_play_violations=fair_play_alerts,
         )
 
     @classmethod

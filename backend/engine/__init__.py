@@ -1,5 +1,5 @@
 """
-TenderLens Qualification Engine Package (v1.0.3)
+TenderLens Qualification Engine Package (v2.0.0)
 """
 
 from backend.engine.deterministic_gatekeeper import DeterministicGatekeeper, TenderStatutoryCriteria
@@ -10,6 +10,8 @@ from backend.engine.compliance_matrix_engine import ComplianceMatrixEngine
 from backend.engine.emd_capital_optimizer import EMDCapitalOptimizer
 from backend.engine.competitor_forensics import CompetitorForensicsEngine
 from backend.engine.precedence_rag_engine import PrecedenceRAGEngine
+from backend.engine.startup_statutory_shield import StartupStatutoryShield
+from backend.engine.fair_play_guardian import FairPlayGuardianEngine
 
 __all__ = [
     "DeterministicGatekeeper",
@@ -20,5 +22,7 @@ __all__ = [
     "ComplianceMatrixEngine",
     "EMDCapitalOptimizer",
     "CompetitorForensicsEngine",
-    "PrecedenceRAGEngine"
+    "PrecedenceRAGEngine",
+    "StartupStatutoryShield",
+    "FairPlayGuardianEngine",
 ]

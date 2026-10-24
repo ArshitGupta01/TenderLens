@@ -51,7 +51,7 @@ data/cache/
 Thumbs.db
 
 # Repomix & scratch dumps
-single.xml
+# single.xml included per user instruction
 repomix-output.*
 .vercel
 

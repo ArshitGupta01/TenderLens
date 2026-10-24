@@ -1,5 +1,5 @@
 """
-TenderLens - Qualification Engine: Deterministic Gatekeeper (v1.0.3)
+TenderLens - Qualification Engine: Deterministic Gatekeeper (v1.0.1)
 ==================================================================
 Executes pure-Python mathematical and statutory checks with zero hallucination:
 1. 3-Year Average Turnover + MSE PPP-2012 / GFR 173(i) exemption (with JV aggregation)
@@ -33,10 +33,7 @@ class TenderStatutoryCriteria(BaseModel):
     allow_insurance_surety_bond: bool = True
     proprietary_brand_lock_detected: bool = False
     proprietary_brand_details: Optional[str] = None
-    emd_exemption_confirmed_by_tender: Optional[bool] = None
-    surety_bond_permitted_by_tender: Optional[bool] = None
-    estimated_emd_lockup_days: Optional[int] = Field(default=120, ge=1, le=3650)
-    annual_capital_cost_rate_pct: Optional[float] = Field(default=12.0, ge=0, le=100)
+    is_public_safety_or_security_exception: bool = False
 
 
 class DeterministicGatekeeper:
@@ -121,13 +118,32 @@ class DeterministicGatekeeper:
                     f"Minimum turnover criteria waived."
                 )
             elif is_eligible_for_exemption and tender.is_turnover_exemption_revoked_by_atc:
-                turnover_passed = False
-                turnover_hard_disqualifier = True
-                statutory_note = "Buyer Added ATC Override (Precedence Rank 3 / Corrigendum Rank 1)"
-                reason = (
-                    f"Turnover below threshold (₹{avg_turnover:.2f} Lakhs < ₹{tender.min_annual_turnover_lakhs:.2f} Lakhs). "
-                    f"CRITICAL DISQUALIFIER: Buyer ATC / Corrigendum explicitly revokes MSME turnover relaxation for this procurement."
-                )
+                # v1.1.0 Fair Play Upgrade: DPIIT Startups invoke Startup Statutory Shield against unlawful ATC revocations
+                if bidder.is_startup_recognized and not getattr(tender, "is_public_safety_or_security_exception", False):
+                    turnover_passed = True
+                    turnover_hard_disqualifier = False
+                    statutory_note = "GeM GTC Clause 4(xiii)(h) & GFR 2017 Rule 173(i) Statutory Shield"
+                    reason = (
+                        f"STATUTORY SHIELD OVERRIDE: Buyer ATC attempts to revoke Startup/MSE turnover relaxation "
+                        f"(₹{avg_turnover:.2f}L vs ₹{tender.min_annual_turnover_lakhs:.2f}L), which is invalid under "
+                        f"GeM GTC Clause 4(xiii)(h) & MoF OM F.20/2/2014-PPD. Exemption restored; file Pre-Bid Challenge."
+                    )
+                elif getattr(tender, "is_public_safety_or_security_exception", False):
+                    turnover_passed = False
+                    turnover_hard_disqualifier = True
+                    statutory_note = "MoF OM F.20/2/2014-PPD(Pt.) Public Safety/Security Exception"
+                    reason = (
+                        f"Turnover below threshold (₹{avg_turnover:.2f}L < ₹{tender.min_annual_turnover_lakhs:.2f}L). "
+                        f"Lawful safety/security exception applies; route to 25% MSE Subcontracting Gateway."
+                    )
+                else:
+                    turnover_passed = False
+                    turnover_hard_disqualifier = True
+                    statutory_note = "Buyer Added ATC Override (Precedence Rank 3 / Corrigendum Rank 1)"
+                    reason = (
+                        f"Turnover below threshold (₹{avg_turnover:.2f} Lakhs < ₹{tender.min_annual_turnover_lakhs:.2f} Lakhs). "
+                        f"CRITICAL DISQUALIFIER: Buyer ATC / Corrigendum explicitly revokes MSME turnover relaxation for this procurement."
+                    )
             else:
                 turnover_passed = False
                 turnover_hard_disqualifier = True
@@ -163,10 +179,29 @@ class DeterministicGatekeeper:
                 exp_statutory_note = "DPIIT Notification / GFR Rule 173(i) Startup Relaxation"
                 exp_reason = f"Experience criteria relaxed under DPIIT startup / MSE policy (bidder has {effective_years} years vs {tender.min_experience_years} years required)."
             elif is_eligible_for_exemption and tender.is_experience_exemption_revoked_by_atc:
-                exp_passed = False
-                exp_hard_disqualifier = True
-                exp_statutory_note = "Buyer ATC Override"
-                exp_reason = f"Experience below threshold ({effective_years} < {tender.min_experience_years} yrs). Buyer ATC explicitly prohibits experience relaxation."
+                # v1.1.0 Fair Play Upgrade: DPIIT Startups invoke Startup Statutory Shield against unlawful ATC revocations
+                if bidder.is_startup_recognized and not getattr(tender, "is_public_safety_or_security_exception", False):
+                    exp_passed = True
+                    exp_hard_disqualifier = False
+                    exp_statutory_note = "GeM GTC Clause 4(xiii)(h) & GFR 2017 Rule 173(i) Statutory Shield"
+                    exp_reason = (
+                        f"STATUTORY SHIELD OVERRIDE: Buyer ATC attempts to revoke Startup experience relaxation "
+                        f"({effective_years} vs {tender.min_experience_years} yrs), which is invalid under "
+                        f"GeM GTC Clause 4(xiii)(h) & MoF OM F.20/2/2014-PPD. Exemption restored; file Pre-Bid Challenge."
+                    )
+                elif getattr(tender, "is_public_safety_or_security_exception", False):
+                    exp_passed = False
+                    exp_hard_disqualifier = True
+                    exp_statutory_note = "MoF OM F.20/2/2014-PPD(Pt.) Public Safety/Security Exception"
+                    exp_reason = (
+                        f"Experience below threshold ({effective_years} < {tender.min_experience_years} yrs). "
+                        f"Lawful safety/security exception applies; route to 25% MSE Subcontracting Gateway."
+                    )
+                else:
+                    exp_passed = False
+                    exp_hard_disqualifier = True
+                    exp_statutory_note = "Buyer ATC Override"
+                    exp_reason = f"Experience below threshold ({effective_years} < {tender.min_experience_years} yrs). Buyer ATC explicitly prohibits experience relaxation."
             else:
                 exp_passed = False
                 exp_hard_disqualifier = True
