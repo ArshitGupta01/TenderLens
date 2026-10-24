@@ -231,6 +231,22 @@ function makeLiveSearchResult(tender) {
         link.rel = 'noopener noreferrer';
         link.textContent = 'Open official notice';
         card.append(link);
+        const saveButton = document.createElement('button');
+        saveButton.type = 'button';
+        saveButton.className = 'live-save-button';
+        saveButton.dataset.liveSave = JSON.stringify({
+          title: tender.title || 'Tender notice',
+          url: linkUrl.href,
+          source_portal: tender.source_portal || 'Tender portal',
+          snippet: tender.snippet || ''
+        });
+        saveButton.textContent = 'Save to account';
+        const saveStatus = document.createElement('span');
+        saveStatus.dataset.liveSaveStatus = '';
+        saveStatus.className = 'live-save-status';
+        saveStatus.setAttribute('role', 'status');
+        saveStatus.setAttribute('aria-live', 'polite');
+        card.append(saveButton, saveStatus);
       }
     } catch (error) { /* Ignore malformed result links. */ }
   }
@@ -320,10 +336,27 @@ function updateScrollChrome() {
   }
 }
 
-if (lenis) lenis.on('scroll', updateScrollChrome);
-window.addEventListener('scroll', updateScrollChrome, { passive: true });
+const parallaxItems = Array.from(document.querySelectorAll('[data-parallax]'));
+let parallaxFrame = 0;
+function updateParallax() {
+  if (!parallaxItems.length || motionPreference.matches || parallaxFrame) return;
+  parallaxFrame = window.requestAnimationFrame(() => {
+    parallaxItems.forEach((item) => {
+      const speed = Math.max(-0.25, Math.min(0.25, Number(item.dataset.parallax) || 0.12));
+      const rect = item.getBoundingClientRect();
+      const offset = (rect.top + rect.height / 2 - window.innerHeight / 2) * speed;
+      item.style.setProperty('--parallax-offset', `${Math.max(-72, Math.min(72, -offset))}px`);
+    });
+    parallaxFrame = 0;
+  });
+}
+
+const handleScrollChrome = () => { updateScrollChrome(); updateParallax(); };
+if (lenis) lenis.on('scroll', handleScrollChrome);
+window.addEventListener('scroll', handleScrollChrome, { passive: true });
 window.addEventListener('resize', updateScrollChrome, { passive: true });
 updateScrollChrome();
+updateParallax();
 
 if (backToTop) {
   backToTop.addEventListener('click', () => {
@@ -640,7 +673,7 @@ if (bidderProfileForm) {
     setBidderProfileStatus('Browser storage is unavailable. The form still works for this visit, but it cannot save a profile.', 'error');
   }
 
-  const saveLocalBidderProfile = () => {
+  const saveLocalBidderProfile = async () => {
     const profile = Object.fromEntries(Object.entries(bidderProfileFields).map(([key, field]) => [key, field?.value.trim() || '']));
     if (!profile.organization) {
       setBidderProfileStatus('Enter an organization name to save this profile.', 'error');
@@ -650,6 +683,24 @@ if (bidderProfileForm) {
     try {
       window.localStorage.setItem(bidderProfileKey, JSON.stringify(profile));
       setBidderProfileStatus('Profile saved in this browser on this device. It is not sent with searches.', 'success');
+      const account = window.TenderLensAuth;
+      if (account) {
+        await account.ready;
+        if (account.user) {
+          setBidderProfileStatus('Saving your profile to your account…', 'loading');
+          const { error } = await account.saveProfile({
+            organization: profile.organization,
+            bidder_type: profile.bidderType,
+            years_active: profile.years,
+            region: profile.region
+          });
+          setBidderProfileStatus(error
+            ? `Saved on this device. Account sync failed: ${account.profileErrorMessage(error)}`
+            : 'Profile saved to your account and available on your other devices.', error ? 'error' : 'success');
+          const label = document.querySelector('.profile-storage-label');
+          if (!error && label) label.textContent = 'ACCOUNT SYNC';
+        }
+      }
     } catch (error) {
       setBidderProfileStatus('Could not save in this browser. Check your storage settings and try again.', 'error');
     }

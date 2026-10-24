@@ -5,11 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#f4f2e9">
     <meta name="description" content="A plain-language guide to the TenderLens sample website and optional live tender search.">
+    <meta name="tenderlens-api" content="">
     <title>Easy guide — TenderLens</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="vendor/lenis.css">
     <script src="theme.js"></script>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0" defer></script>
+    <script src="auth.js" defer></script>
     <script src="vendor/lenis.min.js" defer></script>
     <script src="app.js" defer></script>
   </head>
@@ -22,10 +25,11 @@
           <span class="brand-name">Tender<span>Lens</span></span><span class="brand-descriptor">PROCUREMENT, MADE CLEAR</span>
         </a>
         <div class="header-actions">
+          <a class="header-account-link" data-auth-signin href="signin.html">Sign in</a>
           <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme" aria-pressed="false" title="Switch to dark theme"><span class="theme-toggle-icon" aria-hidden="true">☾</span><span id="theme-toggle-label">Dark mode</span></button>
           <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav"><span class="menu-toggle-label">Menu</span><span class="menu-lines" aria-hidden="true"><i></i><i></i></span></button>
         </div>
-        <nav class="primary-nav" id="primary-nav" aria-label="Main navigation"><a href="index.html">Home</a><a href="guide.html" aria-current="page">Easy guide</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a class="nav-cta" href="index.html#opportunities">Explore tenders <span aria-hidden="true">↗</span></a></nav>
+        <nav class="primary-nav" id="primary-nav" aria-label="Main navigation"><a href="index.html">Home</a><a href="guide.html" aria-current="page">Easy guide</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a class="nav-cta" href="index.html#opportunities">Explore tenders <span aria-hidden="true">↗</span></a><a class="nav-cta nav-account-cta" data-auth-signup href="signup.html">Create account <span aria-hidden="true">↗</span></a></nav>
       </div>
     </header>
 
@@ -50,7 +54,7 @@
             <article class="guide-step-card"><span>1</span><h3>Open a sample report</h3><p>Choose a requirement to see its sample status and the document that it came from.</p><a href="index.html#demo">Go to the report <span aria-hidden="true">↗</span></a></article>
             <article class="guide-step-card"><span>2</span><h3>Explore tender examples</h3><p>Search the made-up examples, filter by type, or open a card for a short review checklist.</p><a href="index.html#opportunities">Go to sample tenders <span aria-hidden="true">↗</span></a></article>
             <article class="guide-step-card"><span>3</span><h3>Check the document order</h3><p>Pick a file in the order panel to see how a later update might change an earlier rule.</p><a href="index.html#precedence">Go to document order <span aria-hidden="true">↗</span></a></article>
-            <article class="guide-step-card"><span>4</span><h3>Save a local bidder profile</h3><p>Keep basic organization details in this browser. The profile is not sent with searches and does not check eligibility.</p><a href="index.html#profile">Go to bidder profile <span aria-hidden="true">↗</span></a></article>
+            <article class="guide-step-card"><span>4</span><h3>Save your bidder profile</h3><p>Save a local draft or sign in to sync basic organization details across devices. This does not check eligibility.</p><a href="index.html#profile">Go to bidder profile <span aria-hidden="true">↗</span></a></article>
           </div>
         </div>
       </section>
@@ -82,7 +86,7 @@
             <div><dt>Corrigendum</dt><dd>An official notice that changes or clarifies an earlier tender.</dd></div>
             <div><dt>Clause</dt><dd>One numbered rule or paragraph inside a tender file.</dd></div>
             <div><dt>Evidence</dt><dd>A document or record that helps show whether a requirement is met.</dd></div>
-            <div><dt>Bidder profile</dt><dd>Basic details about the business preparing a bid. The sample profile on this page is saved only in your browser.</dd></div>
+            <div><dt>Bidder profile</dt><dd>Basic details about the business preparing a bid. Save a local draft or sync it to your signed-in account.</dd></div>
           </dl>
         </div>
       </section>
@@ -104,6 +108,30 @@
             </ol>
             <p class="guide-warning"><strong>What is connected?</strong> Live search uses the backend. Tender fetching and scorecard routes are available to developers, but this page does not yet upload files or send a bidder profile for an audit.</p>
             <a class="guide-api-link" href="http://127.0.0.1:8000/docs" target="_blank" rel="noopener noreferrer">Open the local API reference <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="guide-section" id="account-setup" aria-labelledby="account-setup-title">
+        <div class="container guide-two-column">
+          <div>
+            <p class="eyebrow">05 / ACCOUNTS AND SAVED TENDERS</p>
+            <h2 id="account-setup-title">Set up sign-in once</h2>
+            <p class="guide-copy">TenderLens uses Supabase Auth and Supabase Postgres for accounts. FastAPI provides the public project settings and continues to run live tender search. User rows are protected with database policies.</p>
+            <div class="guide-final-links"><a class="button button-dark" href="signup.html">Create an account <span aria-hidden="true">↗</span></a><a href="signin.html">Already have an account? Sign in</a></div>
+          </div>
+          <div class="guide-setup account-setup-card">
+            <ol>
+              <li>Create a Supabase project. Copy its Project URL and <strong>publishable key</strong> from the Connect dialog into <code>SUPABASE_URL</code> and <code>SUPABASE_PUBLISHABLE_KEY</code> in your private <code>.env</code>. The publishable key is designed to be exposed to the browser; never use a secret or service-role key here.</li>
+              <li>Run <code>supabase/setup.sql</code> once in Supabase Dashboard → SQL Editor. It creates the bidder-profile and saved-tender tables and locks rows to their account with row-level security.</li>
+              <li>In Supabase Authentication, enable Email and Google. For Google, create a Google OAuth client, copy its client ID and secret into the Supabase Google provider settings, and add the callback URL shown by Supabase to Google Cloud.</li>
+              <li>Add <code>http://127.0.0.1:4177/**</code> and <code>http://localhost:4177/**</code> under Supabase Authentication → URL Configuration → Redirect URLs. Set the site URL to the address you use locally.</li>
+              <li>For email confirmation and password reset in production, configure a trusted SMTP provider in Supabase. The built-in test mailer is intended for limited development use.</li>
+              <li>Restart FastAPI with <code>uv run uvicorn backend.main:app --reload</code> and serve the pages at <code>http://127.0.0.1:4177</code>. Sign in, update your profile, then test saving a link from a live search result.</li>
+            </ol>
+            <p class="guide-warning"><strong>Keep secrets out of chat and GitHub.</strong> Google OAuth client secrets and SMTP credentials belong in the Supabase Dashboard. TenderLens only needs the Supabase URL and browser-safe publishable key in the private local environment file. Do not send us keys in chat.</p>
+            <p class="guide-copy"><strong>Not needed for this connection:</strong> a direct database password or Supabase secret key. The browser uses Supabase Auth and Postgres Data API with row-level security; FastAPI does not bypass those policies.</p>
+            <a class="guide-api-link" href="https://supabase.com/docs/guides/auth/social-sign-in/auth-google" target="_blank" rel="noopener noreferrer">Supabase Google setup guide <span aria-hidden="true">↗</span></a>
           </div>
         </div>
       </section>

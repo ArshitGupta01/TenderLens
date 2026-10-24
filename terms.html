@@ -5,11 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#f4f2e9">
     <meta name="description" content="Plain-language TenderLens terms and conditions for the hackathon prototype.">
+    <meta name="tenderlens-api" content="">
     <title>Terms &amp; Conditions — TenderLens</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="vendor/lenis.css">
     <script src="theme.js"></script>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0" defer></script>
+    <script src="auth.js" defer></script>
     <script src="vendor/lenis.min.js" defer></script>
     <script src="app.js" defer></script>
   </head>
@@ -18,25 +21,26 @@
     <header class="site-header">
       <div class="container nav-shell">
         <a class="brand" href="index.html" aria-label="TenderLens home"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M7 12.5V8h4.5M28.5 8H33v4.5M33 27.5V32h-4.5M11.5 32H7v-4.5" stroke="currentColor" stroke-width="1.7"/><circle cx="20" cy="18.5" r="7.2" stroke="currentColor" stroke-width="1.7"/><path d="m25.2 23.7 6.1 6.1" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/><circle cx="20" cy="18.5" r="2" fill="currentColor"/></svg></span><span class="brand-name">Tender<span>Lens</span></span><span class="brand-descriptor">PROCUREMENT, MADE CLEAR</span></a>
-        <div class="header-actions"><button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme" aria-pressed="false" title="Switch to dark theme"><span class="theme-toggle-icon" aria-hidden="true">☾</span><span id="theme-toggle-label">Dark mode</span></button><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav"><span class="menu-toggle-label">Menu</span><span class="menu-lines" aria-hidden="true"><i></i><i></i></span></button></div>
-        <nav class="primary-nav" id="primary-nav" aria-label="Main navigation"><a href="index.html">Home</a><a href="guide.html">Easy guide</a><a href="privacy.html">Privacy</a><a href="terms.html" aria-current="page">Terms</a><a class="nav-cta" href="index.html#opportunities">Explore tenders <span aria-hidden="true">↗</span></a></nav>
+        <div class="header-actions"><a class="header-account-link" data-auth-signin href="signin.html">Sign in</a><button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme" aria-pressed="false" title="Switch to dark theme"><span class="theme-toggle-icon" aria-hidden="true">☾</span><span id="theme-toggle-label">Dark mode</span></button><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav"><span class="menu-toggle-label">Menu</span><span class="menu-lines" aria-hidden="true"><i></i><i></i></span></button></div>
+        <nav class="primary-nav" id="primary-nav" aria-label="Main navigation"><a href="index.html">Home</a><a href="guide.html">Easy guide</a><a href="privacy.html">Privacy</a><a href="terms.html" aria-current="page">Terms</a><a class="nav-cta" href="index.html#opportunities">Explore tenders <span aria-hidden="true">↗</span></a><a class="nav-cta nav-account-cta" data-auth-signup href="signup.html">Create account <span aria-hidden="true">↗</span></a></nav>
       </div>
     </header>
     <main class="legal-main" id="main">
       <div class="container legal-copy">
         <p class="eyebrow"><span class="eyebrow-mark"></span> A PLAIN-LANGUAGE NOTICE · UPDATED 24 OCTOBER 2026</p>
         <h1>Terms &amp; conditions</h1>
-        <p class="legal-intro">These terms apply to the TenderLens hackathon website and its optional live search. TenderLens is an early prototype, not a bidding or legal service.</p>
+        <p class="legal-intro">These terms apply to the TenderLens hackathon website, optional live search and account features. TenderLens is an early prototype, not a bidding or legal service.</p>
         <h2>Sample information</h2>
         <p>The sample tenders, buyers, values, dates, company profile and review results are fictional. They are included only to show how the website could work. Do not treat a sample status as a real eligibility result.</p>
         <h2>Live tender search</h2>
         <p>If the live search service is running, you can choose to send a search phrase and a portal to it. Search results may be incomplete, old or incorrect. Always open the official notice and check the latest documents yourself.</p>
         <h2>Not legal or bid advice</h2>
         <p>TenderLens does not decide whether you should bid or whether you qualify. It does not guarantee that a tender is active, that every linked file was found, or that a requirement was understood correctly. Check the official documents and contact the buyer when something is unclear.</p>
-        <h2>Prototype features</h2>
-        <p>The sample filters, saved-example buttons and bidder checklist only change this page. The optional bidder profile can save basic organization details in this browser on this device; it does not create an account or send that profile to a TenderLens service. Use the clear button to remove the saved profile. The website does not upload files or make eligibility decisions. Developer API routes for tender fetching and sample scorecards are experimental and are not connected to an upload or profile form here.</p>
+        <h2>Prototype and account features</h2>
+        <p>The sample tenders, report, filters, saved-example buttons and bidder checklist are illustrative. Sample results are not real eligibility decisions and sample saves stay in this browser for the current visit. When account sign-in is configured, Supabase Auth creates and manages your login. Supabase Postgres stores only the basic bidder profile you choose to save and live notice links that you explicitly save. Row-level security limits each account to its own records. Do not enter confidential business information.</p>
+        <p>You are responsible for checking every official notice and deciding whether to bid. TenderLens does not confirm that a saved notice is still active. You can edit your profile or remove saved tender links from your account. Account deletion is not yet a self-service feature.</p>
         <h2>External providers</h2>
-        <p>When you choose live search, the configured TenderLens server may use TinyFish to find public notices. That provider is separate from TenderLens and may have its own terms and privacy practices.</p>
+        <p>When you choose live search, the configured TenderLens server may use TinyFish to find public notices. Account sign-in and stored account data are provided by Supabase. Google sign-in also uses Google. Those providers have their own terms and privacy practices. The site loads the Supabase browser client from jsDelivr.</p>
         <h2>Using this preview</h2>
         <p>Use this website to explore the project and its sample interface. Do not rely on it for a purchase, bid, compliance decision or legal conclusion. The prototype is provided as-is while the team continues development.</p>
         <h2>Project contact</h2>

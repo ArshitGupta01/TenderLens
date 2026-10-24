@@ -113,6 +113,13 @@ TenderLens is divided across three clear, non-conflicting domains:
 - [ ] Tender fetching and bidder scorecard evaluation are still not connected to the website; verify backend behavior against real source documents before production use.
 - [ ] Re-run the backend suite and provider checks when a maintainer is ready to validate them; they were not run as part of this interface update.
 
+## 6. Supabase public auth configuration — 2026-10-24
+
+- [x] Added `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` settings to the existing `.env` configuration.
+- [x] Added `GET /api/v1/auth/config`, which returns only those public client values and a configured flag. The endpoint does not expose a Supabase secret key, service-role key or database password.
+- [ ] The Supabase project, email/Google providers, Postgres tables and redirect URLs still require the maintainer's credentials and dashboard setup.
+- [ ] Next: validate the auth config response and RLS behavior against the configured project after setup.
+
 
 
 

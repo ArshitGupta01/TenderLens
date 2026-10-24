@@ -4,7 +4,7 @@
 > **Team**: Team Traxo · HackIIITD (Round 2)  
 > **Agent Owner**: Arshit  
 > **Domain**: Frontend (Next.js), Database (PostgreSQL / Migrations), Object Storage, Async Job Queues & UI Experience  
-> **Status**: Static prototype with optional live search; production frontend and full API integration remain pending
+> **Status**: Responsive website with optional FastAPI search and Supabase auth/profile/bookmark code; Supabase project setup and account verification remain pending
 
 ---
 
@@ -124,6 +124,14 @@ Recommended relational tables for Arshit's implementation:
 - [x] Fixed the closing section's dark-theme contrast by using the dark green theme token for its background and increasing its small caption contrast. The floating top button now hides when the footer is visible to keep its links clear.
 - [x] Added a browser-local bidder profile form with a clear control, a four-step easy-guide entry and updated privacy / terms explanations.
 - [ ] Review the form with a resizable tablet browser and design the authenticated, server-backed profile only after its privacy and API requirements are defined.
+
+### Account and saved-notice experience — 2026-10-24
+- [x] Added separate sign-in, sign-up, account profile and saved live-tender pages with email/password, Google OAuth, email confirmation and password recovery flows.
+- [x] Added Supabase Postgres setup SQL with owner-scoped row-level security for profiles and saved notice links. Sample tenders, sample saves and checklists remain local and illustrative.
+- [x] Added a public FastAPI config response containing only the Supabase project URL and publishable key; secret/service-role keys are not exposed.
+- [x] Connected signed-in profile saves and live result bookmarks to Supabase, added responsive layouts and subtle hero parallax, and updated the easy guide, privacy notice, terms and README.
+- [ ] The Supabase project values, database setup, Google OAuth client and production email provider are not configured yet. Verify sign-up, login, recovery, profile sync, saved-link sync and RLS isolation after the maintainer configures them.
+- [ ] Next: apply `supabase/setup.sql`, configure `.env` and Supabase providers, then check sign-in on Android and desktop against the team's actual project.
 
 - [ ] Initialize Next.js project in `frontend/` (TypeScript, Tailwind CSS, Lucide icons)
 - [ ] Build Bidder Profile configuration screen (Turnover, MSME status, Certifications)

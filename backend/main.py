@@ -96,6 +96,28 @@ async def health_check():
     }
 
 
+@app.get("/api/v1/auth/config")
+async def auth_config():
+    """Return the Supabase project URL and publishable key to the website.
+
+    Publishable keys identify a public client and are safe to expose. Secret keys
+    and database passwords must never be returned here; RLS protects user rows.
+    """
+    supabase_url = settings.SUPABASE_URL.strip()
+    publishable_key = settings.SUPABASE_PUBLISHABLE_KEY.strip()
+    configured = (
+        supabase_url.startswith("https://")
+        and "your-project" not in supabase_url.lower()
+        and publishable_key.startswith("sb_publishable_")
+        and "your-project" not in publishable_key.lower()
+    )
+    return {
+        "configured": configured,
+        "supabase_url": supabase_url if configured else "",
+        "publishable_key": publishable_key if configured else "",
+    }
+
+
 @app.post("/api/v1/tenders/search", response_model=List[DiscoveredTender])
 async def search_tenders_endpoint(payload: SearchRequest):
     """

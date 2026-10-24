@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f4f2e9">
+    <meta name="description" content="Manage your TenderLens bidder profile and account.">
+    <meta name="tenderlens-api" content="">
+    <title>Your account — TenderLens</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="styles.css">
+    <script src="theme.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0" defer></script>
+    <script src="auth.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body class="account-page">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header"><div class="container nav-shell"><a class="brand" href="index.html" aria-label="TenderLens home"><span class="brand-mark" aria-hidden="true">⌕</span><span class="brand-name">Tender<span>Lens</span></span></a><div class="header-actions"><button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch theme" aria-pressed="false"><span class="theme-toggle-icon" aria-hidden="true">☾</span><span id="theme-toggle-label">Dark mode</span></button><a class="header-account-link" data-auth-signin href="signin.html">Sign in</a></div></div></header>
+    <main id="main" class="account-main">
+      <section class="account-hero" data-auth-signed-in hidden><div class="container"><p class="eyebrow"><span class="eyebrow-mark"></span> YOUR TENDERLENS WORKSPACE</p><div class="account-welcome"><div><h1>Welcome, <span data-account-name>bidder</span>.</h1><p>Keep your business basics and live tender links together.</p></div><a class="button button-dark" href="saved-tenders.html">View saved tenders <span aria-hidden="true">↗</span></a></div><div class="account-email-row"><span class="account-avatar" data-account-initials aria-hidden="true">TL</span><span><strong data-account-email></strong><small>Signed in account</small></span><button class="profile-clear" data-signout type="button">Sign out</button></div></div></section>
+      <section class="account-content container" data-auth-signed-in hidden>
+        <div class="account-grid">
+          <article class="account-panel account-profile-panel"><div class="account-panel-heading"><div><p class="eyebrow">BIDDER PROFILE</p><h2>Your business basics</h2></div><span class="account-chip">PRIVATE TO YOUR ACCOUNT</span></div><p class="account-copy">This short profile syncs across your devices. It does not decide whether you qualify for a tender.</p>
+            <form class="account-profile-form" data-account-profile-form>
+              <label class="profile-field" for="account-full-name">Your name<input id="account-full-name" name="full_name" type="text" autocomplete="name" maxlength="100"></label>
+              <label class="profile-field" for="account-organization">Organization name<input id="account-organization" name="organization" type="text" autocomplete="organization" maxlength="100" placeholder="Company or bidder name" required></label>
+              <div class="profile-form-grid"><label class="profile-field" for="account-bidder-type">Bidder type<select id="account-bidder-type" name="bidder_type"><option value="">Choose a type</option><option value="manufacturer">Manufacturer / OEM</option><option value="epc">EPC / works contractor</option><option value="reseller">Dealer / reseller</option><option value="services">IT / services provider</option><option value="other">Other</option></select></label><label class="profile-field" for="account-years">Years in business<select id="account-years" name="years_active"><option value="">Choose a range</option><option value="under-3">Under 3 years</option><option value="3-5">3–5 years</option><option value="6-10">6–10 years</option><option value="10-plus">Over 10 years</option></select></label><label class="profile-field" for="account-region">Operating region<input id="account-region" name="region" type="text" autocomplete="address-level1" maxlength="60" placeholder="e.g. Haryana"></label></div>
+              <div class="account-form-actions"><button class="auth-submit" type="submit">Save profile <span aria-hidden="true">↗</span></button><p class="auth-status" data-account-profile-status role="status" aria-live="polite"></p></div>
+            </form>
+          </article>
+          <aside class="account-side-card"><span class="account-side-icon" aria-hidden="true">↗</span><p class="eyebrow">SAVED NOTICES</p><h2>Keep a shortlist of real opportunities.</h2><p>Save live tender links from the search results. Fictional samples stay local and are never added here.</p><a class="text-link" href="saved-tenders.html">Open saved tenders <span aria-hidden="true">→</span></a></aside>
+        </div>
+        <div class="account-privacy-note"><span aria-hidden="true">◎</span><p><strong>Only basic business details belong here.</strong><br>Avoid registration IDs, financial figures, passwords, bid documents and confidential records.</p></div>
+      </section>
+      <section class="account-guard container" data-auth-signed-out>
+        <div class="account-guard-card"><span class="account-side-icon" aria-hidden="true">◎</span><h2>Sign in to open your workspace</h2><p>Your bidder profile and saved notices appear here after you sign in.</p><a class="button button-dark" href="signin.html?next=account.html">Sign in <span aria-hidden="true">↗</span></a><a class="text-link" href="signup.html">Create an account <span aria-hidden="true">→</span></a><p class="auth-config-hint" data-auth-config-needed hidden>Local setup is needed before sign-in can work. <a href="guide.html#account-setup">See account setup</a>.</p><p class="auth-status" data-auth-status role="status" aria-live="polite"></p></div>
+      </section>
+    </main>
+    <footer class="auth-footer"><a href="index.html">← Back to TenderLens</a><span><a href="guide.html">Easy guide</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></span></footer>
+  </body>
+</html>

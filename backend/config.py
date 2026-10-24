@@ -19,6 +19,8 @@ class Settings(BaseSettings):
     TINYFISH_API_KEY: str = Field(default="", description="TinyFish Web Intelligence API key")
     GEMINI_API_KEY: str = Field(default="", description="Google Gemini API key for structured clause auditing")
     OPENAI_API_KEY: str = Field(default="", description="OpenAI API key (optional fallback)")
+    SUPABASE_URL: str = Field(default="", description="Supabase project URL used by the browser auth client")
+    SUPABASE_PUBLISHABLE_KEY: str = Field(default="", description="Public Supabase publishable key; safe to return to browsers when RLS is enabled")
 
     # Server Settings
     BACKEND_PORT: int = Field(default=8000, description="FastAPI server port")

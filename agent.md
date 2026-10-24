@@ -5,9 +5,9 @@ Updated: 2026-10-24
 ## Project state
 
 - `main` contains the merged `Mohit-Backend` implementation and a static website for Team Traxo's TenderLens hackathon prototype.
-- The website includes a fictional report, sample tender explorer, document-order guide, local bidder profile draft and evidence checklist, optional live tender search, light/dark theme, easy guide, privacy notice, terms and conditions, and quick answers.
-- Only live tender search is connected to the API. The page does not upload tender files or profiles, run eligibility reviews, create cloud accounts, or save audit history. The short bidder profile is stored only in this browser on this device.
-- Search sends the visitor's phrase and selected portal only after they submit. Sample data and checklist changes stay in the browser; the local bidder profile is never included in a search.
+- The website includes a fictional report, sample tender explorer, document-order guide, bidder profile, optional live tender search, light/dark theme, easy guide, privacy notice, terms and conditions, quick answers, and separate sign-in, registration, account and saved-tenders pages.
+- Supabase email/password and Google auth, cross-device basic profiles, and explicitly saved live tender links are implemented in the client. External setup remains pending: Supabase project values, Google OAuth provider, account SQL, and end-to-end verification against the owner's project.
+- Sample data and checklist changes stay in the browser. Fictional samples cannot be stored as account tenders. Live search sends a phrase and selected portal only after the visitor submits. A profile is synced only after an authenticated save; a live tender is stored only after “Save to account.”
 - The backend uses `CORS_ORIGINS` for its local allowlist. Keep credentials and private bidder or tender data out of Git.
 
 ## Working rules
@@ -19,6 +19,13 @@ Updated: 2026-10-24
 - Never record credentials, private profiles, or private tender documents in this file.
 
 ## Latest work — 2026-10-24
+
+- Added Supabase account pages for email/password and Google sign-in, confirmation and reset links, profile editing, sign-out, and a dedicated saved-live-tenders page.
+- Added a FastAPI public config route that exposes only the Supabase project URL and browser-safe publishable key; no secret key or database password is exposed.
+- Added `supabase/setup.sql` with profile/saved-tender tables, ownership constraints and explicit owner-scoped RLS policies. Live tender save controls appear only for real search results; sample bookmarks stay visit-only.
+- Added account setup instructions to the easy guide and README, updated privacy/terms, and marked provider credential setup and account verification as the next milestone. No account credentials have been configured or tested against a Supabase project.
+- Added a subtle scroll parallax ornament and responsive account screens with larger touch-friendly controls and shared dark theme.
+- Next: apply `supabase/setup.sql` in the chosen Supabase project, configure `.env` and the Google/SMTP providers, then verify email confirmation, Google redirect, profile sync and cross-account RLS isolation.
 
 - Added a tablet breakpoint for 851–1100px screens after reviewing the supplied layout screenshot. The header now uses the compact menu and the hero stacks into a readable full-width column at those sizes.
 - Checked the live local preview at its available narrow viewport and reviewed the breakpoint rules against the 1056px screenshot dimensions. A dedicated 1056px browser viewport was not available in the embedded preview.
