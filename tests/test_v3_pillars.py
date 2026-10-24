@@ -160,3 +160,44 @@ def test_pillar_e_competitor_disqualification_forensics():
     assert forensics is not None
     assert "BHEL" in forensics.target_authority
     assert len(forensics.historical_patterns) >= 2
+
+
+
+def test_strategy_preview_endpoint():
+    """Verifies POST /api/v1/strategy/preview returns full 5-Pillar StrategyToolkitResponse."""
+    from fastapi.testclient import TestClient
+    from backend.main import app
+
+    client = TestClient(app)
+    bidder = make_sample_msme_bidder()
+    payload = {
+        "tender_id": "GEM/2026/B/909999",
+        "tender_title": "BHEL 33kV Substation Switchgear & Relay Panels",
+        "source_portal": "BHEL",
+        "bidder_profile": bidder.model_dump(mode="json"),
+        "criteria": {
+            "min_annual_turnover_lakhs": 450.0,
+            "min_experience_years": 5,
+            "estimated_bid_value_lakhs": 300.0,
+            "emd_amount_inr": 600000.0,
+            "min_local_content_percentage": 50.0,
+            "mandatory_certifications": ["ISO-9001", "BIS"],
+            "oem_authorization_mandatory": True,
+            "is_turnover_exemption_revoked_by_atc": True,
+            "is_experience_exemption_revoked_by_atc": True,
+            "proprietary_brand_lock_detected": True,
+            "proprietary_brand_details": "Only Make Allowed: BrandX Switchgear"
+        }
+    }
+    resp = client.post("/api/v1/strategy/preview", json=payload)
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["tender_id"] == "GEM/2026/B/909999"
+    assert len(data["deterministic_gates"]) >= 6
+    assert data["prebid_legal_pack"]["total_challenges"] >= 2
+    assert data["consortium_recommendation"]["has_shortfall"] is True
+    assert len(data["compliance_binder"]["compliance_rows"]) >= 6
+    assert len(data["compliance_binder"]["statutory_affidavits"]) >= 3
+    assert data["emd_capital_report"]["emd_required_inr"] == 600000.0
+    assert len(data["competitor_forensics"]["historical_patterns"]) >= 2
+    assert "limitations_note" in data

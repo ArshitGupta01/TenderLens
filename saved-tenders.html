@@ -16,7 +16,24 @@
   </head>
   <body class="account-page">
     <a class="skip-link" href="#main">Skip to content</a>
-    <header class="site-header"><div class="container nav-shell"><a class="brand" href="index.html" aria-label="TenderLens home"><span class="brand-mark" aria-hidden="true">⌕</span><span class="brand-name">Tender<span>Lens</span></span></a><div class="header-actions"><button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch theme" aria-pressed="false"><span class="theme-toggle-icon" aria-hidden="true">☾</span><span id="theme-toggle-label">Dark mode</span></button><a class="header-account-link" data-auth-signin href="account.html">My account</a></div></div></header>
+    <header class="site-header">
+      <div class="container nav-shell">
+        <a class="brand" href="index.html" aria-label="TenderLens home"><span class="brand-mark" aria-hidden="true">⌕</span><span class="brand-name">Tender<span>Lens</span></span></a>
+        <div class="header-actions">
+          <a class="header-account-link" data-auth-signin href="account.html">My account</a>
+          <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch theme" aria-pressed="false"><span class="theme-toggle-icon" aria-hidden="true">☾</span><span id="theme-toggle-label">Dark mode</span></button>
+          <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav"><span class="menu-toggle-label">Menu</span><span class="menu-lines" aria-hidden="true"><i></i><i></i></span></button>
+        </div>
+        <nav class="primary-nav" id="primary-nav" aria-label="Main navigation">
+          <a href="index.html#opportunities">Sample tenders</a>
+          <a href="index.html#precedence">Document order</a>
+          <a href="index.html#profile">Bidder profile</a>
+          <a href="guide.html">Easy guide</a>
+          <a href="strategy.html">Strategy tools</a>
+          <a class="nav-cta nav-account-cta" data-auth-signin href="account.html">My account <span aria-hidden="true">↗</span></a>
+        </nav>
+      </div>
+    </header>
     <main id="main" class="saved-main">
       <section class="saved-hero" data-auth-signed-in hidden><div class="container"><p class="eyebrow"><span class="eyebrow-mark"></span> YOUR SHORTLIST</p><div class="saved-heading"><div><h1>Saved tender notices</h1><p>Live links you saved to check again. Always open the official notice for current details.</p></div><a class="button button-dark" href="index.html#opportunities">Find live tenders <span aria-hidden="true">↗</span></a></div></div></section>
       <section class="saved-content container" data-auth-signed-in hidden><p class="auth-status" data-saved-tender-status role="status" aria-live="polite">Loading your saved notices…</p><div class="saved-tender-grid" data-saved-tender-list></div><a class="text-link" href="account.html">← Back to your profile</a><p class="saved-disclaimer">Tender notices can change or close. TenderLens does not confirm that a saved opportunity is still active.</p></section>

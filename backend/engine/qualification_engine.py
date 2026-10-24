@@ -1,5 +1,5 @@
 """
-TenderLens - Qualification Engine: Hybrid Scorecard & 5-Pillar Synthesizer (v1.0.1)
+TenderLens - Qualification Engine: Hybrid Scorecard & 5-Pillar Synthesizer (v1.0.3)
 =================================================================================
 Synthesizes:
 1. Precedence DAG conflict resolution (Rank 1 Corr -> Rank 5 Main PDF)
@@ -20,7 +20,8 @@ from contracts.schema import (
     BidderProfile,
     ClauseCitation,
     GateResult,
-    QualificationScorecard
+    QualificationScorecard,
+    StrategyToolkitResponse
 )
 from backend.services.document_processor import ProcessedClauseChunk
 from backend.engine.deterministic_gatekeeper import (
@@ -265,7 +266,7 @@ class QualificationEngine:
         gemini_citations: Optional[List[ClauseCitation]] = None
     ) -> QualificationScorecard:
         """
-        Executes end-to-end qualification audit + synthesizes all 5 v1.0.1 Strategic Pillars.
+        Executes end-to-end qualification audit + synthesizes all 5 Strategic Pillars.
         """
         if explicit_criteria:
             criteria = explicit_criteria
@@ -354,6 +355,71 @@ class QualificationEngine:
             compliance_binder=compliance_binder,
             emd_capital_report=emd_report,
             competitor_forensics=forensics_report
+        )
+
+    @classmethod
+    def generate_strategy_toolkit(
+        cls,
+        tender_id: str,
+        tender_title: str,
+        source_portal: str,
+        bidder_profile: BidderProfile,
+        criteria: TenderStatutoryCriteria,
+        clause_citations: Optional[List[ClauseCitation]] = None,
+        gate_results: Optional[List[GateResult]] = None,
+    ) -> StrategyToolkitResponse:
+        """
+        Generates the 5-Pillar Bid-Preparation Strategy Toolkit response used by
+        both the interactive Strategy Studio (/api/v1/strategy/preview) and tests.
+        """
+        citations = clause_citations or []
+        gates = gate_results or DeterministicGatekeeper.evaluate(bidder=bidder_profile, tender=criteria)
+
+        prebid_pack = PreBidLegalGenerator.generate_representation_pack(
+            tender_id=tender_id,
+            tender_title=tender_title,
+            bidder=bidder_profile,
+            criteria=criteria,
+            gates=gates,
+            citations=citations
+        )
+        consortium_rec = ConsortiumMatchmaker.analyze_and_match(
+            bidder=bidder_profile,
+            criteria=criteria,
+            gate_results=gates
+        )
+        compliance_binder = ComplianceMatrixEngine.generate_package(
+            tender_id=tender_id,
+            tender_title=tender_title,
+            bidder=bidder_profile,
+            criteria=criteria,
+            gates=gates,
+            citations=citations
+        )
+        emd_report = EMDCapitalOptimizer.evaluate_capital_risk(
+            bidder=bidder_profile,
+            criteria=criteria
+        )
+        forensics_report = CompetitorForensicsEngine.analyze_static_forensics(
+            tender_title=tender_title,
+            source_portal=source_portal
+        )
+
+        return StrategyToolkitResponse(
+            tender_id=tender_id,
+            tender_title=tender_title,
+            source_portal=source_portal,
+            deterministic_gates=gates,
+            prebid_legal_pack=prebid_pack,
+            consortium_recommendation=consortium_rec,
+            compliance_binder=compliance_binder,
+            emd_capital_report=emd_report,
+            competitor_forensics=forensics_report,
+            limitations_note=(
+                "These outputs are deterministic calculations and structured review drafts derived from explicit inputs "
+                "and parsed tender clauses. They do not replace legal counsel, a chartered accountant's certificate, "
+                "or the procuring authority's final decision under the governing tender documents and corrigenda."
+            )
         )
 
     @classmethod

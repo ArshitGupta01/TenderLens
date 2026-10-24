@@ -1,5 +1,5 @@
 """
-TenderLens - Qualification Engine: Deterministic Gatekeeper (v1.0.1)
+TenderLens - Qualification Engine: Deterministic Gatekeeper (v1.0.3)
 ==================================================================
 Executes pure-Python mathematical and statutory checks with zero hallucination:
 1. 3-Year Average Turnover + MSE PPP-2012 / GFR 173(i) exemption (with JV aggregation)
@@ -33,6 +33,10 @@ class TenderStatutoryCriteria(BaseModel):
     allow_insurance_surety_bond: bool = True
     proprietary_brand_lock_detected: bool = False
     proprietary_brand_details: Optional[str] = None
+    emd_exemption_confirmed_by_tender: Optional[bool] = None
+    surety_bond_permitted_by_tender: Optional[bool] = None
+    estimated_emd_lockup_days: Optional[int] = Field(default=120, ge=1, le=3650)
+    annual_capital_cost_rate_pct: Optional[float] = Field(default=12.0, ge=0, le=100)
 
 
 class DeterministicGatekeeper:

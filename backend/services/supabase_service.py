@@ -9,7 +9,7 @@ Provides server-side PostgreSQL database persistence for:
 Designed specifically for Supabase Free Tier projects:
 - Zero monolith PostgreSQL setup required
 - Uses PostgREST REST API and Supabase-py client
-- Respects Row Level Security (RLS) policies
+- Respects Row Level Security (RLS) policies via user JWT Bearer tokens
 """
 
 import logging
@@ -21,20 +21,20 @@ logger = logging.getLogger("tenderlens.supabase")
 
 
 class SupabaseService:
-    """Singleton service wrapping Supabase client operations."""
+    """Singleton service wrapping Supabase client operations with RLS enforcement."""
 
     def __init__(self):
         self._client = None
         self._initialized = False
 
     def get_client(self):
-        """Lazily initialize and return Supabase Client."""
+        """Lazily initialize and return the base public Supabase Client."""
         if not self._initialized:
             self._initialized = True
             if settings.is_supabase_configured:
                 try:
                     from supabase import create_client, Client
-                    key = (settings.SUPABASE_SERVICE_ROLE_KEY or settings.supabase_public_key)
+                    key = settings.supabase_public_key
                     self._client: Optional[Client] = create_client(settings.SUPABASE_URL, key)
                     logger.info("Supabase client initialized successfully with project URL %s", settings.SUPABASE_URL)
                 except Exception as e:
@@ -44,6 +44,37 @@ class SupabaseService:
                 logger.info("Supabase is not configured yet. Set SUPABASE_URL and SUPABASE_ANON_KEY in .env")
                 self._client = None
         return self._client
+
+    def get_scoped_client(self, access_token: Optional[str] = None):
+        """
+        Returns a Supabase client scoped to the signed-in user's JWT access token
+        so PostgreSQL Row Level Security (RLS) policies (`auth.uid() = user_id`) are enforced.
+        """
+        if not settings.is_supabase_configured:
+            return None
+        if access_token:
+            try:
+                from supabase import create_client
+                scoped = create_client(settings.SUPABASE_URL, settings.supabase_public_key)
+                scoped.postgrest.auth(access_token)
+                return scoped
+            except Exception as e:
+                logger.warning("Failed to create JWT-scoped Supabase client: %s", e)
+                return self.get_client()
+        return self.get_client()
+
+    def verify_user_token(self, access_token: str) -> Optional[str]:
+        """Verifies a Supabase Auth JWT access token and returns the authenticated user UUID."""
+        client = self.get_client()
+        if not client or not access_token:
+            return None
+        try:
+            user_resp = client.auth.get_user(access_token)
+            user = getattr(user_resp, "user", None)
+            return str(user.id) if user and getattr(user, "id", None) else None
+        except Exception as e:
+            logger.warning("Supabase JWT verification failed: %s", e)
+            return None
 
     @property
     def is_available(self) -> bool:
@@ -59,6 +90,7 @@ class SupabaseService:
             "connected": has_client,
             "supabase_url": settings.SUPABASE_URL if configured else "",
             "has_service_key": bool(settings.SUPABASE_SERVICE_ROLE_KEY),
+            "rls_enforced": True,
             "free_tier_ready": True
         }
 
@@ -68,12 +100,13 @@ class SupabaseService:
         scorecard: QualificationScorecard,
         tender_title: str,
         tender_url: str,
-        source_portal: str = "GeM"
+        source_portal: str = "GeM",
+        access_token: Optional[str] = None
     ) -> Optional[Dict[str, Any]]:
         """
         Persists a completed QualificationScorecard report into Supabase `tender_audits` table.
         """
-        client = self.get_client()
+        client = self.get_scoped_client(access_token)
         if not client:
             logger.debug("Skipping Supabase audit persistence (unconfigured)")
             return None
@@ -98,11 +131,16 @@ class SupabaseService:
             logger.error("Failed to save audit scorecard to Supabase: %s", e)
             return None
 
-    async def get_user_audits(self, user_id: str, limit: int = 20) -> List[Dict[str, Any]]:
+    async def get_user_audits(
+        self,
+        user_id: str,
+        limit: int = 20,
+        access_token: Optional[str] = None
+    ) -> List[Dict[str, Any]]:
         """
         Retrieves historical saved audits for an authenticated user.
         """
-        client = self.get_client()
+        client = self.get_scoped_client(access_token)
         if not client:
             return []
 
@@ -118,11 +156,15 @@ class SupabaseService:
             logger.error("Failed to query user audits from Supabase: %s", e)
             return []
 
-    async def get_bidder_profile(self, user_id: str) -> Optional[BidderProfile]:
+    async def get_bidder_profile(
+        self,
+        user_id: str,
+        access_token: Optional[str] = None
+    ) -> Optional[BidderProfile]:
         """
         Loads the stored BidderProfile for an authenticated user from the `profiles` table.
         """
-        client = self.get_client()
+        client = self.get_scoped_client(access_token)
         if not client:
             return None
 
@@ -155,12 +197,13 @@ class SupabaseService:
         user_id: str,
         profile: BidderProfile,
         full_name: str = "",
-        region: str = ""
+        region: str = "",
+        access_token: Optional[str] = None
     ) -> Optional[Dict[str, Any]]:
         """
         Saves or updates a BidderProfile into Supabase `profiles` table.
         """
-        client = self.get_client()
+        client = self.get_scoped_client(access_token)
         if not client:
             return None
 

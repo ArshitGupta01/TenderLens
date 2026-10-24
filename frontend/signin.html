@@ -16,62 +16,54 @@
   </head>
   <body class="account-page">
     <a class="skip-link" href="#main">Skip to content</a>
-    <!-- Floating Corner Controls -->
-    <button class="floating-menu-btn" id="floating-menu-toggle" type="button" aria-expanded="false" aria-controls="floating-nav-drawer" aria-label="Open navigation menu">
-      <span class="floating-menu-icon" aria-hidden="true"><span></span><span></span><span></span></span>
-      <span class="floating-menu-text">Menu</span>
-    </button>
-
-    <a class="floating-cta-btn" id="floating-account-cta" data-auth-signup href="signup.html">
-      <span class="floating-cta-text">Create account</span>
-      <span aria-hidden="true">↗</span>
-    </a>
-
-    <!-- Slide-over Navigation Drawer -->
-    <div class="floating-nav-drawer" id="floating-nav-drawer" aria-hidden="true">
-      <div class="drawer-backdrop" id="drawer-backdrop"></div>
-      <div class="drawer-panel" role="dialog" aria-modal="true" aria-label="Navigation Menu">
-        <div class="drawer-header">
-          <a class="brand" href="index.html" aria-label="TenderLens home">
-            <span class="brand-mark" aria-hidden="true">
-              <svg viewBox="0 0 40 40" fill="none">
-                <path d="M7 12.5V8h4.5M28.5 8H33v4.5M33 27.5V32h-4.5M11.5 32H7v-4.5" stroke="currentColor" stroke-width="1.7"/>
-                <circle cx="20" cy="18.5" r="7.2" stroke="currentColor" stroke-width="1.7"/>
-                <path d="m25.2 23.7 6.1 6.1" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
-                <circle cx="20" cy="18.5" r="2" fill="currentColor"/>
-              </svg>
-            </span>
-            <span class="brand-name">Tender<span>Lens</span></span>
-          </a>
-          <button class="drawer-close-btn" id="drawer-close-btn" type="button" aria-label="Close navigation menu">✕</button>
+    <header class="site-header">
+      <div class="container nav-shell">
+        <a class="brand" href="index.html" aria-label="TenderLens home"><span class="brand-mark" aria-hidden="true">⌕</span><span class="brand-name">Tender<span>Lens</span></span></a>
+        <div class="header-actions">
+          <a class="header-account-link" data-auth-signup href="signup.html">Create account</a>
+          <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch theme" aria-pressed="false"><span class="theme-toggle-icon" aria-hidden="true">☾</span><span id="theme-toggle-label">Dark mode</span></button>
+          <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav"><span class="menu-toggle-label">Menu</span><span class="menu-lines" aria-hidden="true"><i></i><i></i></span></button>
         </div>
-
-        <div class="drawer-actions-row">
-          <a class="header-account-link" data-auth-signin href="signin.html">Sign in</a>
-          <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch theme" aria-pressed="false" title="Switch theme">
-            <span class="theme-toggle-icon" aria-hidden="true">☾</span>
-            <span id="theme-toggle-label">Dark mode</span>
-          </button>
-        </div>
-
-        <nav class="drawer-nav" aria-label="Main navigation">
-          <a class="drawer-nav-item" href="index.html">Home <span aria-hidden="true">→</span></a>
-          <a class="drawer-nav-item" href="signup.html">Create account <span aria-hidden="true">→</span></a>
-          <a class="drawer-nav-item" href="index.html#opportunities">Find tenders <span aria-hidden="true">→</span></a>
-          <a class="drawer-nav-item" href="guide.html">Easy guide <span aria-hidden="true">→</span></a>
-          <a class="drawer-nav-item drawer-nav-highlight" href="index.html#demo">Launch Evaluation Desk <span aria-hidden="true">↗</span></a>
+        <nav class="primary-nav" id="primary-nav" aria-label="Main navigation">
+          <a href="index.html#opportunities">Sample tenders</a>
+          <a href="index.html#precedence">Document order</a>
+          <a href="index.html#profile">Bidder profile</a>
+          <a href="guide.html">Easy guide</a>
+          <a href="strategy.html">Strategy tools</a>
+          <a class="nav-cta nav-account-cta" data-auth-signup href="signup.html">Create account <span aria-hidden="true">↗</span></a>
         </nav>
       </div>
-    </div>
-
+    </header>
     <main class="auth-main" id="main">
       <div class="auth-orbit auth-orbit-one" aria-hidden="true"></div><div class="auth-orbit auth-orbit-two" aria-hidden="true"></div>
       <section class="auth-layout" aria-labelledby="auth-title">
-        <div class="auth-story"><p class="eyebrow"><span class="eyebrow-mark"></span> YOUR TENDER WORKSPACE</p><h1>Good decisions start with a <em>clear record.</em></h1><p>Sign in to keep your bidder profile and live tender bookmarks together wherever you work.</p><div class="auth-story-note"><span>01</span><p>One account. Your profile and saved notice links travel with you.</p></div></div>
+        <div class="auth-story"><p class="eyebrow"><span class="eyebrow-mark"></span> YOUR TENDER WORKSPACE</p><h1>Good decisions start with a <em>clear record.</em></h1><p>Sign in to keep your bidder profile, statutory capacity figures, and live tender bookmarks together wherever you work.</p><div class="auth-story-note"><span>01</span><p>One account. Your profile and saved notice links travel with you under Supabase Row-Level Security.</p></div></div>
         <div class="auth-card">
-          <p class="eyebrow">WELCOME BACK</p><h2 data-auth-title id="auth-title">Sign in</h2><p class="auth-intro">Use your email or continue with Google.</p>
+          <p class="eyebrow">WELCOME BACK</p><h2 data-auth-title id="auth-title">Sign in</h2><p class="auth-intro">Use your email, shared demo account, or continue with Google.</p>
           <button class="google-button" type="button" data-google-signin><span class="google-mark" aria-hidden="true">G</span> Continue with Google</button>
+          <div class="google-gsi-slot" data-google-gsi-button hidden></div>
+          <details class="strategy-draft-details auth-google-helper" data-google-setup-details>
+            <summary>Google OAuth &amp; Client ID configuration helper</summary>
+            <div class="auth-google-helper-body">
+              <p>To enable Google Sign-In in your Supabase project, add a Google OAuth Web Client in Google Cloud Console with this exact Authorized redirect URI:</p>
+              <code class="auth-callback-code" data-supabase-callback-url>https://qiwpkvjzqdyguygowzci.supabase.co/auth/v1/callback</code>
+              <form class="auth-inline-client-form" data-google-client-id-form>
+                <label class="profile-field" for="signin-google-client-id">Optional: Google Web Client ID (for Google Identity Services ID-Token Sign-In)<input id="signin-google-client-id" name="google_client_id" type="text" placeholder="1234567890-abc.apps.googleusercontent.com"></label>
+                <button class="demo-login-fill" type="submit">Save Client ID locally</button>
+                <p class="auth-status" data-google-helper-status role="status" aria-live="polite"></p>
+              </form>
+            </div>
+          </details>
           <div class="auth-divider"><span>or use email</span></div>
+          <section class="demo-login-card" data-demo-account data-demo-email="cm@gmail.com" aria-labelledby="demo-login-title">
+            <div class="demo-login-heading"><div><p class="eyebrow">SHARED DEMO ACCOUNT</p><h3 id="demo-login-title">Try the workspace</h3></div><span class="demo-login-badge">READY</span></div>
+            <dl class="demo-login-credentials">
+              <div><dt>Email</dt><dd><code data-demo-email-value>cm@gmail.com</code></dd></div>
+            </dl>
+            <p class="demo-login-note">Enter the demo password privately. Anyone using this shared account can see its saved profile and tenders, so do not add private information.</p>
+            <button class="demo-login-fill" type="button" data-demo-fill>Fill demo email <span aria-hidden="true">↗</span></button>
+            <p class="demo-login-status" data-demo-status role="status" aria-live="polite"></p>
+          </section>
           <form class="auth-form" data-signin-form data-auth-form="signin">
             <label class="profile-field" for="signin-email">Email address<input id="signin-email" name="email" type="email" autocomplete="email" required placeholder="you@company.com"></label>
             <label class="profile-field" for="signin-password">Password<input id="signin-password" name="password" type="password" autocomplete="current-password" required minlength="8" placeholder="At least 8 characters"></label>
@@ -90,6 +82,6 @@
         </div>
       </section>
     </main>
-    <footer class="auth-footer"><a href="index.html">← Back to TenderLens</a><span><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></span></footer>
+    <footer class="auth-footer"><a href="index.html">← Back to TenderLens</a><span><a href="guide.html">Easy guide</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></span></footer>
   </body>
 </html>

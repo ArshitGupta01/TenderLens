@@ -100,7 +100,11 @@ class ComplianceMatrixEngine:
             compliance_rows=rows,
             has_material_deviations=has_deviations,
             csv_export_string=csv_str,
-            statutory_affidavits=affidavits
+            statutory_affidavits=affidavits,
+            review_note=(
+                "Verify every compliance row, page/clause reference, and statutory declaration draft against the "
+                "governing tender schedule, Buyer ATCs, and latest Corrigenda before signing or uploading."
+            )
         )
 
     @staticmethod

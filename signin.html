@@ -19,19 +19,44 @@
     <header class="site-header">
       <div class="container nav-shell">
         <a class="brand" href="index.html" aria-label="TenderLens home"><span class="brand-mark" aria-hidden="true">⌕</span><span class="brand-name">Tender<span>Lens</span></span></a>
-        <div class="header-actions"><button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch theme" aria-pressed="false"><span class="theme-toggle-icon" aria-hidden="true">☾</span><span id="theme-toggle-label">Dark mode</span></button><a class="header-account-link" data-auth-signup href="signup.html">Create account</a></div>
+        <div class="header-actions">
+          <a class="header-account-link" data-auth-signup href="signup.html">Create account</a>
+          <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch theme" aria-pressed="false"><span class="theme-toggle-icon" aria-hidden="true">☾</span><span id="theme-toggle-label">Dark mode</span></button>
+          <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav"><span class="menu-toggle-label">Menu</span><span class="menu-lines" aria-hidden="true"><i></i><i></i></span></button>
+        </div>
+        <nav class="primary-nav" id="primary-nav" aria-label="Main navigation">
+          <a href="index.html#opportunities">Sample tenders</a>
+          <a href="index.html#precedence">Document order</a>
+          <a href="index.html#profile">Bidder profile</a>
+          <a href="guide.html">Easy guide</a>
+          <a href="strategy.html">Strategy tools</a>
+          <a class="nav-cta nav-account-cta" data-auth-signup href="signup.html">Create account <span aria-hidden="true">↗</span></a>
+        </nav>
       </div>
     </header>
     <main class="auth-main" id="main">
       <div class="auth-orbit auth-orbit-one" aria-hidden="true"></div><div class="auth-orbit auth-orbit-two" aria-hidden="true"></div>
       <section class="auth-layout" aria-labelledby="auth-title">
-        <div class="auth-story"><p class="eyebrow"><span class="eyebrow-mark"></span> YOUR TENDER WORKSPACE</p><h1>Good decisions start with a <em>clear record.</em></h1><p>Sign in to keep your bidder profile and live tender bookmarks together wherever you work.</p><div class="auth-story-note"><span>01</span><p>One account. Your profile and saved notice links travel with you.</p></div></div>
+        <div class="auth-story"><p class="eyebrow"><span class="eyebrow-mark"></span> YOUR TENDER WORKSPACE</p><h1>Good decisions start with a <em>clear record.</em></h1><p>Sign in to keep your bidder profile, statutory capacity figures, and live tender bookmarks together wherever you work.</p><div class="auth-story-note"><span>01</span><p>One account. Your profile and saved notice links travel with you under Supabase Row-Level Security.</p></div></div>
         <div class="auth-card">
-          <p class="eyebrow">WELCOME BACK</p><h2 data-auth-title id="auth-title">Sign in</h2><p class="auth-intro">Use your email or continue with Google.</p>
+          <p class="eyebrow">WELCOME BACK</p><h2 data-auth-title id="auth-title">Sign in</h2><p class="auth-intro">Use your email, shared demo account, or continue with Google.</p>
           <button class="google-button" type="button" data-google-signin><span class="google-mark" aria-hidden="true">G</span> Continue with Google</button>
+          <div class="google-gsi-slot" data-google-gsi-button hidden></div>
+          <details class="strategy-draft-details auth-google-helper" data-google-setup-details>
+            <summary>Google OAuth &amp; Client ID configuration helper</summary>
+            <div class="auth-google-helper-body">
+              <p>To enable Google Sign-In in your Supabase project, add a Google OAuth Web Client in Google Cloud Console with this exact Authorized redirect URI:</p>
+              <code class="auth-callback-code" data-supabase-callback-url>https://qiwpkvjzqdyguygowzci.supabase.co/auth/v1/callback</code>
+              <form class="auth-inline-client-form" data-google-client-id-form>
+                <label class="profile-field" for="signin-google-client-id">Optional: Google Web Client ID (for Google Identity Services ID-Token Sign-In)<input id="signin-google-client-id" name="google_client_id" type="text" placeholder="1234567890-abc.apps.googleusercontent.com"></label>
+                <button class="demo-login-fill" type="submit">Save Client ID locally</button>
+                <p class="auth-status" data-google-helper-status role="status" aria-live="polite"></p>
+              </form>
+            </div>
+          </details>
           <div class="auth-divider"><span>or use email</span></div>
           <section class="demo-login-card" data-demo-account data-demo-email="cm@gmail.com" aria-labelledby="demo-login-title">
-            <div class="demo-login-heading"><div><p class="eyebrow">SHARED DEMO ACCOUNT</p><h3 id="demo-login-title">Try the workspace</h3></div><span class="demo-login-badge">DEMO</span></div>
+            <div class="demo-login-heading"><div><p class="eyebrow">SHARED DEMO ACCOUNT</p><h3 id="demo-login-title">Try the workspace</h3></div><span class="demo-login-badge">READY</span></div>
             <dl class="demo-login-credentials">
               <div><dt>Email</dt><dd><code data-demo-email-value>cm@gmail.com</code></dd></div>
             </dl>
@@ -57,6 +82,6 @@
         </div>
       </section>
     </main>
-    <footer class="auth-footer"><a href="index.html">← Back to TenderLens</a><span><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></span></footer>
+    <footer class="auth-footer"><a href="index.html">← Back to TenderLens</a><span><a href="guide.html">Easy guide</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></span></footer>
   </body>
 </html>

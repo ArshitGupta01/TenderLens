@@ -5,7 +5,9 @@
   const currentPage = window.location.pathname.split('/').pop() || 'index.html';
   let supabaseClient = null;
   let signedInUser = null;
+  let currentSession = null;
   let profileCache = null;
+  let authConfigCache = null;
 
   function setStatus(element, message, state = '') {
     if (!element) return;
@@ -20,7 +22,7 @@
 
   function accountRedirect() {
     const requested = new URLSearchParams(window.location.search).get('next');
-    return ['account.html', 'saved-tenders.html'].includes(requested) ? requested : 'account.html';
+    return ['account.html', 'saved-tenders.html', 'strategy.html'].includes(requested) ? requested : 'account.html';
   }
 
   function updateHeader() {
@@ -44,7 +46,7 @@
     document.querySelectorAll('[data-account-initials]').forEach((element) => { element.textContent = initials; });
     document.querySelectorAll('[data-auth-signed-in]').forEach((element) => { element.hidden = !hasAccount; });
     document.querySelectorAll('[data-auth-signed-out]').forEach((element) => { element.hidden = hasAccount; });
-    document.dispatchEvent(new CustomEvent('tenderlens:auth-state', { detail: { user: signedInUser } }));
+    document.dispatchEvent(new CustomEvent('tenderlens:auth-state', { detail: { user: signedInUser, profile: profileCache } }));
   }
 
   function setConfigState(available, message = '') {
@@ -61,7 +63,7 @@
     if (!supabaseClient || !signedInUser) return { data: null, error: new Error('Sign in first.') };
     const { data, error } = await supabaseClient
       .from('profiles')
-      .select('full_name, organization, bidder_type, years_active, region')
+      .select('full_name, organization, bidder_type, years_active, region, is_msme_registered, msme_category, is_startup_recognized, turnover_year_1_lakhs, turnover_year_2_lakhs, turnover_year_3_lakhs, years_in_business, local_content_percentage, held_certifications, past_similar_project_values_lakhs')
       .eq('user_id', signedInUser.id)
       .maybeSingle();
     if (!error) {
@@ -75,13 +77,42 @@
     if (!supabaseClient || !signedInUser) return { error: new Error('Sign in to sync this profile between devices.') };
     const row = {
       user_id: signedInUser.id,
-      full_name: String(profile.full_name || signedInUser.user_metadata?.full_name || '').trim().slice(0, 100),
-      organization: String(profile.organization || '').trim().slice(0, 100),
-      bidder_type: String(profile.bidder_type || profile.bidderType || '').trim().slice(0, 60),
-      years_active: String(profile.years_active || profile.years || '').trim().slice(0, 40),
-      region: String(profile.region || '').trim().slice(0, 60),
+      full_name: String(profile.full_name || profileCache?.full_name || signedInUser.user_metadata?.full_name || '').trim().slice(0, 100),
+      organization: String(profile.organization || profileCache?.organization || '').trim().slice(0, 100),
+      bidder_type: String(profile.bidder_type || profile.bidderType || profileCache?.bidder_type || '').trim().slice(0, 60),
+      years_active: String(profile.years_active || profile.years || profileCache?.years_active || '').trim().slice(0, 40),
+      region: String(profile.region || profileCache?.region || '').trim().slice(0, 60),
       updated_at: new Date().toISOString()
     };
+
+    if (profile.is_msme_registered !== undefined) row.is_msme_registered = Boolean(profile.is_msme_registered);
+    if (profile.msme_category !== undefined) row.msme_category = String(profile.msme_category || '').trim().slice(0, 30);
+    if (profile.is_startup_recognized !== undefined) row.is_startup_recognized = Boolean(profile.is_startup_recognized);
+    if (profile.turnover_year_1_lakhs !== undefined && profile.turnover_year_1_lakhs !== '') {
+      row.turnover_year_1_lakhs = Math.max(0, Number(profile.turnover_year_1_lakhs) || 0);
+    }
+    if (profile.turnover_year_2_lakhs !== undefined && profile.turnover_year_2_lakhs !== '') {
+      row.turnover_year_2_lakhs = Math.max(0, Number(profile.turnover_year_2_lakhs) || 0);
+    }
+    if (profile.turnover_year_3_lakhs !== undefined && profile.turnover_year_3_lakhs !== '') {
+      row.turnover_year_3_lakhs = Math.max(0, Number(profile.turnover_year_3_lakhs) || 0);
+    }
+    if (profile.years_in_business !== undefined && profile.years_in_business !== '') {
+      row.years_in_business = Math.max(0, Math.round(Number(profile.years_in_business) || 0));
+    }
+    if (profile.local_content_percentage !== undefined && profile.local_content_percentage !== '') {
+      row.local_content_percentage = Math.min(100, Math.max(0, Number(profile.local_content_percentage) || 0));
+    }
+    if (profile.held_certifications !== undefined) {
+      row.held_certifications = Array.isArray(profile.held_certifications)
+        ? profile.held_certifications
+        : String(profile.held_certifications || '')
+            .split(',')
+            .map((item) => item.trim())
+            .filter(Boolean)
+            .slice(0, 25);
+    }
+
     const { data, error } = await supabaseClient.from('profiles').upsert(row, { onConflict: 'user_id' }).select().single();
     if (!error) {
       profileCache = data;
@@ -132,12 +163,23 @@
       'account-organization': profile?.organization || '',
       'account-bidder-type': profile?.bidder_type || '',
       'account-years': profile?.years_active || '',
-      'account-region': profile?.region || ''
+      'account-region': profile?.region || '',
+      'account-msme-category': profile?.msme_category || '',
+      'account-years-numeric': profile?.years_in_business != null ? String(profile.years_in_business) : '',
+      'account-turnover-1': profile?.turnover_year_1_lakhs != null ? String(profile.turnover_year_1_lakhs) : '',
+      'account-turnover-2': profile?.turnover_year_2_lakhs != null ? String(profile.turnover_year_2_lakhs) : '',
+      'account-turnover-3': profile?.turnover_year_3_lakhs != null ? String(profile.turnover_year_3_lakhs) : '',
+      'account-local-content': profile?.local_content_percentage != null ? String(profile.local_content_percentage) : '',
+      'account-certifications': Array.isArray(profile?.held_certifications) ? profile.held_certifications.join(', ') : ''
     };
     Object.entries(values).forEach(([id, value]) => {
       const field = document.getElementById(id);
       if (field && typeof value === 'string') field.value = value;
     });
+    const msmeCheck = document.getElementById('account-is-msme');
+    if (msmeCheck) msmeCheck.checked = Boolean(profile?.is_msme_registered);
+    const startupCheck = document.getElementById('account-is-startup');
+    if (startupCheck) startupCheck.checked = Boolean(profile?.is_startup_recognized);
   }
 
   async function initAccountProfile() {
@@ -150,22 +192,48 @@
       return;
     }
     fillProfileFields(result.data);
-    setStatus(status, result.data ? 'Your bidder profile is saved to your account and available on other devices.' : 'Add your business basics, then save them to your account.', '');
+    setStatus(status, result.data ? 'Your bidder profile is saved to your account and available across devices and Strategy Studio.' : 'Add your business basics and optional capacity metrics, then save them to your account.', '');
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       const fields = new FormData(form);
       const button = form.querySelector('[type="submit"]');
       if (button) button.disabled = true;
       setStatus(status, 'Saving your account profile…', 'loading');
-      const saved = await saveProfile({
+      const payload = {
         full_name: fields.get('full_name'),
         organization: fields.get('organization'),
         bidder_type: fields.get('bidder_type'),
         years_active: fields.get('years_active'),
         region: fields.get('region')
-      });
+      };
+      if (form.elements.namedItem('is_msme_registered')) {
+        payload.is_msme_registered = form.elements.namedItem('is_msme_registered').checked;
+      }
+      if (form.elements.namedItem('is_startup_recognized')) {
+        payload.is_startup_recognized = form.elements.namedItem('is_startup_recognized').checked;
+      }
+      if (fields.has('msme_category')) payload.msme_category = fields.get('msme_category');
+      if (fields.has('years_in_business') && fields.get('years_in_business') !== '') {
+        payload.years_in_business = fields.get('years_in_business');
+      }
+      if (fields.has('turnover_year_1_lakhs') && fields.get('turnover_year_1_lakhs') !== '') {
+        payload.turnover_year_1_lakhs = fields.get('turnover_year_1_lakhs');
+      }
+      if (fields.has('turnover_year_2_lakhs') && fields.get('turnover_year_2_lakhs') !== '') {
+        payload.turnover_year_2_lakhs = fields.get('turnover_year_2_lakhs');
+      }
+      if (fields.has('turnover_year_3_lakhs') && fields.get('turnover_year_3_lakhs') !== '') {
+        payload.turnover_year_3_lakhs = fields.get('turnover_year_3_lakhs');
+      }
+      if (fields.has('local_content_percentage') && fields.get('local_content_percentage') !== '') {
+        payload.local_content_percentage = fields.get('local_content_percentage');
+      }
+      if (fields.has('held_certifications')) {
+        payload.held_certifications = fields.get('held_certifications');
+      }
+      const saved = await saveProfile(payload);
       if (button) button.disabled = false;
-      setStatus(status, saved.error ? profileErrorMessage(saved.error) : 'Profile saved. It will be here when you sign in on another device.', saved.error ? 'error' : 'success');
+      setStatus(status, saved.error ? profileErrorMessage(saved.error) : 'Profile saved to Supabase Postgres (RLS protected). Ready across devices and Strategy Studio.', saved.error ? 'error' : 'success');
     });
   }
 
@@ -238,11 +306,11 @@
         const card = button.closest('[data-demo-account]');
         const form = document.querySelector('[data-signin-form]');
         const email = form?.querySelector('[name="email"]');
+        const passwordInput = form?.querySelector('[name="password"]');
         if (!card || !email) return;
         email.value = card.dataset.demoEmail || '';
-        form?.querySelector('[name="password"]')?.focus();
-        setStatus(card.querySelector('[data-demo-status]'), 'Demo email filled. Enter the password privately, then choose “Sign in”.', 'success');
-        password.focus({ preventScroll: true });
+        setStatus(card.querySelector('[data-demo-status]'), 'Demo email filled. Enter the demo password privately, then choose “Sign in”.', 'success');
+        passwordInput?.focus({ preventScroll: true });
       });
     });
   }
@@ -267,7 +335,16 @@
       }
     });
     if (error) {
-      setStatus(status, error.message, 'error');
+      const msg = String(error.message || '');
+      if (error.status === 429 || msg.toLowerCase().includes('rate limit')) {
+        setStatus(
+          status,
+          'Supabase free-tier confirmation email limit reached (2–3 emails/hour). You can sign in immediately using the pre-confirmed Shared Demo Account on the Sign in page, or disable "Confirm email" in Supabase Dashboard → Authentication → Providers → Email.',
+          'error'
+        );
+      } else {
+        setStatus(status, msg, 'error');
+      }
       return;
     }
     if (data.session) {
@@ -277,13 +354,134 @@
     setStatus(status, 'Check your email for a confirmation link. After confirming, sign in to finish your profile.', 'success');
   }
 
+  function getActiveGoogleClientId() {
+    let localId = '';
+    try {
+      localId = window.localStorage.getItem('tenderlens_google_client_id') || '';
+    } catch (e) {
+      // ignore storage errors
+    }
+    return (authConfigCache?.google_client_id || localId || '').trim();
+  }
+
+  function initGoogleIdentityServices() {
+    const clientId = getActiveGoogleClientId();
+    const gsiContainers = document.querySelectorAll('[data-google-gsi-button]');
+    if (!clientId || !supabaseClient) return;
+
+    const loadScript = () => new Promise((resolve) => {
+      if (window.google?.accounts?.id) return resolve(true);
+      const existing = document.querySelector('script[src*="accounts.google.com/gsi/client"]');
+      if (existing) {
+        existing.addEventListener('load', () => resolve(true), { once: true });
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.async = true;
+      script.defer = true;
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.head.appendChild(script);
+    });
+
+    loadScript().then((loaded) => {
+      if (!loaded || !window.google?.accounts?.id) return;
+      window.google.accounts.id.initialize({
+        client_id: clientId,
+        callback: async (response) => {
+          if (!response?.credential) return;
+          setEveryStatus('[data-auth-status]', 'Verifying Google ID token with Supabase…', 'loading');
+          const { error } = await supabaseClient.auth.signInWithIdToken({
+            provider: 'google',
+            token: response.credential
+          });
+          if (error) {
+            setEveryStatus('[data-auth-status]', `Google ID token sign-in error: ${error.message}. Ensure Google provider has this Client ID enabled in Supabase Dashboard.`, 'error');
+            return;
+          }
+          window.location.assign(accountRedirect());
+        }
+      });
+      gsiContainers.forEach((container) => {
+        container.hidden = false;
+        window.google.accounts.id.renderButton(container, {
+          theme: 'outline',
+          size: 'large',
+          width: 320,
+          text: 'continue_with'
+        });
+      });
+    });
+  }
+
+  function initGoogleOAuthHelper() {
+    const callbackUrl = authConfigCache?.supabase_url
+      ? `${authConfigCache.supabase_url.replace(/\/$/, '')}/auth/v1/callback`
+      : 'https://qiwpkvjzqdyguygowzci.supabase.co/auth/v1/callback';
+
+    document.querySelectorAll('[data-supabase-callback-url]').forEach((el) => {
+      el.textContent = callbackUrl;
+    });
+
+    const params = new URLSearchParams(window.location.search);
+    const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+    const errorDesc = params.get('error_description') || hashParams.get('error_description') || '';
+    if (errorDesc) {
+      setEveryStatus('[data-auth-status]', `OAuth notice: ${errorDesc.replace(/\+/g, ' ')}`, 'error');
+      document.querySelectorAll('[data-google-setup-details]').forEach((details) => {
+        details.open = true;
+      });
+    }
+
+    document.querySelectorAll('[data-google-client-id-form]').forEach((form) => {
+      const input = form.querySelector('[name="google_client_id"]');
+      const status = form.querySelector('[data-google-helper-status]');
+      if (input) input.value = getActiveGoogleClientId();
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const val = String(input?.value || '').trim();
+        try {
+          if (val) window.localStorage.setItem('tenderlens_google_client_id', val);
+          else window.localStorage.removeItem('tenderlens_google_client_id');
+        } catch (e) {
+          // ignore
+        }
+        setStatus(
+          status,
+          val
+            ? 'Google Web Client ID saved locally. Rendering Google Sign-In button…'
+            : 'Cleared local Google Web Client ID.',
+          'success'
+        );
+        if (val) initGoogleIdentityServices();
+      });
+    });
+  }
+
   async function handleGoogleSignIn() {
     if (!supabaseClient) return;
+    setEveryStatus('[data-auth-status]', 'Redirecting to Google OAuth via Supabase…', 'loading');
     const { error } = await supabaseClient.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: new URL(accountRedirect(), window.location.href).href }
+      options: {
+        redirectTo: new URL(accountRedirect(), window.location.href).href,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent'
+        }
+      }
     });
-    if (error) setEveryStatus('[data-auth-status]', error.message, 'error');
+    if (error) {
+      setEveryStatus(
+        '[data-auth-status]',
+        `Google OAuth setup required in Supabase Dashboard: ${error.message}. Expand "Google OAuth Setup" below for the 3-step Client ID & Secret instructions.`,
+        'error'
+      );
+      document.querySelectorAll('[data-google-setup-details]').forEach((details) => {
+        details.open = true;
+      });
+    }
   }
 
   async function handlePasswordRecovery() {
@@ -318,6 +516,7 @@
       const response = await fetch(`${apiBaseUrl}/api/v1/auth/config`, { headers: { Accept: 'application/json' } });
       if (!response.ok) throw new Error('The TenderLens API could not load account settings.');
       config = await response.json();
+      authConfigCache = config;
     } catch (error) {
       setConfigState(false, 'Could not reach the TenderLens API. Start the FastAPI service and check the easy guide.');
       return null;
@@ -331,10 +530,15 @@
     });
     const { data, error } = await supabaseClient.auth.getSession();
     if (error) setEveryStatus('[data-auth-status]', error.message, 'error');
-    signedInUser = data?.session?.user || null;
+    currentSession = data?.session || null;
+    signedInUser = currentSession?.user || null;
     setConfigState(true);
     updateHeader();
+    initGoogleOAuthHelper();
+    initGoogleIdentityServices();
+
     supabaseClient.auth.onAuthStateChange((event, session) => {
+      currentSession = session || null;
       signedInUser = session?.user || null;
       updateHeader();
       if (event === 'PASSWORD_RECOVERY') handlePasswordRecovery();
@@ -362,7 +566,7 @@
     await initAccountProfile();
     await initSavedTenders();
     if (signedInUser && ['signin.html', 'signup.html'].includes(currentPage) && new URLSearchParams(window.location.search).get('mode') !== 'reset') {
-      window.location.replace('account.html');
+      window.location.replace(accountRedirect());
       return supabaseClient;
     }
     if (currentPage === 'index.html' && signedInUser) {
@@ -431,7 +635,9 @@
   window.TenderLensAuth = {
     get client() { return supabaseClient; },
     get user() { return signedInUser; },
+    get session() { return currentSession; },
     get profile() { return profileCache; },
+    getAccessToken() { return currentSession?.access_token || null; },
     ready,
     saveProfile,
     saveTender,

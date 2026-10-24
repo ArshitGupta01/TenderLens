@@ -18,62 +18,27 @@
   </head>
   <body class="guide-page">
     <a class="skip-link" href="#main">Skip to content</a>
-    <!-- Floating Corner Controls -->
-    <button class="floating-menu-btn" id="floating-menu-toggle" type="button" aria-expanded="false" aria-controls="floating-nav-drawer" aria-label="Open navigation menu">
-      <span class="floating-menu-icon" aria-hidden="true"><span></span><span></span><span></span></span>
-      <span class="floating-menu-text">Menu</span>
-    </button>
-
-    <a class="floating-cta-btn" id="floating-account-cta" data-auth-signup href="signup.html">
-      <span class="floating-cta-text">Create account</span>
-      <span aria-hidden="true">↗</span>
-    </a>
-
-    <!-- Slide-over Navigation Drawer -->
-    <div class="floating-nav-drawer" id="floating-nav-drawer" aria-hidden="true">
-      <div class="drawer-backdrop" id="drawer-backdrop"></div>
-      <div class="drawer-panel" role="dialog" aria-modal="true" aria-label="Navigation Menu">
-        <div class="drawer-header">
-          <a class="brand" href="index.html" aria-label="TenderLens home">
-            <span class="brand-mark" aria-hidden="true">
-              <svg viewBox="0 0 40 40" fill="none">
-                <path d="M7 12.5V8h4.5M28.5 8H33v4.5M33 27.5V32h-4.5M11.5 32H7v-4.5" stroke="currentColor" stroke-width="1.7"/>
-                <circle cx="20" cy="18.5" r="7.2" stroke="currentColor" stroke-width="1.7"/>
-                <path d="m25.2 23.7 6.1 6.1" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
-                <circle cx="20" cy="18.5" r="2" fill="currentColor"/>
-              </svg>
-            </span>
-            <span class="brand-name">Tender<span>Lens</span></span>
-          </a>
-          <button class="drawer-close-btn" id="drawer-close-btn" type="button" aria-label="Close navigation menu">✕</button>
-        </div>
-
-        <div class="drawer-actions-row">
+    <header class="site-header">
+      <div class="container nav-shell">
+        <a class="brand" href="index.html" aria-label="TenderLens home">
+          <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M7 12.5V8h4.5M28.5 8H33v4.5M33 27.5V32h-4.5M11.5 32H7v-4.5" stroke="currentColor" stroke-width="1.7"/><circle cx="20" cy="18.5" r="7.2" stroke="currentColor" stroke-width="1.7"/><path d="m25.2 23.7 6.1 6.1" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/><circle cx="20" cy="18.5" r="2" fill="currentColor"/></svg></span>
+          <span class="brand-name">Tender<span>Lens</span></span><span class="brand-descriptor">PROCUREMENT, MADE CLEAR</span>
+        </a>
+        <div class="header-actions">
           <a class="header-account-link" data-auth-signin href="signin.html">Sign in</a>
-          <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme" aria-pressed="false" title="Switch to dark theme">
-            <span class="theme-toggle-icon" aria-hidden="true">☾</span>
-            <span id="theme-toggle-label">Dark mode</span>
-          </button>
+          <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme" aria-pressed="false" title="Switch to dark theme"><span class="theme-toggle-icon" aria-hidden="true">☾</span><span id="theme-toggle-label">Dark mode</span></button>
+          <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav"><span class="menu-toggle-label">Menu</span><span class="menu-lines" aria-hidden="true"><i></i><i></i></span></button>
         </div>
-
-        <nav class="drawer-nav" aria-label="Main navigation">
-          <a class="drawer-nav-item" href="index.html">Home <span aria-hidden="true">→</span></a>
-          <a class="drawer-nav-item" href="guide.html">Easy guide <span aria-hidden="true">→</span></a>
-          <a class="drawer-nav-item" href="index.html#opportunities">Find tenders <span aria-hidden="true">→</span></a>
-          <a class="drawer-nav-item" href="privacy.html">Privacy <span aria-hidden="true">→</span></a>
-          <a class="drawer-nav-item" href="terms.html">Terms <span aria-hidden="true">→</span></a>
-          <a class="drawer-nav-item drawer-nav-highlight" href="index.html#demo">Launch Evaluation Desk <span aria-hidden="true">↗</span></a>
-        </nav>
+        <nav class="primary-nav" id="primary-nav" aria-label="Main navigation"><a href="index.html">Home</a><a href="guide.html" aria-current="page">Easy guide</a><a href="strategy.html">Strategy tools</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a class="nav-cta" href="index.html#opportunities">Explore tenders <span aria-hidden="true">↗</span></a><a class="nav-cta nav-account-cta" data-auth-signup href="signup.html">Create account <span aria-hidden="true">↗</span></a></nav>
       </div>
-    </div>
-
+    </header>
 
     <main class="guide-main" id="main">
       <section class="guide-hero">
         <div class="container guide-hero-grid">
           <div>
             <p class="eyebrow"><span class="eyebrow-mark"></span> THE SHORT, PLAIN-LANGUAGE GUIDE</p>
-            <h1>Use TenderLens in <em>four simple steps.</em></h1>
+            <h1>Use TenderLens in <em>five simple steps.</em></h1>
             <p class="guide-lede">You can explore the sample without an account. The examples are made up. Live search is available only when the optional service is running.</p>
             <a class="button button-dark" href="index.html#demo">Open the sample report <span aria-hidden="true">↗</span></a>
           </div>
@@ -84,12 +49,33 @@
       <section class="guide-section" aria-labelledby="steps-title">
         <div class="container">
           <p class="eyebrow">01 / GET STARTED</p>
-          <h2 id="steps-title">Four things to try</h2>
+          <h2 id="steps-title">Five things to try</h2>
           <div class="guide-step-grid">
             <article class="guide-step-card"><span>1</span><h3>Open a sample report</h3><p>Choose a requirement to see its sample status and the document that it came from.</p><a href="index.html#demo">Go to the report <span aria-hidden="true">↗</span></a></article>
             <article class="guide-step-card"><span>2</span><h3>Explore tender examples</h3><p>Search the made-up examples, filter by type, or open a card for a short review checklist.</p><a href="index.html#opportunities">Go to sample tenders <span aria-hidden="true">↗</span></a></article>
             <article class="guide-step-card"><span>3</span><h3>Check the document order</h3><p>Pick a file in the order panel to see how a later update might change an earlier rule.</p><a href="index.html#precedence">Go to document order <span aria-hidden="true">↗</span></a></article>
             <article class="guide-step-card"><span>4</span><h3>Save your bidder profile</h3><p>Save a local draft or sign in to sync basic organization details across devices. This does not check eligibility.</p><a href="index.html#profile">Go to bidder profile <span aria-hidden="true">↗</span></a></article>
+            <article class="guide-step-card"><span>5</span><h3>Build a strategy preview</h3><p>Enter values to make a draft checklist, clarification prompts and EMD cash scenario. Always verify the original tender.</p><a href="strategy.html">Open strategy tools <span aria-hidden="true">↗</span></a></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="guide-section guide-section-muted" id="strategy-tools" aria-labelledby="strategy-guide-title">
+        <div class="container guide-two-column">
+          <div>
+            <p class="eyebrow">02 / STRATEGY PREVIEW</p>
+            <h2 id="strategy-guide-title">What the new tools do</h2>
+            <p class="guide-copy">The preview uses tender and bidder values that you enter. It does not read tender files, save the submitted form, or make a legal or eligibility decision.</p>
+          </div>
+          <div class="guide-setup">
+            <ol>
+              <li>Use clarification prompts to identify questions you may want to ask through the official tender channel.</li>
+              <li>Review possible capability gaps. TenderLens does not list or verify consortium partners.</li>
+              <li>Download the checklist as a CSV draft; entered values are not supporting evidence.</li>
+              <li>Use the EMD figure as a cash scenario only. The tool does not confirm exemptions or permitted instruments.</li>
+              <li>If you choose public-source search, the tender title and portal are sent to the configured search provider. Search results need manual verification.</li>
+            </ol>
+            <a class="guide-api-link" href="strategy.html">Open the strategy preview <span aria-hidden="true">↗</span></a>
           </div>
         </div>
       </section>
@@ -97,7 +83,7 @@
       <section class="guide-section guide-section-muted" aria-labelledby="status-title">
         <div class="container guide-two-column">
           <div>
-            <p class="eyebrow">02 / READ THE RESULTS</p>
+            <p class="eyebrow">03 / READ THE RESULTS</p>
             <h2 id="status-title">What do the labels mean?</h2>
           </div>
           <div class="guide-status-list">
@@ -111,7 +97,7 @@
       <section class="guide-section" aria-labelledby="words-title">
         <div class="container guide-two-column">
           <div>
-            <p class="eyebrow">03 / USEFUL WORDS</p>
+            <p class="eyebrow">04 / USEFUL WORDS</p>
             <h2 id="words-title">A short glossary</h2>
             <p class="guide-copy">Tender documents use a lot of abbreviations. Here are the ones used on this site.</p>
           </div>
@@ -129,7 +115,7 @@
       <section class="guide-section guide-section-muted" id="live-search" aria-labelledby="live-title">
         <div class="container guide-two-column">
           <div>
-            <p class="eyebrow">04 / OPTIONAL LIVE SEARCH</p>
+            <p class="eyebrow">05 / OPTIONAL LIVE SEARCH</p>
             <h2 id="live-title">Turn on current tender search</h2>
             <p class="guide-copy">This needs the TenderLens backend and a TinyFish API key. The key stays on the server; never put it in the website code.</p>
           </div>
@@ -142,7 +128,7 @@
               <li>Open “Search current tender notices” and submit a phrase. Only that phrase and the selected portal are sent.</li>
             </ol>
             <p class="guide-copy"><strong>Other backend features:</strong> <code>GEMINI_API_KEY</code> turns on clause/conflict analysis, while <code>TAVILY_API_KEY</code> enables the backup web search. Both are optional for the website and account pages; the model setting defaults to <code>gemini-3.8-flash</code>.</p>
-            <p class="guide-warning"><strong>What is connected?</strong> Live search uses the backend. Tender fetching and scorecard routes are available to developers, but this page does not yet upload files or send a bidder profile for an audit.</p>
+            <p class="guide-warning"><strong>What is connected?</strong> Live search uses the backend, and the separate Strategy tools page builds a preview from values you enter. Tender fetching and source-document scorecard review are not connected to a webpage form.</p>
             <a class="guide-api-link" href="http://127.0.0.1:8000/docs" target="_blank" rel="noopener noreferrer">Open the local API reference <span aria-hidden="true">↗</span></a>
           </div>
         </div>
@@ -151,7 +137,7 @@
       <section class="guide-section" id="account-setup" aria-labelledby="account-setup-title">
         <div class="container guide-two-column">
           <div>
-            <p class="eyebrow">05 / ACCOUNTS AND SAVED TENDERS</p>
+            <p class="eyebrow">06 / ACCOUNTS AND SAVED TENDERS</p>
             <h2 id="account-setup-title">Set up sign-in once</h2>
             <p class="guide-copy">TenderLens uses Supabase Auth and Supabase Postgres for accounts. FastAPI provides the public project settings and continues to run live tender search. User rows are protected with database policies.</p>
             <div class="guide-final-links"><a class="button button-dark" href="signup.html">Create an account <span aria-hidden="true">↗</span></a><a href="signin.html">Already have an account? Sign in</a></div>

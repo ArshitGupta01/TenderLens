@@ -118,3 +118,4 @@ TenderLens is divided across three clear, non-conflicting domains:
 
 
 
+| **2026-10-24 19:25** | Unified Main + Mohit-Backend Integration & RLS Hardening | Restored `POST /api/v1/strategy/preview` (`StrategyPreviewRequest` & `QualificationEngine.generate_strategy_toolkit`) powered by all 5 Strategy Pillars + Deterministic Gatekeeper while preserving all `Mohit-Backend` v1.0.3 endpoints (`/api/v1/rag/query`, `/api/v1/rag/precedence-graph`, `/api/v1/strategy/*`, `/api/v1/audits/*`, `/api/v1/profile/sync*`). Hardened `SupabaseService` (`get_scoped_client`, `verify_user_token`) so server-side persistence routes enforce PostgreSQL Row-Level Security (`auth.uid() = user_id`) via JWT Bearer tokens and never expose service-role keys. Provisioned and verified `cm@gmail.com` in Supabase (`qiwpkvjzqdyguygowzci`). All 34/34 tests passing across 8 test modules. |

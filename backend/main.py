@@ -2,10 +2,24 @@
 TenderLens - FastAPI Backend Orchestrator
 =========================================
 Production REST and Server-Sent Events (SSE) router exposing:
+- GET  /healthz
+- GET  /api/v1/auth/config
 - POST /api/v1/tenders/search
 - POST /api/v1/tenders/fetch
 - POST /api/v1/audit/evaluate
 - GET  /api/v1/audit/stream/{task_id}
+- POST /api/v1/strategy/preview
+- POST /api/v1/strategy/prebid-queries
+- POST /api/v1/strategy/consortium-match
+- POST /api/v1/strategy/compliance-matrix
+- POST /api/v1/strategy/emd-optimizer
+- GET  /api/v1/strategy/forensics
+- POST /api/v1/rag/query
+- POST /api/v1/rag/precedence-graph
+- POST /api/v1/audits/save
+- GET  /api/v1/audits/user/{user_id}
+- GET  /api/v1/profile/sync/{user_id}
+- POST /api/v1/profile/sync
 """
 
 import os
@@ -14,7 +28,7 @@ import json
 import asyncio
 import logging
 from typing import List, Dict, Any, Optional
-from fastapi import FastAPI, HTTPException, BackgroundTasks, Query
+from fastapi import FastAPI, HTTPException, BackgroundTasks, Query, Header
 from fastapi.middleware.cors import CORSMiddleware
 from sse_starlette.sse import EventSourceResponse
 from pydantic import BaseModel, Field
@@ -42,7 +56,9 @@ from backend.engine.competitor_forensics import CompetitorForensicsEngine
 from backend.engine.precedence_rag_engine import PrecedenceRAGEngine
 from contracts.schema import (
     BidderProfile,
+    ClauseCitation,
     QualificationScorecard,
+    StrategyToolkitResponse,
     PreBidLegalRepresentationPack,
     ConsortiumMatchRecommendation,
     ComplianceAndBinderPackage,
@@ -63,7 +79,7 @@ app = FastAPI(
     version="1.0.3"
 )
 
-# Enable CORS for Arshit's Frontend and local origins
+# Enable CORS for Frontend and local origins
 cors_origins = [origin.strip() for origin in settings.CORS_ORIGINS.split(",") if origin.strip()]
 if "*" not in cors_origins:
     cors_origins.append("*")
@@ -105,6 +121,16 @@ class AuditEvaluationRequest(BaseModel):
     explicit_criteria: Optional[TenderStatutoryCriteria] = None
 
 
+class StrategyPreviewRequest(BaseModel):
+    tender_id: Optional[str] = None
+    tender_title: str = Field(default="Tender Strategy Preview", max_length=240)
+    source_portal: Optional[str] = "GeM"
+    bidder_profile: BidderProfile
+    criteria: Optional[TenderStatutoryCriteria] = None
+    explicit_criteria: Optional[TenderStatutoryCriteria] = None
+    clause_citations: List[ClauseCitation] = Field(default_factory=list)
+
+
 class SaveAuditRequest(BaseModel):
     user_id: str
     tender_title: str
@@ -120,12 +146,31 @@ class SaveBidderProfileRequest(BaseModel):
     region: Optional[str] = ""
 
 
+def _extract_bearer_token(authorization: Optional[str]) -> Optional[str]:
+    if not authorization:
+        return None
+    parts = authorization.strip().split(" ", 1)
+    if len(parts) == 2 and parts[0].lower() == "bearer":
+        return parts[1].strip() or None
+    return None
+
+
+def _verify_request_user(user_id: str, authorization: Optional[str]) -> Optional[str]:
+    token = _extract_bearer_token(authorization)
+    if not token:
+        return None
+    verified_uid = supabase_service.verify_user_token(token)
+    if verified_uid and verified_uid != user_id:
+        raise HTTPException(status_code=403, detail="Authenticated user token does not match requested user_id")
+    return token
+
+
 @app.get("/healthz")
 async def health_check():
     return {
         "status": "healthy",
         "service": "TenderLens Backend Engine",
-        "version": "1.0.1",
+        "version": "1.0.3",
         "environment": settings.ENVIRONMENT,
         "tinyfish_configured": bool(settings.TINYFISH_API_KEY and not settings.TINYFISH_API_KEY.startswith("sk-tinyfish-your-key")),
         "supabase_configured": settings.is_supabase_configured,
@@ -135,7 +180,7 @@ async def health_check():
 
 @app.get("/api/v1/auth/config")
 async def auth_config():
-    """Return the Supabase project URL and publishable/anon key to the browser frontend.
+    """Return the Supabase project URL, publishable/anon key, and optional Google Client ID to the browser frontend.
 
     Publishable keys identify a public client and are safe to expose. Secret keys
     and database passwords must never be returned here; RLS protects user rows.
@@ -145,6 +190,7 @@ async def auth_config():
         "configured": configured,
         "supabase_url": settings.SUPABASE_URL.strip() if configured else "",
         "publishable_key": settings.supabase_public_key if configured else "",
+        "google_client_id": settings.GOOGLE_CLIENT_ID.strip(),
     }
 
 
@@ -243,12 +289,30 @@ async def evaluate_tender_endpoint(payload: AuditEvaluationRequest, background_t
         raise HTTPException(status_code=500, detail=f"Audit execution failed: {str(e)}")
 
 
+@app.post("/api/v1/strategy/preview", response_model=StrategyToolkitResponse)
+async def preview_strategy_toolkit_endpoint(payload: StrategyPreviewRequest):
+    """
+    Generates all 5 Strategy Pillars + Deterministic Gates directly from explicit
+    bidder and tender criteria without crawling external portals.
+    """
+    tender_id = payload.tender_id or f"STRAT-{uuid.uuid4().hex[:8].upper()}"
+    resolved_criteria = payload.criteria or payload.explicit_criteria or TenderStatutoryCriteria()
+    return QualificationEngine.generate_strategy_toolkit(
+        tender_id=tender_id,
+        tender_title=payload.tender_title,
+        source_portal=payload.source_portal or "GeM",
+        bidder_profile=payload.bidder_profile,
+        criteria=resolved_criteria,
+        clause_citations=payload.clause_citations,
+    )
+
+
 @app.get("/api/v1/audit/stream/{task_id}")
 async def stream_audit_progress(task_id: str):
     """
     Server-Sent Events (SSE) endpoint: Streams live pipeline stage transitions
     (Discovering -> Ingesting ATCs -> Math Gates -> LLM Audit -> Final Scorecard)
-    to Arshit's Next.js frontend progress bar.
+    to the frontend progress bar.
     """
     queue = pipeline_task_events.setdefault(task_id, asyncio.Queue())
 
@@ -262,7 +326,7 @@ async def stream_audit_progress(task_id: str):
         ]
         try:
             for s in stages:
-                await asyncio.sleep(0.6)  # Simulated progression interval for UI demonstration
+                await asyncio.sleep(0.6)
                 yield {
                     "event": "progress",
                     "data": json.dumps(s)
@@ -399,27 +463,22 @@ async def get_precedence_dag_graph_endpoint(payload: PrecedenceGraphRequest):
 
 
 # ---------------------------------------------------------------------------
-# Supabase Cloud Database Persistence & Auth Endpoints (Free Tier)
+# Supabase Cloud Database Persistence & Auth Endpoints (Free Tier + RLS)
 # ---------------------------------------------------------------------------
-@app.get("/api/v1/auth/config")
-async def get_auth_config_endpoint():
-    """Returns safe, public Supabase configuration for browser clients."""
-    return {
-        "configured": settings.is_supabase_configured,
-        "supabase_url": settings.SUPABASE_URL,
-        "publishable_key": settings.supabase_public_key,
-    }
-
-
 @app.post("/api/v1/audits/save")
-async def save_audit_endpoint(payload: SaveAuditRequest):
+async def save_audit_endpoint(
+    payload: SaveAuditRequest,
+    authorization: Optional[str] = Header(default=None)
+):
     """Save an evaluated qualification scorecard into Supabase tender_audits table."""
+    access_token = _verify_request_user(payload.user_id, authorization)
     result = await supabase_service.save_audit_scorecard(
         user_id=payload.user_id,
         scorecard=payload.scorecard,
         tender_title=payload.tender_title,
         tender_url=payload.tender_url,
-        source_portal=payload.source_portal or "GeM"
+        source_portal=payload.source_portal or "GeM",
+        access_token=access_token
     )
     if not result:
         if not settings.is_supabase_configured:
@@ -429,29 +488,50 @@ async def save_audit_endpoint(payload: SaveAuditRequest):
 
 
 @app.get("/api/v1/audits/user/{user_id}")
-async def get_user_audits_endpoint(user_id: str, limit: int = Query(20, ge=1, le=100)):
+async def get_user_audits_endpoint(
+    user_id: str,
+    limit: int = Query(20, ge=1, le=100),
+    authorization: Optional[str] = Header(default=None)
+):
     """Retrieve historical saved audits for an authenticated user from Supabase."""
-    audits = await supabase_service.get_user_audits(user_id=user_id, limit=limit)
+    access_token = _verify_request_user(user_id, authorization)
+    audits = await supabase_service.get_user_audits(
+        user_id=user_id,
+        limit=limit,
+        access_token=access_token
+    )
     return {"user_id": user_id, "audits": audits}
 
 
 @app.get("/api/v1/profile/sync/{user_id}", response_model=Optional[BidderProfile])
-async def get_synced_bidder_profile_endpoint(user_id: str):
+async def get_synced_bidder_profile_endpoint(
+    user_id: str,
+    authorization: Optional[str] = Header(default=None)
+):
     """Fetch the stored BidderProfile for an authenticated user from Supabase."""
-    profile = await supabase_service.get_bidder_profile(user_id=user_id)
+    access_token = _verify_request_user(user_id, authorization)
+    profile = await supabase_service.get_bidder_profile(
+        user_id=user_id,
+        access_token=access_token
+    )
     if not profile:
         raise HTTPException(status_code=404, detail="No profile found for user in Supabase")
     return profile
 
 
 @app.post("/api/v1/profile/sync")
-async def save_synced_bidder_profile_endpoint(payload: SaveBidderProfileRequest):
+async def save_synced_bidder_profile_endpoint(
+    payload: SaveBidderProfileRequest,
+    authorization: Optional[str] = Header(default=None)
+):
     """Sync a BidderProfile into Supabase profiles table."""
+    access_token = _verify_request_user(payload.user_id, authorization)
     result = await supabase_service.save_bidder_profile(
         user_id=payload.user_id,
         profile=payload.bidder_profile,
         full_name=payload.full_name or "",
-        region=payload.region or ""
+        region=payload.region or "",
+        access_token=access_token
     )
     if not result:
         if not settings.is_supabase_configured:
@@ -465,5 +545,3 @@ frontend_dir = ROOT_DIR / "frontend"
 if frontend_dir.exists():
     from fastapi.staticfiles import StaticFiles
     app.mount("/", StaticFiles(directory=str(frontend_dir), html=True), name="frontend")
-
-

@@ -35,6 +35,7 @@ class Settings(BaseSettings):
     SUPABASE_ANON_KEY: str = Field(default="", description="Supabase anonymous public key from Project Settings > API")
     SUPABASE_PUBLISHABLE_KEY: str = Field(default="", description="Supabase publishable key alias")
     SUPABASE_SERVICE_ROLE_KEY: str = Field(default="", description="Supabase service role secret key (optional for backend admin operations)")
+    GOOGLE_CLIENT_ID: str = Field(default="", description="Optional Google OAuth Web Client ID for Google Identity Services")
 
     @property
     def supabase_public_key(self) -> str:

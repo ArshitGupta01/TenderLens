@@ -1,99 +1,74 @@
 # TenderLens
 
-TenderLens is a Team Traxo hackathon project for making public tender requirements easier to review. It brings the main tender, extra buyer terms and official updates into one place, with findings linked to their source.
+TenderLens is a Team Traxo hackathon project for making Indian public tender requirements easier to review. It brings the main tender, extra buyer terms (ATCs), and official corrigenda into one place, with deterministic checks and source-linked evidence.
 
 ## What works today
 
-- The website has a fictional sample report, sample tender search and filters, a document-order explorer, a local bidder profile draft, and an evidence checklist.
-- The website can run optional live tender search through the FastAPI backend when a TinyFish API key is configured.
-- The Strategy tools page sends bidder and tender values you enter to FastAPI to create a temporary review preview: clarification prompts, capability-gap notes, a compliance checklist and CSV, an EMD cash scenario, and optional public-source search. It does not upload tender files or store the preview.
-- The backend includes endpoints for finding tenders, fetching linked documents, building a qualification scorecard, and the Strategy tools preview.
-- Account pages support Supabase email/password and Google sign-in, a cross-device bidder profile, and saved live tender links when configured. `signin.html`, `signup.html`, `account.html` and `saved-tenders.html` are separate pages.
-- The website does not upload files or save audit history. Fictional sample tenders, checklist selections and sample saves stay in the browser. The fetch and scorecard endpoints are not connected to a website form.
+- **Interactive Tender Explorer & Sample Report (`index.html`)**: Includes an illustrative qualification report, sample tender search and filters, an interactive five-layer document-precedence explorer, a local bidder profile draft, and an evidence checklist.
+- **Live Portal Discovery (`POST /api/v1/tenders/search`)**: Runs optional live tender search across GeM, CPPP, BHEL, ICMR, and State eProcurement portals through the FastAPI backend when `TINYFISH_API_KEY` (or fallback `TAVILY_API_KEY`) is configured.
+- **5-Pillar Strategy Studio & Precedence DAG Workbench (`strategy.html`)**:
+  - Connects to `POST /api/v1/strategy/preview`, `GET /api/v1/strategy/forensics`, and `POST /api/v1/rag/query`.
+  - Includes one-click illustrative presets (`BHEL MSME Trap & Brand Lock`, `CPPP EPC Surety Bond & 80/50/40`, `ICMR Medical OEM MAF & BIS`) and one-click loading from a signed-in user's synced Supabase Bidder Profile.
+  - **Deterministic Gatekeeper**: Evaluates 3-Year Average Turnover, Experience, GFR Rule 170(i) EMD exemption, Make in India Class-I/II local content, OEM MAF requirement, Mandatory Certifications set-difference, and CPWD 80/50/40 similar-work ratios.
+  - **Pillar 01 — Pre-Bid Legal & Clarification Pack**: Generates statutory challenge cards and a downloadable/copyable formal representation letter citing CVC, GFR 2017, and DPIIT orders.
+  - **Pillar 02 — Consortium & Capability Gap Matchmaker**: Quantifies exact eligibility shortfalls and displays illustrative JV/OEM partner archetypes.
+  - **Pillar 03 — Automated Compliance Matrix & Statutory Affidavits**: Builds a clause-by-clause compliance table, exports portal-ready CSVs, and drafts statutory undertaking templates (`GFR_170_BID_SECURITY`, `DPIIT_MII_LOCAL_CONTENT`, `GFR_144_XI_LAND_BORDER`, `OEM_MAF_FORMAT`).
+  - **Pillar 04 — EMD Capital Risk & Surety Bond Optimizer**: Computes working-capital lock-up across concurrent bids and compares GFR Rule 170(i) Bid Security Declarations, IRDAI Insurance Surety Bonds, and NeSL e-BGs.
+  - **Pillar 05 — Competitor Disqualification Forensics**: Surfaces authority-specific evaluation checkpoints and supports explicit public-source search.
+  - **Section 06 — Precedence DAG & RAG Conflict Resolver**: Demonstrates how Rank 1 Corrigenda supersede Rank 3 Buyer ATCs and Rank 5 Main Tender PDFs with a full audit trail.
+- **Supabase Auth, Google Sign-In & RLS Persistence (`signin.html`, `signup.html`, `account.html`, `saved-tenders.html`)**:
+  - Supports email/password sign-in, shared demo sign-in, Supabase Google OAuth redirect (`signInWithOAuth`), and Google Identity Services (`google.accounts.id` + `signInWithIdToken`).
+  - Syncs the signed-in user's Bidder Profile (both basic organization details and optional statutory/financial capacity metrics) and saved live tender links to Supabase Postgres under Row-Level Security (`supabase/setup.sql`).
 
-This is an experimental hackathon project. Sample tenders and report results are fictional. Check official documents and ask the buyer before acting on any tender.
-
-## Run the website
-
-The sample website works without a backend or API key. From the project folder, run:
-
-```powershell
-python -m http.server 4177 --bind 127.0.0.1
-```
-
-Open <http://127.0.0.1:4177>. Sample searches, filters, saved examples and the checklist run in your browser and reset when you reload. A signed-out bidder profile draft and theme choice stay in this browser. Account sign-in needs the FastAPI service and the Supabase setup below.
-
-## Turn on live search
-
-Install [uv](https://docs.astral.sh/uv/getting-started/installation/) and sync the locked Python dependencies:
-
-```powershell
-uv sync --locked
-Copy-Item .env.example .env
-```
-
-Open `.env` and add your TinyFish key to `TINYFISH_API_KEY`. Keep this file private; it is ignored by Git. Do not put API secrets in the website code. `GEMINI_API_KEY` enables the backend's clause/conflict analysis, and `TAVILY_API_KEY` enables its web-search fallback. Those two are optional unless you use those backend features. `GEMINI_MODEL` defaults to `gemini-3.8-flash`.
-
-Start the API in one terminal:
-
-```powershell
-uv run uvicorn backend.main:app --reload
-```
-
-Start the website in a second terminal:
-
-```powershell
-python -m http.server 4177 --bind 127.0.0.1
-```
-
-Open <http://127.0.0.1:4177> and expand “Search current tender notices.” The page checks that the service and API key are ready before it sends the search words and selected portal. The interactive API reference is at <http://127.0.0.1:8000/docs>.
-
-Open <http://127.0.0.1:4177/strategy.html> to enter tender and bidder values and create a review preview. The request goes to POST /api/v1/strategy/preview; the route does not fetch tender files or persist the submitted form. Public-source search is a separate action at GET /api/v1/strategy/forensics and runs only after you choose its button. It sends the tender title and portal to the configured public-search provider and returns unverified links for manual review.
+This is an experimental hackathon project. Sample tenders, partner archetypes, and report results are illustrative. Always check the official tender documents and consult qualified counsel before acting on any tender.
 
 ## Technology stack
 
-- Website: responsive HTML, CSS and JavaScript, with the existing local Lenis scroll library.
-- API: Python 3.12, FastAPI, Pydantic and Uvicorn.
-- Search and document review: the existing TinyFish integration, PyMuPDF, and optional Gemini/Tavily provider adapters.
-- Accounts and cross-device saved data: Supabase Auth and Postgres with row-level security.
+- **Frontend**: Responsive HTML5, CSS3, and Vanilla ES6+ JavaScript (`index.html`, `strategy.html`, `signin.html`, `signup.html`, `account.html`, `saved-tenders.html`, `guide.html`, `app.js`, `auth.js`, `strategy.js`, `theme.js`, `styles.css`), bundled with Lenis smooth scrolling (`vendor/lenis.min.js`) and `@supabase/supabase-js@2`.
+- **Backend API**: Python 3.12, FastAPI, Pydantic v2, Uvicorn, and `sse-starlette` (`backend/main.py`, `backend/config.py`).
+- **Qualification & RAG Engines**:
+  - `backend/engine/deterministic_gatekeeper.py` — Pure-Python mathematical & statutory gatekeeper (GFR 2017, DPIIT MII Order 2017, PPP-MSE 2012, CPWD 80/50/40).
+  - `backend/engine/precedence_rag_engine.py` — Directed Acyclic Graph (DAG) clause conflict resolver (Rank 1 Corrigendum → Rank 5 Main PDF).
+  - `backend/engine/prebid_legal_generator.py`, `consortium_matchmaker.py`, `compliance_matrix_engine.py`, `emd_capital_optimizer.py`, `competitor_forensics.py` — 5-Pillar Strategy Engine.
+- **Web & Document Intelligence**: TinyFish API (`TinySearch`, `TinyFetch`, `TinyAgent` in `backend/services/tinyfish_service.py`), PyMuPDF (`fitz` in `backend/services/document_processor.py`), Google Gemini SDK (`google-genai` / `langchain-google-genai`, default model `gemini-3.8-flash`), and optional Tavily fallback.
+- **Database & Authentication**: Supabase Auth + Supabase PostgreSQL with Row-Level Security (`supabase/setup.sql`, `backend/services/supabase_service.py`).
 
-The strategy modules use the Python and Pydantic dependencies already in pyproject.toml and uv.lock, so this integration adds no new package requirement. Use uv sync --locked to install the full locked project environment. Live public-source search requires TINYFISH_API_KEY or TAVILY_API_KEY in the private backend environment.
+## Run the project locally
 
-By default, the API allows the local website ports 3000 and 4177. If you serve the website from another address, add that exact origin to `CORS_ORIGINS` in `.env` and restart the API.
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/) and sync the Python environment:
 
-## Enable accounts and cross-device profile data
+```powershell
+uv sync
+Copy-Item .env.example .env
+```
 
-1. Create a Supabase project. Copy the Project URL and the **publishable key** from its Connect dialog into `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` in `.env`. The publishable key is designed for browser clients. Never use a Supabase secret/service-role key in the website or this endpoint.
-2. Run [`supabase/setup.sql`](supabase/setup.sql) once in Supabase Dashboard → SQL Editor. It creates profile and saved-tender tables with row-level security policies tied to `auth.uid()`.
-3. Enable Email and Google providers in Supabase Authentication. For Google, create an OAuth web client, copy its client ID and secret into Supabase's Google provider settings, and use the callback URL shown in Supabase as Google's authorized redirect URI.
-4. Add `http://127.0.0.1:4177/**` and `http://localhost:4177/**` to Supabase Authentication → URL Configuration → Redirect URLs. Set the local Site URL to the address used in your browser.
-5. Restart FastAPI. The public endpoint `/api/v1/auth/config` returns only the Supabase project URL and publishable key. Supabase Auth handles credentials; Postgres Data API requests use the signed-in session and the database policies.
-6. Create an account at `/signup.html`. Save a profile from the home page or account page. When live search is enabled, save an official notice from a search result to see it at `/saved-tenders.html` on other devices.
+Start the FastAPI backend (which serves the API at `http://127.0.0.1:8000`, interactive Swagger docs at `http://127.0.0.1:8000/docs`, and mounts the static frontend at `/`):
 
-The sign-in page includes a shared demo email shortcut; enter the password privately. The demo account must first be created and verified in Supabase. Everyone using a shared demo account can see the profile and saved notices attached to it, so do not store private information there.
+```powershell
+uv run uvicorn backend.main:app --reload --port 8000
+```
 
-For production, set each page's `meta[name="tenderlens-api"]` to the deployed FastAPI base URL, allow the deployed website origin in `CORS_ORIGINS`, and add the deployed site URL to Supabase's redirect allowlist. Configure a trusted SMTP sender in Supabase before relying on confirmation and password-reset emails. Google OAuth client secrets and SMTP credentials stay in the Supabase Dashboard; do not send them in chat or commit them.
+You can also serve the root static files on port `4177` in a second terminal:
 
-## Privacy and data
+```powershell
+python -m http.server 4177 --bind 127.0.0.1
+```
 
-The sample interface does not send sample tender filters, sample saves or checklist selections to a service. A bidder profile is synced only after a signed-in user chooses to save it; a live notice is stored only after a user explicitly chooses “Save to account.” See [the privacy notice](privacy.html), [terms and conditions](terms.html) and [easy guide](guide.html).
+Open <http://127.0.0.1:4177> (or <http://127.0.0.1:8000>).
 
-## Repository guide
+## Configure Supabase & Google OAuth
 
-- strategy.html, strategy.js — entered-value preview, checklist export and explicit public-source search controls.
-- backend/engine/ — deterministic gates plus clarification prompts, consortium gap notes, compliance checklist, EMD scenario and public-record search helpers.
+1. **Supabase URL & Keys**: Set `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` (and/or `SUPABASE_ANON_KEY`) in `.env`. Never expose a service-role secret key in browser code.
+2. **Database Schema & RLS**: Run [`supabase/setup.sql`](supabase/setup.sql) in Supabase Dashboard → SQL Editor to create `public.profiles`, `public.saved_tenders`, and `public.tender_audits` with owner-scoped RLS policies (`auth.uid() = user_id`).
+3. **Google OAuth Setup**:
+   - Open [Google Cloud Console → Credentials](https://console.cloud.google.com/apis/credentials) and create an **OAuth 2.0 Client ID** (Application type: **Web application**).
+   - Under **Authorized JavaScript origins**, add `http://localhost:4177`, `http://127.0.0.1:4177`, `http://localhost:8000`, and `http://127.0.0.1:8000`.
+   - Under **Authorized redirect URIs**, add your Supabase Callback URL:
+     `https://<your-project-ref>.supabase.co/auth/v1/callback`
+   - Copy the **Client ID** and **Client Secret** into **Supabase Dashboard → Authentication → Providers → Google**, and optionally set `GOOGLE_CLIENT_ID=` in `.env` (or in the Sign-In page helper) for Google Identity Services One-Tap / ID-Token sign-in.
 
-- `index.html`, `styles.css`, `app.js`, `auth.js`, `theme.js` — website, local sample interactions, Supabase account flows, live-search connection and theme support.
-- `signin.html`, `signup.html`, `account.html`, `saved-tenders.html` — sign-in, registration, bidder profile and saved live notice pages.
-- `supabase/setup.sql` — account tables and owner-only row-level security policies.
-- `guide.html`, `privacy.html`, `terms.html` — plain-language help and website notices.
-- `backend/` — FastAPI routes, tender search and fetch services, document processing and scorecard logic.
-- `contracts/schema.py` — shared Python data models.
-- `tests/` — backend test suite.
-- `vendor/` — pinned Lenis distribution and its MIT license.
-- `FINAL_IMPLEMENTATION_PLAN.md`, `research/` — product and procurement research.
-- `arshit-agents.md`, `MOhit-Agents.md` — frontend and backend project trackers.
+## Run tests
 
-## Project direction
-
-Next steps include configuring the team's Supabase project and Google OAuth credentials, verifying sign-up/sign-in and row policies against that project, reviewing backend behavior against real tender documents, and connecting verified file and scorecard workflows. This repository is not a production procurement service.
+```powershell
+uv run pytest -q
+```

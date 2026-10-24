@@ -153,3 +153,16 @@ Recommended relational tables for Arshit's implementation:
 - [x] Added mobile-aware strategy layout and validated server-side numeric bounds for core bidder and tender criteria.
 - [ ] Verify the preview on desktop and Android-sized viewports; exercise the public-search provider only with a deliberate query.
 - [ ] Connect uploaded-source audit after source precedence, storage, consent and retention requirements are implemented.
+
+
+### Unified 5-Pillar Strategy Studio, Precedence DAG Workbench & Supabase Auth Upgrade — 2026-10-24
+- [x] Upgraded `strategy.html`, `strategy.js`, and `styles.css` into the full 5-Pillar Strategy Studio & Precedence DAG Workbench:
+  - Added one-click scenario presets (`BHEL MSME Trap & Brand Lock`, `CPPP EPC Surety Bond & 80/50/40`, `ICMR Medical OEM MAF & BIS`) plus one-click `Load my Bidder Profile` from Supabase.
+  - Added visual Deterministic Gatekeeper Scorecard cards (`PASS` / `CONDITIONAL` / `DISQUALIFIER` badges, bidder vs required values, statutory citations).
+  - Upgraded Pillar 01 (Pre-Bid Legal & Clarification Pack with copy/download `.md`), Pillar 02 (Consortium & Capability Gap Matchmaker with quantified gap cards and illustrative partner archetypes), Pillar 03 (Automated Compliance Matrix with CSV download + interactive tabbed Statutory Affidavit Drafter for `GFR_170_BID_SECURITY`, `DPIIT_MII_LOCAL_CONTENT`, `GFR_144_XI_LAND_BORDER`, and `OEM_MAF_FORMAT`), Pillar 04 (EMD Capital Risk & Surety Bond Optimizer), and Pillar 05 (Competitor Disqualification Forensics + explicit public-source search).
+  - Added Section 06: Interactive Precedence DAG & RAG Conflict Resolver Workbench (`POST /api/v1/rag/query`) demonstrating how Rank 1 Corrigenda override Rank 3 Buyer ATCs and Rank 5 Main Tender PDFs.
+- [x] Fixed `auth.js` (`initDemoLogin` password focus bug), added Google Identity Services (`google.accounts.id` + `signInWithIdToken`) alongside Supabase Google OAuth redirect (`signInWithOAuth`), added an interactive Google OAuth & Client ID configuration helper on `signin.html` and `signup.html`, and handled free-tier email rate limits (`429`) gracefully.
+- [x] Provisioned and verified the shared demo account (`cm@gmail.com`) in Supabase Auth (`auth.users` & `auth.identities`) and `public.profiles` under RLS.
+- [x] Upgraded `account.html` so signed-in users can sync both basic organization details and statutory/financial capacity metrics (`is_msme_registered`, `msme_category`, `is_startup_recognized`, 3-year turnover, `years_in_business`, `local_content_percentage`, `held_certifications`) to `public.profiles` under RLS.
+- [x] Synchronized all root HTML/CSS/JS files with `frontend/` so both FastAPI port `8000` and static server port `4177` serve the unified application.
+- [ ] Next milestone: configure production Google Cloud OAuth Client ID & Secret in Supabase Dashboard and connect multi-PDF file upload to the source-document audit view.
