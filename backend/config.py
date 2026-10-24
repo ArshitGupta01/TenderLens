@@ -18,6 +18,8 @@ class Settings(BaseSettings):
     # API Keys
     TINYFISH_API_KEY: str = Field(default="", description="TinyFish Web Intelligence API key")
     GEMINI_API_KEY: str = Field(default="", description="Google Gemini API key for structured clause auditing")
+    GEMINI_MODEL: str = Field(default="gemini-3.8-flash", description="Gemini model name for clause & conflict analysis")
+    TAVILY_API_KEY: str = Field(default="", description="Tavily search API key for live web search fallback")
     OPENAI_API_KEY: str = Field(default="", description="OpenAI API key (optional fallback)")
 
     # Server Settings

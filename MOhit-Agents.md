@@ -97,13 +97,18 @@ TenderLens is divided across three clear, non-conflicting domains:
 | **2026-10-24 14:45** | Bug Fixes & Resiliency | Fixed turnover/experience extraction regex edge cases and link queue deduplication in `tinyfish_service.py`. |
 | **2026-10-24 14:47** | Round 1 Q&A & Architecture Asset | Created `round1_qa.txt` (double-line separated Q&A) and generated architecture comparison infographic in `assets/tenderlens_architecture_comparison.png`. |
 | **2026-10-24 14:53** | Live TinyFish Verification | Tested fresh `TINYFISH_API_KEY`: HTTP 200 OK across both TinySearch and TinyFetch. Verified live GeM & BHEL tender discovery via `backend/services/tinyfish_service.py`. |
+| **2026-10-24 15:08** | Gemini API Key Verification | Tested `GEMINI_API_KEY` against Google Generative Language API (`gemini-2.5-flash`). Key authenticated and test script self-deleted upon success. |
+| **2026-10-24 15:13** | Real E2E & Edge Case Suite | Built and ran `tests/test_real_e2e_pipeline.py` testing live TinySearch ($0.00 cost, preserving 100% of $5 credits), MSME PPP-2012 turnover relaxation, Buyer ATC revocation trap, MII Class-II disqualification, GFR 170 EMD rules, and FastAPI audit evaluate endpoint. 16/16 tests passing. |
+| **2026-10-24 15:55** | Gemini 3.8 Flash & Tavily Search Fallback | Set `GEMINI_MODEL="gemini-3.8-flash"` in `backend/config.py`. Enhanced `QualificationEngine.analyze_clauses_with_gemini` and added `evaluate_tender_async` for semantic clause conflict auditing. Integrated Tavily live search fallback (`_search_tavily_fallback`) in `TinyFishService` when TinySearch returns 0 results or errors. Fixed cert keyword regex word boundary matching. Added `tests/test_gemini_auditor.py`. All 19/19 tests passing. |
 
 ---
 
 ## 4. Current State & Next Actions
 
-- **Current State**: TinyFish API is 100% authenticated and operational. Live Indian procurement search retrieves live GeM/BHEL PDFs in real time. Backend engine is fully verified.
-- **Next Step**: Support Arshit with frontend integration (connecting UI to FastAPI endpoints) and support Argon with the 50-tender evaluation benchmark.
+- **Current State**: All 19 unit, integration, and live end-to-end tests pass across 5 test modules. `gemini-3.8-flash` is verified and active for LLM clause and conflict analysis. Tavily is verified live as the web search fallback. Working tree clean on branch `Mohit-Backend`.
+- **Next Step**: Commit and push changes to `origin/Mohit-Backend`, ready for handshake with Arshit's frontend and Argon's evaluation benchmark.
+
+
 
 
 
