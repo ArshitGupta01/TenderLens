@@ -44,7 +44,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid #bf6a4a; outline-offs
 .primary-nav { display: none; }
 .menu-toggle { display: inline-flex; }
 
-.hero { position: relative; padding: 65px 0 52px; overflow: hidden; }
+.hero { position: relative; padding: 65px 0 52px; overflow: hidden; background: var(--paper); }
 .hero-grid { display: grid; grid-template-columns: minmax(350px, .78fr) minmax(530px, 1.22fr); align-items: center; gap: clamp(42px, 6.8vw, 104px); }
 .hero-copy { padding: 12px 0 6px; }
 .eyebrow { display: flex; align-items: center; gap: 10px; margin: 0 0 22px; color: var(--green); font: 10px var(--mono); letter-spacing: .09em; text-transform: uppercase; }
@@ -811,7 +811,10 @@ small { font-size: max(12px, 1em); line-height: 1.5; }
 :root[data-theme="dark"] .precedence-section,
 :root[data-theme="dark"] .legal-main,
 :root[data-theme="dark"] .not-found,
+:root[data-theme="dark"] .tenderlens-curtain,
+:root[data-theme="dark"] .hero,
 :root[data-theme="dark"] .guide-hero { background: var(--paper); }
+:root[data-theme="dark"] .tenderlens-curtain { box-shadow: 0 -35px 80px rgba(0, 0, 0, 0.95), 0 -1px 0 rgba(130, 210, 184, 0.2); }
 :root[data-theme="dark"] .report-topbar,
 :root[data-theme="dark"] .button-dark,
 :root[data-theme="dark"] .primary-nav .nav-cta { color: #f7fbf8; background: var(--green-dark); }
@@ -2719,9 +2722,9 @@ body.is-recovery-mode [data-recovery-footer] {
   .tenderlens-curtain {
     position: relative;
     z-index: 25;
-    background: var(--bg-canvas, #090e17);
-    box-shadow: 0 -35px 80px rgba(0, 0, 0, 0.95), 0 -1px 0 rgba(56, 189, 248, 0.28);
-    transition: box-shadow 0.3s ease;
+    background: var(--paper);
+    box-shadow: 0 -20px 45px rgba(24, 51, 47, 0.12), 0 -1px 0 var(--line);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
   }
 }
 
@@ -2779,7 +2782,8 @@ body.is-recovery-mode [data-recovery-footer] {
     position: relative !important;
     z-index: auto !important;
     box-shadow: none !important;
-    border-top: 1px solid var(--border-color);
+    border-top: 1px solid var(--line);
+    background: var(--paper);
   }
 
   .doodle-scroll-cue {

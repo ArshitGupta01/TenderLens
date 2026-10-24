@@ -403,4 +403,8 @@ ode --check) across all frontend scripts in both root and rontend/.
 - [x] Added explicit `:root[data-theme="dark"] .legal-main, :root[data-theme="dark"] .not-found { background: var(--paper); }` dark mode rules and high-contrast button hover.
 - [x] Injected Google Fonts (`DM Mono`, `DM Sans`, `Newsreader`) preconnect and stylesheet links across all 22 HTML pages for crisp, consistent typography across views.
 - [x] Cleaned duplicate `<meta name="theme-color">` tags.
+### Homepage Hero & Curtain Contrast Resolution - 2026-10-25
+- [x] Resolved unreadable dark-ink on pitch-black contrast bug on `index.html` hero section by removing hardcoded `#090e17` from `.tenderlens-curtain` and setting `background: var(--paper)` on both `.hero` and `.tenderlens-curtain`.
+- [x] Added theme-aware curtain elevation (`box-shadow: 0 -20px 45px rgba(24, 51, 47, 0.12), 0 -1px 0 var(--line);` in light mode, deep obsidian shadow in dark mode).
+- [x] Updated both `styles.css` and `frontend/styles.css`.
 - [ ] Next milestone: Address Wave 1 high-priority remediations from the audit report.
