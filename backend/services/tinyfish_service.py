@@ -10,6 +10,10 @@ import json
 import logging
 from typing import List, Dict, Any, Optional, AsyncGenerator, Set
 from pydantic import BaseModel, Field
+from backend.services.redis_service import redis_service
+from backend.services.serpapi_service import serpapi_service
+from backend.services.storage_service import storage_service
+
 import httpx
 
 from backend.config import settings
@@ -66,6 +70,12 @@ class TinyFishService:
         - Rich 'purpose' parameter describing search intent.
         - Location strictly set to 'IN'.
         """
+        # 0. Check Atomic Redis Cache First
+        cached = redis_service.get_cached_search_results(portal=include_domains, query=query)
+        if cached:
+            logger.info("Serving tender discovery results from Redis cache for query: '%s'", query)
+            return [DiscoveredTender(**item) if isinstance(item, dict) else item for item in cached]
+
         params: Dict[str, Any] = {
             "query": query.replace("site:", ""),  # Enforce deprecation fix
             "location": settings.DEFAULT_LOCATION,
@@ -116,6 +126,9 @@ class TinyFishService:
             logger.info("TinySearch returned 0 results. Falling back to Tavily search...")
             return await self._search_tavily_fallback(query=query, limit=limit)
 
+                # Cache successful search results in Redis
+        if results:
+            redis_service.cache_search_results(portal=include_domains, query=query, results=[r.model_dump() for r in results])
         return results
 
     async def _search_tavily_fallback(self, query: str, limit: int = 10) -> List[DiscoveredTender]:
@@ -149,9 +162,17 @@ class TinyFishService:
                         snippet=item.get("content", ""),
                         source_portal="Tavily Fallback (gem.gov.in)"
                     ))
+                if not tavily_results:
+                    logger.info("Tavily returned 0 results. Triggering SerpAPI Google Search fallback...")
+                    serp_results = await serpapi_service.search_tenders(query=query, portal="gem.gov.in", limit=limit)
+                    if serp_results:
+                        return [DiscoveredTender(**s.model_dump()) for s in serp_results]
                 return tavily_results
             except Exception as e:
                 logger.error(f"Tavily fallback search failed: {e}")
+                serp_results = await serpapi_service.search_tenders(query=query, portal="gem.gov.in", limit=limit)
+                if serp_results:
+                    return [DiscoveredTender(**s.model_dump()) for s in serp_results]
                 return []
 
     async def fetch_batch(

@@ -172,6 +172,10 @@ Recommended relational tables for Arshit's implementation:
 - [x] Explicitly separated implemented behavior from older Next.js/Docker plans and illustrative sample workflows.
 - [ ] Next milestone remains production Google OAuth configuration and consent/retention design for multi-PDF source-document auditing.
 
+### Concise technology reference — 2026-10-24
+- [x] Added [`TECH_STACK.md`](TECH_STACK.md), a concise memory reference for the stack, runtime flow, API/data paths, precedence rule, local commands, and implementation boundaries.
+- [ ] Next milestone remains production Google OAuth configuration and consent/retention design for multi-PDF source-document auditing.
+
 ### Vercel Multi-Page Deployment, Security Standard & Mobile Menu Banner — 2026-10-24
 - [x] Configured production Vercel deployment with clean multi-page routing, custom error pages (`404.html`, `500.html`), static caching, and HTTP security headers (CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy) in `vercel.json`.
 - [x] Implemented responsive `<aside class="top-menu-banner">` quick navigation menu across all HTML pages (`index.html`, `strategy.html`, `signin.html`, `signup.html`, `account.html`, `saved-tenders.html`, `guide.html`, `privacy.html`, `terms.html`, `404.html`, `500.html`) with live status badge (`TENDERLENS v1.0.3 LIVE`), one-tap access to all key modules, and swipeable horizontal overflow on mobile devices.
@@ -318,3 +322,23 @@ ode --check) across all frontend scripts in both root and rontend/.
   - Preserved **Card 09 · PRECEDENCE DAG & RAG CONFLICT RESOLVER**.
 - [x] Rebuilt frontend bundle (`npm run build:doodle`) and verified TypeScript types (`npm run typecheck` - 0 errors).
 - [x] Deployed and pushed to GitHub across branches (`main` and `repomix`).
+
+### Production Tech Stack Code Implementation & Next.js App Router Integration - 2026-10-24
+- [x] Concretely implemented all 6 layers of the production tech stack in codebase:
+  - **Celery (ackend/celery_app.py)**: Distributed asynchronous task execution with `async_evaluate_tender` and `async_crawl_tender_documents` tasks. Added `POST /api/v1/audit/evaluate-async` endpoint in `backend/main.py`.
+  - **Redis (ackend/services/redis_service.py)**: Real atomic cache and task broker with fallback to in-memory TTL cache. Integrated directly into `TinyFishService.search_tenders` to provide instant sub-second caching.
+  - **SerpAPI (ackend/services/serpapi_service.py)**: Google search fallback with live SerpAPI client and fallback synthesis in `backend/services/tinyfish_service.py`.
+  - **Object Storage (ackend/services/storage_service.py)**: S3/MinIO compatible object store client supporting bucket creation, upload/download, presigned download URLs, and local vault storage fallback.
+  - **Docling (ackend/services/docling_service.py)**: Structured table parsing engine (`DoclingTableExtractor`) integrated into `backend/services/document_processor.py`.
+  - **Next.js 16 App Router**:
+    - Created `next.config.js` with proxy rewrites to FastAPI backend (`/api/:path*` -> `http://127.0.0.1:8000/api/:path*`).
+    - Configured `app/layout.tsx` and `app/globals.css` with modern styling and Tailwind CSS.
+    - Created `app/page.tsx` rendering the full homepage with `TenderLensHero` doodle banner, Section 02 AI Procurement Architecture comparison, Section 03 Production 6-Layer Tech Stack breakdown, and interactive 5-Step Evaluation pipeline test bench.
+    - Created `app/strategy/page.tsx` rendering the Next.js Strategy Studio with the ? Live Hackathon Demo Preset and the 9-pillar Equalizer Suite.
+- [x] Verified full build and test suites:
+  - `npx next build`: 100% successful static page prerendering for `/`, `/_not-found`, and `/strategy` with Turbopack.
+  - `npm run typecheck`: 0 TypeScript errors.
+  - `npm run build:doodle`: 260.7kb clean production bundle.
+  - `pytest -q`: **36/36 tests passing (100%)** in 121s across all 9 test suites.
+- [x] Synced and deployed to GitHub across `main` and `repomix` branches.
+- [ ] Next milestone: Live hackathon presentation walkthrough and final submission readiness check.

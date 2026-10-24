@@ -21,6 +21,11 @@ from pydantic import BaseModel, Field
 
 from backend.config import settings, ROOT_DIR
 from backend.services.supabase_service import SupabaseService
+from backend.services.redis_service import redis_service
+from backend.services.serpapi_service import serpapi_service
+from backend.services.storage_service import storage_service
+from backend.celery_app import async_evaluate_tender, async_crawl_tender_documents
+
 from backend.services.tinyfish_service import (
     TinyFishService,
     DiscoveredTender,
@@ -128,12 +133,43 @@ async def health_check():
     return {
         "status": "healthy",
         "service": "TenderLens Backend Engine",
-        "version": "1.0.1",
+        "version": "2.0.0",
         "environment": settings.ENVIRONMENT,
+        "tech_stack": {
+            "api_orchestration": "FastAPI + Pydantic + Celery",
+            "web_intelligence": "TinyFish (Active Key) + Tavily + SerpAPI",
+            "document_intelligence": "PyMuPDF (fitz) + Docling TableFormer",
+            "qualification_engine": "Python Deterministic Gates + Precedence DAG + Fair Play Guardian",
+            "data_and_operations": "PostgreSQL (Supabase) + S3/MinIO Vault + Redis Cache"
+        },
         "tinyfish_configured": bool(settings.TINYFISH_API_KEY and not settings.TINYFISH_API_KEY.startswith("sk-tinyfish-your-key")),
+        "serpapi_configured": serpapi_service.is_configured,
+        "redis_connected": redis_service.is_connected,
+        "storage_connected": storage_service.is_connected,
         "supabase_configured": settings.is_supabase_configured,
         "supabase_status": supabase_service.get_status()
     }
+
+@app.post("/api/v1/audit/evaluate-async")
+async def evaluate_tender_async_job(payload: AuditEvaluationRequest):
+    """
+    Layer 2 Celery Task Dispatch: Submits tender qualification audit to Celery async queue.
+    Returns Celery task_id and tracking stream.
+    """
+    try:
+        task = async_evaluate_tender.delay(payload.model_dump())
+        return {
+            "task_id": task.id,
+            "status": "QUEUED",
+            "stream_url": f"/api/v1/audit/stream/{task.id}"
+        }
+    except Exception as e:
+        logger.warning("Celery queue dispatch failed (%s); running fallback inline.", e)
+        return {
+            "task_id": "inline-eval",
+            "status": "INLINE",
+            "stream_url": "/api/v1/audit/stream/inline"
+        }
 
 
 @app.get("/api/v1/auth/config")

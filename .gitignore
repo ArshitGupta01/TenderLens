@@ -56,3 +56,4 @@ repomix-output.*
 .vercel
 
 tmp/
+*.tsbuildinfo

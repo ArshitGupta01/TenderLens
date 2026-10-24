@@ -5,6 +5,10 @@ description = "Evidence-backed tender review for Indian public procurement"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "boto3>=1.35.0",
+    "celery>=5.4.0",
+    "google-search-results>=2.4.2",
+    "redis>=5.0.0",
     "fastapi>=0.162.0",
     "httpx>=0.28.1",
     "langchain>=1.4.7",
