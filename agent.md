@@ -20,6 +20,8 @@ Updated: 2026-10-24
 
 ## Latest work — 2026-10-24
 
+- Added a tablet breakpoint for 851–1100px screens after reviewing the supplied layout screenshot. The header now uses the compact menu and the hero stacks into a readable full-width column at those sizes.
+- Checked the live local preview at its available narrow viewport and reviewed the breakpoint rules against the 1056px screenshot dimensions. A dedicated 1056px browser viewport was not available in the embedded preview.
 - Merged `origin/Mohit-Backend` into `main`.
 - Published the merged backend and finished website update in commit `518191e` on `origin/main`.
 - Increased text sizes and simplified visible report language; added a plain-language guide, glossary, quick answers, dark mode, and terms page.

@@ -737,6 +737,29 @@ small { font-size: max(12px, 1em); line-height: 1.5; }
   .hero-grid { grid-template-columns: minmax(465px, .94fr) minmax(0, 1.06fr); gap: clamp(44px, 5vw, 68px); }
   .hero h1 { font-size: clamp(58px, 5.5vw, 78px); }
 }
+@media (min-width: 851px) and (max-width: 1100px) {
+  .site-header { height: 72px; }
+  .nav-shell { position: relative; }
+  .brand { min-width: 0; }
+  .brand-descriptor { display: none; }
+  .header-actions { order: 2; margin-left: auto; margin-right: 0; gap: 10px; }
+  .menu-toggle { display: inline-flex; align-items: center; gap: 10px; padding: 10px 0 10px 10px; border: 0; color: var(--ink); background: transparent; font-size: 14px; font-weight: 700; cursor: pointer; }
+  .menu-lines { display: flex; flex-direction: column; gap: 4px; width: 17px; }
+  .menu-lines i { display: block; width: 17px; height: 1px; background: var(--ink); transition: transform .18s ease; }
+  .menu-toggle[aria-expanded=true] .menu-lines i:first-child { transform: translateY(2.5px) rotate(45deg); }
+  .menu-toggle[aria-expanded=true] .menu-lines i:last-child { transform: translateY(-2.5px) rotate(-45deg); }
+  .primary-nav { position: absolute; z-index: 10; top: 71px; right: 0; left: 0; display: none; align-items: stretch; flex-direction: column; gap: 0; padding: 5px 24px 18px; border-bottom: 1px solid var(--line-strong); background: var(--paper); }
+  .primary-nav.is-open { display: flex; }
+  .primary-nav a { padding: 13px 0; border-bottom: 1px solid var(--line); }
+  .primary-nav .nav-cta { justify-content: space-between; margin-top: 12px; padding: 12px 14px; }
+  .primary-nav a[aria-current="location"] { color: var(--green); }
+  .hero { padding: 50px 0 34px; }
+  .hero-grid { grid-template-columns: minmax(0, 1fr); gap: 42px; }
+  .hero-copy { max-width: 720px; }
+  .hero h1 { max-width: 720px; font-size: clamp(62px, 8vw, 82px); }
+  .hero-lede { max-width: 650px; }
+  .hero-demo { max-width: 760px; width: 100%; margin-inline: auto; }
+}
 :root[data-theme="dark"] {
   color-scheme: dark;
   --paper: #111a17;

@@ -114,6 +114,11 @@ Recommended relational tables for Arshit's implementation:
 - [x] Reviewed the desktop and narrow preview layouts; adjusted the navigation and footer to avoid wrapping and horizontal overflow.
 - [ ] A real company profile, file upload, account, saved audit, and connected eligibility review remain future work.
 
+### Tablet layout refinement — 2026-10-24
+- [x] Added an 851–1100px breakpoint that replaces the crowded desktop navigation with the menu button and gives the hero a full-width reading column.
+- [x] Reviewed the change against the supplied 1056px screenshot and checked the existing narrow local preview; a dedicated 1056px embedded-browser viewport was unavailable.
+- [ ] Recheck tablet and desktop layouts in a resizable browser preview when available.
+
 - [ ] Initialize Next.js project in `frontend/` (TypeScript, Tailwind CSS, Lucide icons)
 - [ ] Build Bidder Profile configuration screen (Turnover, MSME status, Certifications)
 - [ ] Build Search & Ingestion tracker with live SSE progress bar
