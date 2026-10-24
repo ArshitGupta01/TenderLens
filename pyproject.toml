@@ -1,6 +1,6 @@
 [project]
 name = "tenderlens"
-version = "1.0.1"
+version = "1.0.3"
 description = "Evidence-backed tender review for Indian public procurement"
 readme = "README.md"
 requires-python = ">=3.11"

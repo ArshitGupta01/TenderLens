@@ -1,10 +1,10 @@
 """
-TenderLens Shared Contract Schema (Pydantic & JSON) — v1.0.1
+TenderLens Shared Contract Schema (Pydantic & JSON) — v1.0.3
 ============================================================
 This file defines the shared contract between Research/Evaluation (Argon)
 and Backend/Frontend Engineering (Mohit & Arshit).
 
-Rule: All v1.0.1 additions use safe default factories to remain 100% backwards
+Rule: All v1.0.3 additions use safe default factories to remain 100% backwards
 compatible with baseline tests and callers.
 """
 
@@ -238,3 +238,69 @@ class StrategyToolkitResponse(BaseModel):
     compliance_binder: ComplianceAndBinderPackage
     emd_capital_report: EMDCapitalOptimizationReport
     competitor_forensics: CompetitorForensicsReport
+
+
+# ---------------------------------------------------------------------------
+# Precedence DAG RAG Engine Models (v1.0.3)
+# ---------------------------------------------------------------------------
+class RAGPrecedenceCitation(BaseModel):
+    """Grounding citation for RAG answers with precedence and coordinate metadata."""
+    document_name: str
+    precedence_rank: int  # 1 = Latest Corr, 2 = Prior Corr, 3 = Buyer ATC, 4 = Text ATC, 5 = Main PDF
+    page_number: int
+    clause_id: str
+    verbatim_text: str
+    category: str = "GENERAL"  # TURNOVER, EXPERIENCE, EMD, MII_LOCAL_CONTENT, OEM_MAF, CERTIFICATIONS, LIQUIDATED_DAMAGES, ARBITRATION, PAYMENT_TERMS, GENERAL
+    bbox: Optional[Dict[str, float]] = None
+    is_superseded: bool = False
+    superseded_by: Optional[str] = None
+
+
+class RAGQueryRequest(BaseModel):
+    """Request model for querying the tender corpus via Precedence DAG RAG."""
+    tender_id: str = "TENDER-QUERY"
+    query: str
+    canonical_category: Optional[str] = None
+    include_superseded: bool = False
+
+
+class RAGQueryResponse(BaseModel):
+    """Response model returning precedence-grounded answers and audit trails."""
+    tender_id: str
+    query: str
+    answer: str
+    winning_citation: Optional[RAGPrecedenceCitation] = None
+    audit_trail: List[RAGPrecedenceCitation] = Field(default_factory=list)
+    conflict_detected: bool = False
+    precedence_applied: bool = False
+    confidence_score: float = 1.0
+
+
+class PrecedenceDAGNode(BaseModel):
+    """Node in the Precedence Directed Acyclic Graph representing a clause version."""
+    node_id: str
+    document_name: str
+    precedence_rank: int
+    clause_id: str
+    category: str
+    page_number: int
+    text_snippet: str
+    bbox: Optional[Dict[str, float]] = None
+
+
+class PrecedenceDAGEdge(BaseModel):
+    """Edge in the Precedence DAG representing supersession or amendment."""
+    source_node_id: str
+    target_node_id: str
+    relation_type: str = "SUPERSEDES"  # "SUPERSEDES", "AMENDS", "CLARIFIES", "CONFLICTS_WITH"
+    explanation: str = ""
+
+
+class PrecedenceDAGGraph(BaseModel):
+    """Full Directed Acyclic Graph topology for visualization and audit."""
+    tender_id: str
+    nodes: List[PrecedenceDAGNode] = Field(default_factory=list)
+    edges: List[PrecedenceDAGEdge] = Field(default_factory=list)
+    total_overrides: int = 0
+    detected_conflicts: int = 0
+

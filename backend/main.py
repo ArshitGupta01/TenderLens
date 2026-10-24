@@ -39,6 +39,7 @@ from backend.engine.consortium_matchmaker import ConsortiumMatchmaker
 from backend.engine.compliance_matrix_engine import ComplianceMatrixEngine
 from backend.engine.emd_capital_optimizer import EMDCapitalOptimizer
 from backend.engine.competitor_forensics import CompetitorForensicsEngine
+from backend.engine.precedence_rag_engine import PrecedenceRAGEngine
 from contracts.schema import (
     BidderProfile,
     QualificationScorecard,
@@ -46,7 +47,10 @@ from contracts.schema import (
     ConsortiumMatchRecommendation,
     ComplianceAndBinderPackage,
     EMDCapitalOptimizationReport,
-    CompetitorForensicsReport
+    CompetitorForensicsReport,
+    RAGQueryRequest,
+    RAGQueryResponse,
+    PrecedenceDAGGraph
 )
 
 # Configure logging
@@ -56,7 +60,7 @@ logger = logging.getLogger("tenderlens.api")
 app = FastAPI(
     title="TenderLens Engine API",
     description="AI-Powered Tender Qualification & Disqualification Engine for Indian Public Procurement",
-    version="1.0.1"
+    version="1.0.3"
 )
 
 # Enable CORS for Arshit's Frontend and local origins
@@ -320,6 +324,77 @@ async def get_competitor_forensics_endpoint(
     return CompetitorForensicsEngine.analyze_static_forensics(
         tender_title=tender_title,
         source_portal=source_portal
+    )
+
+
+# ---------------------------------------------------------------------------
+# Precedence DAG RAG Endpoints (v1.0.3)
+# ---------------------------------------------------------------------------
+class RAGQueryPayload(BaseModel):
+    tender_id: str = "TENDER-QUERY"
+    query: str
+    tender_url: Optional[str] = None
+    canonical_category: Optional[str] = None
+    explicit_chunks: Optional[List[ProcessedClauseChunk]] = None
+    enable_gemini: bool = True
+
+
+@app.post("/api/v1/rag/query", response_model=RAGQueryResponse)
+async def query_rag_endpoint(payload: RAGQueryPayload):
+    """
+    Precedence DAG RAG (v1.0.3): Queries tender document corpus with strict
+    precedence resolution (Rank 1 Corrigendum overrides Rank 5 Main PDF).
+    """
+    chunks = payload.explicit_chunks or []
+    if not chunks and payload.tender_url:
+        try:
+            fetched_docs = await tinyfish.fetch_tender_recursive(payload.tender_url, max_depth=1)
+            for doc in fetched_docs:
+                rank = DocumentProcessor.infer_precedence_rank(doc.url.split("/")[-1])
+                lines = doc.content_markdown.split("\n\n")
+                for idx, para in enumerate(lines):
+                    cleaned = para.strip()
+                    if cleaned:
+                        chunks.append(ProcessedClauseChunk(
+                            document_name=doc.url.split("/")[-1] or "Tender_Doc.pdf",
+                            precedence_rank=rank,
+                            page_number=(idx // 3) + 1,
+                            clause_id=f"Sec-{idx + 1}",
+                            text_content=cleaned,
+                            parsing_method="tinyfetch_markdown"
+                        ))
+        except Exception as e:
+            logger.warning(f"RAG document fetch error: {e}")
+
+    if payload.enable_gemini:
+        return await PrecedenceRAGEngine.query_with_gemini(
+            tender_id=payload.tender_id,
+            query_str=payload.query,
+            chunks=chunks,
+            canonical_category=payload.canonical_category
+        )
+    return PrecedenceRAGEngine.query(
+        tender_id=payload.tender_id,
+        query_str=payload.query,
+        chunks=chunks,
+        canonical_category=payload.canonical_category
+    )
+
+
+class PrecedenceGraphRequest(BaseModel):
+    tender_id: str
+    chunks: List[ProcessedClauseChunk]
+
+
+@app.post("/api/v1/rag/precedence-graph", response_model=PrecedenceDAGGraph)
+async def get_precedence_dag_graph_endpoint(payload: PrecedenceGraphRequest):
+    """
+    Constructs and returns the full Precedence Directed Acyclic Graph (DAG) topology
+    showing nodes, supersession edges, and detected conflicts.
+    """
+    return PrecedenceRAGEngine.build_dag_graph(
+        tender_id=payload.tender_id,
+        chunks=payload.chunks
     )
 
 
