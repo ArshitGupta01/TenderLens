@@ -220,4 +220,13 @@ ode --check) across all frontend scripts in both root and rontend/.
 - [x] Verified full local execution:
   - FastAPI server running on http://127.0.0.1:8000/ serving HTML and bundled component (doodle-hero.bundle.js).
   - Synced all files and configurations between root and frontend/.
+- [x] Paused external deployments and transitioned entirely to local development.
+
+### Google Auth Complete Removal - 2026-10-24
+- [x] Completely purged Google OAuth, GIS (Google Identity Services) button slots, and Client ID helpers from sign-in and sign-up pages (`signin.html`, `signup.html`, `frontend/signin.html`, `frontend/signup.html`).
+- [x] Removed all Google OAuth handlers, GIS script loaders, and token exchange routines (`handleGoogleSignIn`, `initGoogleIdentityServices`, `initGoogleOAuthHelper`, `getActiveGoogleClientId`) from `auth.js` and `frontend/auth.js`.
+- [x] Added automatic cleanup of any legacy `tenderlens_google_client_id` localStorage items upon initialization.
+- [x] Cleaned unused `.google-button` and `.google-mark` CSS from `styles.css` and `frontend/styles.css`.
+- [x] Updated documentation in `guide.html` and `privacy.html` to reflect pure email/password credentials and verified session tokens under Supabase Auth without external social providers.
+- [x] Verified local pages load cleanly at `http://127.0.0.1:8000/signin.html` and `http://127.0.0.1:8000/signup.html` with zero Google artifacts.
 - [ ] Next milestone: Continue local feature development and connect multi-file PDF ingestion to the live compliance DAG.

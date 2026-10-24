@@ -965,9 +965,6 @@ small { font-size: max(12px, 1em); line-height: 1.5; }
 .auth-card > .eyebrow { margin-bottom: 10px; font-size: 11px; }
 .auth-card h2 { margin: 0; font: 500 clamp(32px, 4vw, 43px)/1.05 var(--serif); letter-spacing: -.035em; }
 .auth-intro { margin: 11px 0 22px; color: var(--muted); font-size: 15px; }
-.google-button { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; min-height: 49px; border: 1px solid var(--line-strong); color: var(--ink); background: var(--surface); font-size: 15px; font-weight: 700; cursor: pointer; transition: background-color .18s ease, border-color .18s ease; }
-.google-button:hover { border-color: var(--green); background: var(--paper-deep); }
-.google-mark { color: #4285f4; font-size: 18px; font-weight: 700; }
 .auth-divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; color: var(--muted); font-size: 12px; }
 .auth-divider::before, .auth-divider::after { height: 1px; flex: 1; background: var(--line); content: ''; }
 .demo-login-card { display: grid; gap: 12px; margin: 0 0 20px; padding: 16px; border: 1px solid color-mix(in srgb, var(--green) 32%, var(--line)); background: color-mix(in srgb, var(--green-pale) 58%, var(--surface)); }
@@ -991,8 +988,7 @@ small { font-size: max(12px, 1em); line-height: 1.5; }
 .auth-form .profile-field input, .account-profile-form .profile-field input, .account-profile-form .profile-field select { min-height: 48px; padding: 0 13px; border-radius: 3px; }
 .auth-submit { display: inline-flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 50px; padding: 0 17px; border: 0; color: #fff; background: var(--green-dark); font-size: 15px; font-weight: 700; cursor: pointer; transition: background-color .18s ease, transform .18s ease; }
 .auth-submit:hover { transform: translateY(-1px); background: var(--green); }
-.auth-submit:disabled, .google-button:disabled { opacity: .55; cursor: not-allowed; }
-.auth-submit span { font-size: 19px; font-weight: 400; }
+.auth-submit:disabled, .auth-submit span { font-size: 19px; font-weight: 400; }
 .auth-text-button { justify-self: start; padding: 0; border: 0; color: var(--green); background: transparent; font-size: 13px; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .auth-status { min-height: 0; margin: 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
 .auth-status:not(:empty) { padding: 10px 12px; border-left: 3px solid var(--line-strong); background: var(--paper-deep); }
@@ -1103,8 +1099,7 @@ small { font-size: max(12px, 1em); line-height: 1.5; }
 :root[data-theme="dark"] .account-guard-card,
 :root[data-theme="dark"] .saved-tender-card { border-color: var(--line-strong); background: var(--surface); }
 :root[data-theme="dark"] .auth-main { background: radial-gradient(ellipse at 15% 18%, rgba(86, 171, 139, .13), transparent 34%), radial-gradient(ellipse at 95% 82%, rgba(205, 119, 89, .11), transparent 29%); }
-:root[data-theme="dark"] .google-button,
-:root[data-theme="dark"] .demo-login-fill,
+:root[data-theme="dark"] :root[data-theme="dark"] .demo-login-fill,
 :root[data-theme="dark"] .saved-tender-actions button { border-color: var(--line-strong); color: var(--ink); background: var(--paper-deep); }
 :root[data-theme="dark"] .demo-login-card { border-color: color-mix(in srgb, var(--green) 56%, var(--line)); background: color-mix(in srgb, var(--green-dark) 55%, var(--surface)); }
 :root[data-theme="dark"] .account-hero,
@@ -1691,7 +1686,7 @@ small { font-size: max(12px, 1em); line-height: 1.5; }
   .auth-tab {
     min-height: 44px;
   }
-  .google-button, .demo-login-fill {
+  .demo-login-fill {
     min-height: 46px;
   }
 }

@@ -53,7 +53,7 @@
     document.querySelectorAll('[data-auth-config-needed]').forEach((element) => { element.hidden = available; });
     if (!available) {
       setEveryStatus('[data-auth-status]', message || 'Account sign-in is not connected yet. Follow the setup steps in the easy guide.', 'unavailable');
-      document.querySelectorAll('[data-auth-submit], [data-google-signin], [data-password-reset], [data-password-update]').forEach((button) => {
+      document.querySelectorAll('[data-auth-submit], [data-password-reset], [data-password-update]').forEach((button) => {
         button.disabled = true;
       });
     }
@@ -354,136 +354,6 @@
     setStatus(status, 'Check your email for a confirmation link. After confirming, sign in to finish your profile.', 'success');
   }
 
-  function getActiveGoogleClientId() {
-    let localId = '';
-    try {
-      localId = window.localStorage.getItem('tenderlens_google_client_id') || '';
-    } catch (e) {
-      // ignore storage errors
-    }
-    return (authConfigCache?.google_client_id || localId || '').trim();
-  }
-
-  function initGoogleIdentityServices() {
-    const clientId = getActiveGoogleClientId();
-    const gsiContainers = document.querySelectorAll('[data-google-gsi-button]');
-    if (!clientId || !supabaseClient) return;
-
-    const loadScript = () => new Promise((resolve) => {
-      if (window.google?.accounts?.id) return resolve(true);
-      const existing = document.querySelector('script[src*="accounts.google.com/gsi/client"]');
-      if (existing) {
-        existing.addEventListener('load', () => resolve(true), { once: true });
-        return;
-      }
-      const script = document.createElement('script');
-      script.src = 'https://accounts.google.com/gsi/client';
-      script.async = true;
-      script.defer = true;
-      script.onload = () => resolve(true);
-      script.onerror = () => resolve(false);
-      document.head.appendChild(script);
-    });
-
-    loadScript().then((loaded) => {
-      if (!loaded || !window.google?.accounts?.id) return;
-      window.google.accounts.id.initialize({
-        client_id: clientId,
-        callback: async (response) => {
-          if (!response?.credential) return;
-          setEveryStatus('[data-auth-status]', 'Verifying Google ID token with Supabase…', 'loading');
-          const { error } = await supabaseClient.auth.signInWithIdToken({
-            provider: 'google',
-            token: response.credential
-          });
-          if (error) {
-            setEveryStatus('[data-auth-status]', `Google ID token sign-in error: ${error.message}. Ensure Google provider has this Client ID enabled in Supabase Dashboard.`, 'error');
-            return;
-          }
-          window.location.assign(accountRedirect());
-        }
-      });
-      gsiContainers.forEach((container) => {
-        container.hidden = false;
-        window.google.accounts.id.renderButton(container, {
-          theme: 'outline',
-          size: 'large',
-          width: 320,
-          text: 'continue_with'
-        });
-      });
-    });
-  }
-
-  function initGoogleOAuthHelper() {
-    const callbackUrl = authConfigCache?.supabase_url
-      ? `${authConfigCache.supabase_url.replace(/\/$/, '')}/auth/v1/callback`
-      : 'https://qiwpkvjzqdyguygowzci.supabase.co/auth/v1/callback';
-
-    document.querySelectorAll('[data-supabase-callback-url]').forEach((el) => {
-      el.textContent = callbackUrl;
-    });
-
-    const params = new URLSearchParams(window.location.search);
-    const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
-    const errorDesc = params.get('error_description') || hashParams.get('error_description') || '';
-    if (errorDesc) {
-      setEveryStatus('[data-auth-status]', `OAuth notice: ${errorDesc.replace(/\+/g, ' ')}`, 'error');
-      document.querySelectorAll('[data-google-setup-details]').forEach((details) => {
-        details.open = true;
-      });
-    }
-
-    document.querySelectorAll('[data-google-client-id-form]').forEach((form) => {
-      const input = form.querySelector('[name="google_client_id"]');
-      const status = form.querySelector('[data-google-helper-status]');
-      if (input) input.value = getActiveGoogleClientId();
-      form.addEventListener('submit', (event) => {
-        event.preventDefault();
-        const val = String(input?.value || '').trim();
-        try {
-          if (val) window.localStorage.setItem('tenderlens_google_client_id', val);
-          else window.localStorage.removeItem('tenderlens_google_client_id');
-        } catch (e) {
-          // ignore
-        }
-        setStatus(
-          status,
-          val
-            ? 'Google Web Client ID saved locally. Rendering Google Sign-In button…'
-            : 'Cleared local Google Web Client ID.',
-          'success'
-        );
-        if (val) initGoogleIdentityServices();
-      });
-    });
-  }
-
-  async function handleGoogleSignIn() {
-    if (!supabaseClient) return;
-    setEveryStatus('[data-auth-status]', 'Redirecting to Google OAuth via Supabase…', 'loading');
-    const { error } = await supabaseClient.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: new URL(accountRedirect(), window.location.href).href,
-        queryParams: {
-          access_type: 'offline',
-          prompt: 'consent'
-        }
-      }
-    });
-    if (error) {
-      setEveryStatus(
-        '[data-auth-status]',
-        `Google OAuth setup required in Supabase Dashboard: ${error.message}. Expand "Google OAuth Setup" below for the 3-step Client ID & Secret instructions.`,
-        'error'
-      );
-      document.querySelectorAll('[data-google-setup-details]').forEach((details) => {
-        details.open = true;
-      });
-    }
-  }
-
   async function handlePasswordRecovery() {
     const form = document.querySelector('[data-password-recovery]');
     if (!form || !supabaseClient || form.dataset.recoveryBound === 'true') return;
@@ -534,8 +404,6 @@
     signedInUser = currentSession?.user || null;
     setConfigState(true);
     updateHeader();
-    initGoogleOAuthHelper();
-    initGoogleIdentityServices();
 
     supabaseClient.auth.onAuthStateChange((event, session) => {
       currentSession = session || null;
@@ -545,7 +413,6 @@
     });
     document.querySelectorAll('[data-signin-form]').forEach((form) => form.addEventListener('submit', handleSignIn));
     document.querySelectorAll('[data-signup-form]').forEach((form) => form.addEventListener('submit', handleSignUp));
-    document.querySelectorAll('[data-google-signin]').forEach((button) => button.addEventListener('click', handleGoogleSignIn));
     document.querySelectorAll('[data-password-reset]').forEach((button) => button.addEventListener('click', async () => {
       const email = document.querySelector('[name="email"]')?.value.trim();
       const status = document.querySelector('[data-signin-form] [data-auth-status]');
@@ -632,6 +499,7 @@
   }
 
   const ready = init();
+  try { window.localStorage.removeItem('tenderlens_google_client_id'); } catch (e) {}
   window.TenderLensAuth = {
     get client() { return supabaseClient; },
     get user() { return signedInUser; },

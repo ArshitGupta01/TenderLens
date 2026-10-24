@@ -191,14 +191,14 @@
             <ol>
               <li>Create a Supabase project. Copy its Project URL and <strong>publishable key</strong> from the Connect dialog into <code>SUPABASE_URL</code> and <code>SUPABASE_PUBLISHABLE_KEY</code> in your private <code>.env</code>. The publishable key is designed to be exposed to the browser; never use a secret or service-role key here.</li>
               <li>Run <code>supabase/setup.sql</code> once in Supabase Dashboard → SQL Editor. It creates the bidder-profile and saved-tender tables and locks rows to their account with row-level security.</li>
-              <li>In Supabase Authentication, enable Email and Google. For Google, create a Google OAuth client, copy its client ID and secret into the Supabase Google provider settings, and add the callback URL shown by Supabase to Google Cloud.</li>
+              <li>In Supabase Authentication, enable the Email/Password provider.</li>
               <li>Add <code>http://127.0.0.1:4177/**</code> and <code>http://localhost:4177/**</code> under Supabase Authentication → URL Configuration → Redirect URLs. Set the site URL to the address you use locally.</li>
               <li>For email confirmation and password reset in production, configure a trusted SMTP provider in Supabase. The built-in test mailer is intended for limited development use.</li>
               <li>Restart FastAPI with <code>uv run uvicorn backend.main:app --reload</code> and serve the pages at <code>http://127.0.0.1:4177</code>. Sign in, update your profile, then test saving a link from a live search result.</li>
             </ol>
-            <p class="guide-warning"><strong>Keep secrets out of chat and GitHub.</strong> Google OAuth client secrets and SMTP credentials belong in the Supabase Dashboard. TenderLens only needs the Supabase URL and browser-safe publishable key in the private local environment file. Do not send us keys in chat.</p>
+            <p class="guide-warning"><strong>Keep secrets out of chat and GitHub.</strong> Never expose service-role or secret keys in client-side code.</p>
             <p class="guide-copy"><strong>Not needed for this connection:</strong> a direct database password or Supabase secret key. The browser uses Supabase Auth and Postgres Data API with row-level security; FastAPI does not bypass those policies.</p>
-            <a class="guide-api-link" href="https://supabase.com/docs/guides/auth/social-sign-in/auth-google" target="_blank" rel="noopener noreferrer">Supabase Google setup guide <span aria-hidden="true">↗</span></a>
+            
           </div>
         </div>
       </section>
