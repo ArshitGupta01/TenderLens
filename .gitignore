@@ -1,0 +1,51 @@
+# Environments & Secrets
+.env
+.env.local
+.env.*.local
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Node & Next.js
+node_modules/
+.next/
+out/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Document Ingestion Scratch & Large PDFs (Download on demand)
+data/raw_tenders/*.pdf
+!data/raw_tenders/.gitkeep
+data/cache/
+*.tmp
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
