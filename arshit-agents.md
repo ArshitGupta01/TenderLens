@@ -357,4 +357,11 @@ ode --check) across all frontend scripts in both root and rontend/.
   - Verified HTTP 200 OK on `/doodle-hero.bundle.js` (266,921 bytes interactive wordmark).
 - [x] Verified full backend test suite: **36/36 tests passing (100%)** across all modules with zero regressions.
 - [x] Synced and pushed changes across both `main` and `repomix` branches on GitHub (`origin/main`, `origin/repomix`).
-- [ ] Next milestone: Live hackathon presentation walkthrough and production monitoring.
+- [x] Streamlined industry-ready public website:
+  - Removed Section 03 (developer tech stack badges: Next.js, FastAPI, SerpAPI, PyMuPDF, etc.) from `index.html` and `frontend/index.html`.
+  - Removed the `Production Tech Stack` link from the site menu drawer.
+  - Cleaned up 114 lines of unused CSS rules from `styles.css` and `frontend/styles.css`.
+  - Preserved the Core Architectural Comparison & 5-Step Pipeline (`#architecture`).
+  - Deployed to Vercel production (`https://tenderlens-mauve.vercel.app`) with zero broken links or remaining tech stack cards.
+- [x] Synced and pushed changes across both `main` and `repomix` branches on GitHub.
+- [ ] Next milestone: Live hackathon presentation walkthrough and client production monitoring.
