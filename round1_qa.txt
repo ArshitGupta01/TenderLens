@@ -1,0 +1,77 @@
+Q1: What is TenderLens and what core problem does it solve in public procurement?
+
+A1: TenderLens is an AI-powered tender qualification and disqualification engine built by Team Traxo for Indian public procurement (GeM, CPPP, State Portals, and PSUs). Our core thesis is: "Finding tenders is easy. Proving eligibility is hard." Today, discovering notices is commoditized by search aggregators, but Indian MSMEs and contractors lose thousands of hours and risk millions in Earnest Money Deposits (EMD) because eligibility criteria are buried across main tender PDFs, buyer-added Additional Terms & Conditions (ATCs), and last-minute corrigenda. TenderLens audits the complete document set before a bid is prepared and produces an evidence-backed Bid/No-Bid scorecard.
+
+
+Q2: Why do existing tender aggregators like BidAssist and Tender247 fail to solve this problem?
+
+A2: Indian tender aggregators (BidAssist, Tender247, TendersInfo) are purely discovery and notification notice-boards. They index high-level metadata (tender title, category, closing date) and stop at the download link. They do not parse linked child ATC documents, do not calculate mathematical ratios (such as 3-year average turnover vs. estimated bid value), do not evaluate Make in India local content thresholds, do not interpret statutory MSME/Startup exemptions, and offer zero clause-by-clause audit trails.
+
+
+Q3: Why can't global AI RFP tools like Loopio, Responsive, or GovDash be used for Indian government tenders?
+
+A3: Western AI bid tools are designed for proposal generation and prose drafting on US Federal (FAR/DFARS) or private enterprise RFPs. They fail in India because: (1) They lack Indian procurement portal connectors (GeM dynamic hydration, CPPP, PSU portals); (2) They lack deterministic statutory rule engines for Indian laws (such as DPIIT Make in India Order 2017, Public Procurement Policy for MSEs 2012, and GFR 2017 Rules 170 and 173); (3) They cost $500 to $2,000 per month, which is economically inaccessible to Indian MSMEs; and (4) Pure LLMs hallucinate financial math, creating catastrophic legal risk.
+
+
+Q4: What are the five material qualification traps that cause Indian MSMEs to be disqualified?
+
+A4: The five major qualification traps are:
+1. The Turnover Relaxation Trap: An MSME relies on general statutory turnover exemptions under GFR 173(i), but a Buyer Added ATC or Corrigendum explicitly revokes exemption for that specific bid.
+2. The Past Experience Trap: Complex CPWD/GeM "similar work" definitions (e.g., one project of 80%, two of 50%, or three of 40% value) spanning strict date windows.
+3. The Make in India (MII) Local Content Trap: Confusing Class-I (>=50% local content) and Class-II (20%-49%) supplier eligibility, resulting in automatic technical disqualification if only Class-I is permitted.
+4. The OEM Authorization (MAF) Trap: Resellers and EPC contractors failing to submit a signed, bid-specific Manufacturer Authorization Form prior to deadline.
+5. The Mandatory Certifications Trap: Hidden clauses requiring specific ISO, BIS, CMMI, or CE quality certifications with specific accreditation bodies.
+
+
+Q5: What is the Tripartite Document Hierarchy and why does flat RAG fail on government tenders?
+
+A5: Solicitations in India are distributed across three legal layers: (1) The Main Tender/GeM Bid PDF (template baseline), (2) Buyer Added Bid Specific Terms & Conditions (ATC) either in text or hyperlinked RFP PDFs, and (3) Sequential Corrigenda issued post-publication. Flat RAG fails because a standard vector similarity search retrieves contradictory chunks and cannot determine legal supersession. A Corrigendum clause carries higher legal weight than an ATC clause, which in turn overrides the Main PDF. TenderLens solves this by modeling every tender as a Versioned Directed Acyclic Graph (DAG) with strict Precedence Ranking (Rank 1 Latest Corrigendum down to Rank 5 Main PDF).
+
+
+Q6: What is the "Safe Uncertainty Principle" in TenderLens?
+
+A6: Most AI tools suffer from "forced certainty" and hallucinate an answer when faced with contractual ambiguity. Under the Safe Uncertainty Principle, if two clauses at the same precedence rank conflict, or if a buyer ATC clause illegally contradicts overarching GeM General Terms and Conditions (GTC) without explicit exemption authority, TenderLens refuses to guess. It flags the item as "AMBIGUOUS_MANUAL_REVIEW", lowers the scorecard recommendation to "CONDITIONAL_BID", and highlights both conflicting citations with page and clause coordinates for human review before capital is committed.
+
+
+Q7: Why did Team Traxo choose TinyFish, and how does it give TenderLens an unfair advantage?
+
+A7: TinyFish is a web infrastructure and API platform built specifically for AI agents, replacing fragile scraping scripts and costly proxy clusters with three high-speed primitives:
+1. TinySearch API ($0.00/call): Provides rank-stable, live search across Indian procurement domains (gem.gov.in, eprocure.gov.in, tenders.bhel.com) in under 500ms without IP blocking.
+2. TinyFetch Recursive ($0.00/call): Renders JavaScript-heavy single-page applications, strips out ads, boilerplate HTML, and scripts, returning bilingual Markdown and automatically discovering child ATC hyperlinks. This reduces LLM token costs by over 80%.
+3. TinyAgent Stealth SSE ($0.016/step): An autonomous browser fallback for JS-gated portals with dynamic filter states. We enforce a strict cost circuit breaker (max 10 steps, 60 seconds) with live SSE streaming.
+
+
+Q8: How does TenderLens extract hidden ATCs that are embedded inside GeM bid PDFs?
+
+A8: On GeM, the buyer-uploaded ATC document is rarely printed as a plain-text URL. Instead, it is embedded as an interactive hyperlink annotation inside the PDF stream ("Buyer uploaded ATC document: Click here to view the file"). Traditional scrapers miss this completely. TenderLens utilizes PyMuPDF (fitz) to inspect the PDF's low-level URI annotation dictionary (via page.get_links()), extracts the destination object URL, and automatically enqueues it into the TinyFetch recursive crawler up to depth d <= 2.
+
+
+Q9: Why does TenderLens use a Hybrid Engine (Deterministic Python + Semantic LLM) instead of pure LLM?
+
+A9: Asking an LLM to perform mathematical calculations (e.g., verifying whether a 3-year turnover average of ₹3.42 Crore meets an ₹80 Lakh threshold, or checking CPWD 80/50/40 experience ratios) introduces hallucination risk. TenderLens isolates all numerical thresholds, financial ratios, GFR Rule 170 EMD rules, and DPIIT local content formulas into pure-Python deterministic gates. The LLM is used strictly for what it excels at: semantic clause interpretation, scope similarity matching, and anomaly detection. This guarantees a 0.0% math hallucination rate.
+
+
+Q10: What is the Two-Tier Document Intelligence Pipeline in TenderLens?
+
+A10: To achieve our SLA of processing complete multi-document tenders in under 5 minutes:
+- Tier 1 Fast Pass (PyMuPDF): Ingests text at 250+ pages per second on standard CPU, clips bilingual Hindi/English columns spatially, captures bounding boxes [x0, y0, x1, y1] for frontend SVG overlays, and extracts hidden hyperlinks.
+- Tier 2 Structural Pass (IBM Docling / TableFormer): Pages detected with complex financial tables, low character counts, or scanned annexures are routed selectively to Docling to reconstruct exact table cell hierarchies without bogging down the entire document pipeline.
+
+
+Q11: What are the target performance metrics and validation benchmarks for Round 2?
+
+A11: TenderLens has established strict engineering benchmarks:
+- Disqualifier Precision: >= 85% (Percentage of flagged disqualifiers verified as true statutory/ATC rejection criteria).
+- Disqualifier Recall: >= 80% (Percentage of actual disqualifications caught across our 50-tender GeM benchmark dataset).
+- Linked ATC Capture Rate: >= 90% (Successful retrieval and parsing of child ATC and corrigenda files via TinyFetch and PyMuPDF).
+- Average Turnaround Time: < 5 minutes per complete tender document set.
+- Math Hallucination Rate: 0.0% (Achieved via deterministic Python gatekeeper).
+
+
+Q12: What is the go-to-market (GTM) strategy and monetization model?
+
+A12: TenderLens operates on a three-tier model:
+1. Freemium: 3 free tender eligibility audits per month for registered Indian MSMEs.
+2. MSME Pro: Monthly SaaS subscription at ₹1,499/month for unlimited audits, corrigenda change alerts, and exportable PDF compliance reports.
+3. Enterprise / Consultant: Multi-seat API access for EPC contractors and bid consultancies handling dozens of tenders concurrently.
+Our beachhead market is Haryana e-Procurement (6,155 active tenders), targeting Electrical and IT hardware manufacturing MSMEs where technical specifications and Make in India rules are most contentious.
