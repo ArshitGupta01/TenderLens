@@ -31,3 +31,7 @@ dev = [
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"
+
+
+[tool.vercel]
+entrypoint = "backend.main:app"

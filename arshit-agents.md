@@ -192,3 +192,11 @@ Recommended relational tables for Arshit's implementation:
 - [x] Validated zero syntax errors (
 ode --check) across all frontend scripts in both root and rontend/.
 - [x] Verified full backend suite: all 34/34 unit, integration, and live pipeline tests pass in 112s.
+
+### Live Vercel Production Deployment — 2026-10-24
+- [x] Deployed live to Vercel with project name 	enderlens under team 	eam_2bd4JqS5pfsQYUDhbwMEDBzK (username rshitgupta2017-9626).
+- [x] Production URLs:
+  - Canonical: https://tenderlens-ten.vercel.app
+  - Team Alias: https://tenderlens-arshit-s-projects-680b94fa.vercel.app
+- [x] Verified 200 OK responses across all routes with clean multi-page URLs (/, /strategy, /signin, /account, /robots.txt, /404).
+- [x] Configured static multi-page rootDirectory rontend to bypass AWS Lambda 500MB function size limit while serving full responsive UI, Top Menu Banner, Supabase Auth, and client Strategy Studio.

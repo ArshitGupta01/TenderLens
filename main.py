@@ -1,10 +1,11 @@
 """
 TenderLens - Main Application Entrypoint
 ========================================
-Runs the unified FastAPI application via Uvicorn.
+Exposes top-level FastAPI instance for Vercel Serverless and Uvicorn.
 """
 
 import uvicorn
+from backend.main import app
 from backend.config import settings
 
 if __name__ == "__main__":
