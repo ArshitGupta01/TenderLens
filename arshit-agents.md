@@ -364,4 +364,12 @@ ode --check) across all frontend scripts in both root and rontend/.
   - Preserved the Core Architectural Comparison & 5-Step Pipeline (`#architecture`).
   - Deployed to Vercel production (`https://tenderlens-mauve.vercel.app`) with zero broken links or remaining tech stack cards.
 - [x] Synced and pushed changes across both `main` and `repomix` branches on GitHub.
+- [x] Restructured navigation menu for production UX:
+  - Repositioned **Sign in** and **Create account** (or **My account** / **Saved tenders**) to the very TOP of the navigation drawer in `.menu-group-auth` for immediate, single-tap access.
+  - Purged internal developer sections (`ARCHITECTURE & ENGINE` and `Document Order (Precedence DAG)`).
+  - Streamlined remaining links into two focused categories: **PLATFORM & TOOLS** (`Strategy Studio`, `Tenders Desk`, `Qualification Report`, `Saved Tenders Shortlist`, `Bidder Profile`) and **RESOURCES** (`Guide & Documentation`, `Privacy`, `Terms`).
+  - Applied changes consistently across all 18 HTML pages in root and `frontend/`.
+  - Added `.menu-group-auth` CSS divider rules in `styles.css` and `frontend/styles.css`.
+  - Deployed to Vercel production (`https://tenderlens-mauve.vercel.app`) and verified live.
+- [x] Synced and pushed changes across both `main` and `repomix` branches on GitHub.
 - [ ] Next milestone: Live hackathon presentation walkthrough and client production monitoring.
