@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f4f2e9">
+    <meta name="description" content="Plain-language TenderLens privacy notice for the website and optional live search.">
+    <meta name="tenderlens-api" content="">
+    <title>Privacy — TenderLens</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="vendor/lenis.css">
+    <script src="theme.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0" defer></script>
+    <script src="auth.js" defer></script>
+    <script src="vendor/lenis.min.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body class="legal-page">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="container nav-shell">
+        <a class="brand" href="index.html" aria-label="TenderLens home"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M7 12.5V8h4.5M28.5 8H33v4.5M33 27.5V32h-4.5M11.5 32H7v-4.5" stroke="currentColor" stroke-width="1.7"/><circle cx="20" cy="18.5" r="7.2" stroke="currentColor" stroke-width="1.7"/><path d="m25.2 23.7 6.1 6.1" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/><circle cx="20" cy="18.5" r="2" fill="currentColor"/></svg></span><span class="brand-name">Tender<span>Lens</span></span><span class="brand-descriptor">PROCUREMENT, MADE CLEAR</span></a>
+        <div class="header-actions"><a class="header-account-link" data-auth-signin href="signin.html">Sign in</a><button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme" aria-pressed="false" title="Switch to dark theme"><span class="theme-toggle-icon" aria-hidden="true">☾</span><span id="theme-toggle-label">Dark mode</span></button><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav"><span class="menu-toggle-label">Menu</span><span class="menu-lines" aria-hidden="true"><i></i><i></i></span></button></div>
+        <nav class="primary-nav" id="primary-nav" aria-label="Main navigation"><a href="index.html">Home</a><a href="guide.html">Easy guide</a><a href="privacy.html" aria-current="page">Privacy</a><a href="terms.html">Terms</a><a class="nav-cta" href="index.html#opportunities">Explore tenders <span aria-hidden="true">↗</span></a><a class="nav-cta nav-account-cta" data-auth-signup href="signup.html">Create account <span aria-hidden="true">↗</span></a></nav>
+      </div>
+    </header>
+    <main class="legal-main" id="main">
+      <div class="container legal-copy">
+        <p class="eyebrow"><span class="eyebrow-mark"></span> A PLAIN-LANGUAGE NOTICE · UPDATED 24 OCTOBER 2026</p>
+        <h1>Privacy</h1>
+        <p class="legal-intro">TenderLens is a hackathon project. This notice explains what happens when you use its sample pages, optional live search and account features.</p>
+        <h2>Using the sample</h2>
+        <p>Sample searches, filters, fictional saved examples, the checklist and report controls run in your browser. Your light or dark theme choice and a signed-out bidder-profile draft are saved on this device. Fictional tender examples and checklist selections are not uploaded or stored in your account.</p>
+        <h2>Accounts and saved live tenders</h2>
+        <p>When account sign-in is enabled, Supabase Auth handles your email address, password credentials, confirmation and session. TenderLens does not receive or store your password. If you sign up with Google, Google and Supabase process the sign-in under their own terms. Supabase stores the basic profile fields you choose to save: name, organization, bidder type, years in business and operating region. Your saved live tender links include the notice title, official URL, portal name and search snippet. These details are stored in Supabase Postgres and protected by row-level security so an account can read or change only its own rows.</p>
+        <p>You can edit your profile or remove individual saved tenders from your account. Account deletion is not currently available as a self-service action. Avoid entering registration numbers, financial figures, bank details, bid documents or other confidential information.</p>
+        <h2>Choosing live search</h2>
+        <p>Live search is optional. After you press “Search live tenders,” the page checks whether the TenderLens service is available. If it is ready, only the search words and the portal you chose are sent to the configured service, which asks TinyFish for public tender notices. The website does not send your local bidder profile, checklist or saved examples with this search.</p>
+        <p>The search provider and the server that runs TenderLens may process ordinary connection details needed to answer the request. Search phrases are not saved to a TenderLens account. A live result is stored only if you sign in and explicitly choose “Save to account.” Results may be incomplete or out of date; open the official notice before relying on them.</p>
+        <h2>Files and company information</h2>
+        <p>This website does not upload tender files or company records. A local profile draft stays in your browser. If you are signed in, choosing “Save profile” sends only the basic profile fields described above to Supabase so they can sync between your devices. This does not connect the profile to an eligibility review. The backend also contains early developer routes for fetching a tender and making a sample scorecard, but this page does not call those routes.</p>
+        <h2>Other services</h2>
+        <p>The website may load fonts from Google Fonts and the Supabase JavaScript client from jsDelivr. Lenis, the smooth-scrolling library, is included with the project and runs locally. The site does not use advertising pixels or analytics tools.</p>
+        <h2>Questions</h2>
+        <p>This preview is presented by Team Traxo for HackIIITD. A support email address has not been provided.</p>
+        <a class="button button-dark legal-back" href="index.html">Return to TenderLens <span aria-hidden="true">↗</span></a>
+      </div>
+    </main>
+    <footer class="site-footer"><div class="container footer-main"><a class="brand footer-brand" href="index.html"><span class="brand-mark" aria-hidden="true">TL</span><span class="brand-name">Tender<span>Lens</span></span></a><p>Clearer tender reviews, with the source close by.<br>Built by Team Traxo for HackIIITD.</p><div class="footer-links"><a href="guide.html">Easy guide</a><a href="terms.html">Terms &amp; conditions</a><a href="index.html">Home</a></div></div><div class="container footer-bottom"><span>© <span id="current-year">2026</span> TENDERLENS · TEAM TRAXO</span><span>SAMPLE DATA ONLY</span></div></footer>
+  </body>
+</html>

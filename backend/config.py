@@ -26,6 +26,14 @@ class Settings(BaseSettings):
     BACKEND_PORT: int = Field(default=8000, description="FastAPI server port")
     BACKEND_HOST: str = Field(default="0.0.0.0", description="FastAPI server host")
     ENVIRONMENT: str = Field(default="development", description="Environment: development, test, production")
+    CORS_ORIGINS: str = Field(
+        default="http://localhost:3000,http://127.0.0.1:3000,http://localhost:4177,http://127.0.0.1:4177,http://localhost:8000,http://127.0.0.1:8000,http://localhost:5173,http://127.0.0.1:5173",
+        description="Comma-separated browser origins allowed to call this API"
+    )
+
+    # Supabase & Database Pairing
+    SUPABASE_URL: str = Field(default="", description="Supabase project URL used by the browser auth client")
+    SUPABASE_PUBLISHABLE_KEY: str = Field(default="", description="Public Supabase publishable key; safe to return to browsers when RLS is enabled")
 
     # Indian Procurement Web Intelligence Defaults
     ALLOWED_DOMAINS: str = Field(

@@ -19,7 +19,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sse_starlette.sse import EventSourceResponse
 from pydantic import BaseModel, Field
 
-from backend.config import settings
+from backend.config import settings, ROOT_DIR
 from backend.services.tinyfish_service import (
     TinyFishService,
     DiscoveredTender,
@@ -58,10 +58,14 @@ app = FastAPI(
     version="1.0.1"
 )
 
-# Enable CORS for Arshit's Next.js Frontend
+# Enable CORS for Arshit's Frontend and local origins
+cors_origins = [origin.strip() for origin in settings.CORS_ORIGINS.split(",") if origin.strip()]
+if "*" not in cors_origins:
+    cors_origins.append("*")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000", "*"],
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -103,6 +107,28 @@ async def health_check():
         "version": "1.0.1",
         "environment": settings.ENVIRONMENT,
         "tinyfish_configured": bool(settings.TINYFISH_API_KEY and not settings.TINYFISH_API_KEY.startswith("sk-tinyfish-your-key"))
+    }
+
+
+@app.get("/api/v1/auth/config")
+async def auth_config():
+    """Return the Supabase project URL and publishable key to the browser frontend.
+
+    Publishable keys identify a public client and are safe to expose. Secret keys
+    and database passwords must never be returned here; RLS protects user rows.
+    """
+    supabase_url = settings.SUPABASE_URL.strip()
+    publishable_key = settings.SUPABASE_PUBLISHABLE_KEY.strip()
+    configured = (
+        supabase_url.startswith("https://")
+        and "your-project" not in supabase_url.lower()
+        and publishable_key.startswith("sb_publishable_")
+        and "your-project" not in publishable_key.lower()
+    )
+    return {
+        "configured": configured,
+        "supabase_url": supabase_url if configured else "",
+        "publishable_key": publishable_key if configured else "",
     }
 
 
@@ -283,4 +309,12 @@ async def get_competitor_forensics_endpoint(
         tender_title=tender_title,
         source_portal=source_portal
     )
+
+
+# Pair up Frontend: Mount static files if frontend/ directory exists
+frontend_dir = ROOT_DIR / "frontend"
+if frontend_dir.exists():
+    from fastapi.staticfiles import StaticFiles
+    app.mount("/", StaticFiles(directory=str(frontend_dir), html=True), name="frontend")
+
 
