@@ -33,9 +33,19 @@ from backend.engine.deterministic_gatekeeper import (
     TenderStatutoryCriteria
 )
 from backend.engine.qualification_engine import QualificationEngine
+from backend.engine.prebid_legal_generator import PreBidLegalGenerator
+from backend.engine.consortium_matchmaker import ConsortiumMatchmaker
+from backend.engine.compliance_matrix_engine import ComplianceMatrixEngine
+from backend.engine.emd_capital_optimizer import EMDCapitalOptimizer
+from backend.engine.competitor_forensics import CompetitorForensicsEngine
 from contracts.schema import (
     BidderProfile,
-    QualificationScorecard
+    QualificationScorecard,
+    PreBidLegalRepresentationPack,
+    ConsortiumMatchRecommendation,
+    ComplianceAndBinderPackage,
+    EMDCapitalOptimizationReport,
+    CompetitorForensicsReport
 )
 
 # Configure logging
@@ -223,3 +233,54 @@ async def stream_audit_progress(task_id: str):
             logger.info(f"SSE client disconnected from task {task_id}")
 
     return EventSourceResponse(event_generator())
+
+
+@app.post("/api/v1/strategy/prebid-queries", response_model=PreBidLegalRepresentationPack)
+async def generate_prebid_queries_endpoint(payload: AuditEvaluationRequest):
+    """Pillar A: Generates formal legal pre-bid representations challenging unfair ATCs."""
+    scorecard = await evaluate_tender_endpoint(payload, BackgroundTasks())
+    return scorecard.prebid_legal_pack
+
+
+@app.post("/api/v1/strategy/consortium-match", response_model=ConsortiumMatchRecommendation)
+async def match_consortium_partners_endpoint(payload: AuditEvaluationRequest):
+    """Pillar B: Computes exact eligibility shortfalls and recommends JV/OEM partners."""
+    scorecard = await evaluate_tender_endpoint(payload, BackgroundTasks())
+    return scorecard.consortium_recommendation
+
+
+@app.post("/api/v1/strategy/compliance-matrix", response_model=ComplianceAndBinderPackage)
+async def generate_compliance_matrix_endpoint(payload: AuditEvaluationRequest):
+    """Pillar C: Auto-generates CSV/Table Compliance Matrix, Deviation Statement, and Statutory Affidavits."""
+    scorecard = await evaluate_tender_endpoint(payload, BackgroundTasks())
+    return scorecard.compliance_binder
+
+
+@app.post("/api/v1/strategy/emd-optimizer", response_model=EMDCapitalOptimizationReport)
+async def optimize_emd_capital_endpoint(payload: AuditEvaluationRequest):
+    """Pillar D: Evaluates working capital lock-up and IRDAI Insurance Surety Bond optimization."""
+    criteria = payload.explicit_criteria or TenderStatutoryCriteria()
+    return EMDCapitalOptimizer.evaluate_capital_risk(
+        bidder=payload.bidder_profile,
+        criteria=criteria
+    )
+
+
+@app.get("/api/v1/strategy/forensics", response_model=CompetitorForensicsReport)
+async def get_competitor_forensics_endpoint(
+    tender_title: str = Query(..., description="Tender title or category"),
+    source_portal: str = Query("GeM", description="Portal or PSU name, e.g., BHEL, ICMR, GeM, CPPP"),
+    live_search: bool = Query(False, description="Whether to query live TinySearch archives")
+):
+    """Pillar E: Returns historical technical evaluation rejection forensics for the procuring authority."""
+    if live_search:
+        return await CompetitorForensicsEngine.analyze_with_live_archives(
+            tender_title=tender_title,
+            source_portal=source_portal,
+            tinyfish=tinyfish
+        )
+    return CompetitorForensicsEngine.analyze_static_forensics(
+        tender_title=tender_title,
+        source_portal=source_portal
+    )
+
