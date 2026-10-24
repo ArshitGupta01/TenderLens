@@ -1,7 +1,7 @@
 # arshit-agents.md — Arshit's Memory & Progress Tracker
 
 > **Project**: TenderLens (AI-Powered Tender Qualification & Disqualification Engine)  
-> **Team**: Team Traxo · HackIIITD (Round 2)  
+> **Team**: TenderLens  
 > **Agent Owner**: Arshit  
 > **Domain**: Frontend (Next.js), Database (PostgreSQL / Migrations), Object Storage, Async Job Queues & UI Experience  
 > **Status**: Responsive website with optional FastAPI search and configured Supabase auth/profile/bookmark code; Google OAuth and demo-account verification remain pending

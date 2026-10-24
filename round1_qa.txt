@@ -1,6 +1,6 @@
 Q1: What is TenderLens and what core problem does it solve in public procurement?
 
-A1: TenderLens is an AI-powered tender qualification and disqualification engine built by Team Traxo for Indian public procurement (GeM, CPPP, State Portals, and PSUs). Our core thesis is: "Finding tenders is easy. Proving eligibility is hard." Today, discovering notices is commoditized by search aggregators, but Indian MSMEs and contractors lose thousands of hours and risk millions in Earnest Money Deposits (EMD) because eligibility criteria are buried across main tender PDFs, buyer-added Additional Terms & Conditions (ATCs), and last-minute corrigenda. TenderLens audits the complete document set before a bid is prepared and produces an evidence-backed Bid/No-Bid scorecard.
+A1: TenderLens is an AI-powered tender qualification and disqualification engine built for Indian public procurement (GeM, CPPP, State Portals, and PSUs). Our core thesis is: "Finding tenders is easy. Proving eligibility is hard." Today, discovering notices is commoditized by search aggregators, but Indian MSMEs and contractors lose thousands of hours and risk millions in Earnest Money Deposits (EMD) because eligibility criteria are buried across main tender PDFs, buyer-added Additional Terms & Conditions (ATCs), and last-minute corrigenda. TenderLens audits the complete document set before a bid is prepared and produces an evidence-backed Bid/No-Bid scorecard.
 
 
 Q2: Why do existing tender aggregators like BidAssist and Tender247 fail to solve this problem?
@@ -33,7 +33,7 @@ Q6: What is the "Safe Uncertainty Principle" in TenderLens?
 A6: Most AI tools suffer from "forced certainty" and hallucinate an answer when faced with contractual ambiguity. Under the Safe Uncertainty Principle, if two clauses at the same precedence rank conflict, or if a buyer ATC clause illegally contradicts overarching GeM General Terms and Conditions (GTC) without explicit exemption authority, TenderLens refuses to guess. It flags the item as "AMBIGUOUS_MANUAL_REVIEW", lowers the scorecard recommendation to "CONDITIONAL_BID", and highlights both conflicting citations with page and clause coordinates for human review before capital is committed.
 
 
-Q7: Why did Team Traxo choose TinyFish, and how does it give TenderLens an unfair advantage?
+Q7: Why did TenderLens choose TinyFish, and how does it give an unfair advantage?
 
 A7: TinyFish is a web infrastructure and API platform built specifically for AI agents, replacing fragile scraping scripts and costly proxy clusters with three high-speed primitives:
 1. TinySearch API ($0.00/call): Provides rank-stable, live search across Indian procurement domains (gem.gov.in, eprocure.gov.in, tenders.bhel.com) in under 500ms without IP blocking.

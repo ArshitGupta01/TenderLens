@@ -1,7 +1,7 @@
 # `single.md` — TenderLens Master Context & Engineering Blueprint for Antigravity
 
 > **Project**: TenderLens (AI-Powered Public Procurement Qualification & Disqualification Engine)[cite: 1]  
-> **Team**: Team Traxo · HackIIITD (Round 2)[cite: 1]  
+> **Team**: TenderLens[cite: 1]  
 > **Active Agent Scope**: **Mohit & Antigravity AI** (Backend, Web Intelligence, Document Intelligence, Deterministic Qualification Engine & API Orchestration)[cite: 1]  
 > **Environment**: Python 3.12 (`uv` package manager) · Windows (`d:\softwares\Tenderlens\TenderLens`)[cite: 1]
 

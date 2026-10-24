@@ -36,8 +36,7 @@
   "include": [
     "components",
     "lib",
-    ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts"
+    "frontend"
   ],
   "exclude": [
     "node_modules"
