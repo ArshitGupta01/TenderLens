@@ -4,7 +4,6 @@ TenderLens - Test Suite: Deterministic Gatekeeper & Qualification Engine
 Validates pure-Python statutory gates and Precedence DAG synthesis.
 """
 
-import pytest
 from contracts.schema import BidderProfile
 from backend.engine.deterministic_gatekeeper import (
     DeterministicGatekeeper,

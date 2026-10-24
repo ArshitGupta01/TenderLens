@@ -5,9 +5,8 @@ Unit Tests for TenderLens Supabase Cloud Database & Auth Integration (Free Tier)
 import pytest
 from fastapi.testclient import TestClient
 from backend.main import app
-from backend.config import settings
 from backend.services.supabase_service import SupabaseService
-from contracts.schema import BidderProfile, QualificationScorecard, GateResult
+from contracts.schema import BidderProfile
 
 
 def make_test_bidder() -> BidderProfile:

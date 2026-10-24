@@ -10,7 +10,7 @@ Two-tier document intelligence engine using PyMuPDF (fitz) with:
 
 import re
 import pymupdf
-from typing import List, Dict, Any, Optional, Tuple, Set
+from typing import List, Optional, Set
 from pathlib import Path
 from pydantic import BaseModel, Field
 

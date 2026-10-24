@@ -5,7 +5,6 @@ Tests gemini-3.8-flash integration for semantic clause conflict detection,
 statutory exemption revocation identification, and async evaluation synthesis.
 """
 
-import os
 import pytest
 from backend.config import settings
 from contracts.schema import BidderProfile

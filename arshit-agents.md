@@ -184,3 +184,11 @@ Recommended relational tables for Arshit's implementation:
   - `robots.txt` and `sitemap.xml`: SEO and crawler directives for production deployment.
 - [x] Synced all static assets and configuration files between repository root and `frontend/`.
 - [ ] Next milestone: Deploy to Vercel via `npx vercel` or GitHub integration and connect custom domain.
+
+### Codebase Hygiene & Dead Code Purge — 2026-10-24
+- [x] Deleted 303KB obsolete Repomix snapshot (single.xml) and updated .gitignore to ignore build/export dumps.
+- [x] Audited and eliminated unused imports, dead functions, and redundant variables across all Python files in ackend/, contracts/, and 	ests/.
+- [x] Converted empty placeholder main.py into a functional Uvicorn CLI entrypoint for local execution.
+- [x] Validated zero syntax errors (
+ode --check) across all frontend scripts in both root and rontend/.
+- [x] Verified full backend suite: all 34/34 unit, integration, and live pipeline tests pass in 112s.

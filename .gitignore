@@ -49,3 +49,7 @@ data/cache/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Repomix & scratch dumps
+single.xml
+repomix-output.*

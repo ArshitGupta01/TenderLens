@@ -2,7 +2,6 @@
 TenderLens v1.0.1 — Comprehensive Unit & Integration Tests for Pillars A–E
 """
 
-import pytest
 from contracts.schema import BidderProfile
 from backend.services.document_processor import ProcessedClauseChunk
 from backend.engine.deterministic_gatekeeper import TenderStatutoryCriteria

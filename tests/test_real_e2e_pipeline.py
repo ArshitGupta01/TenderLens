@@ -13,17 +13,10 @@ Executes a real test of all TenderLens components:
 5. Live FastAPI Endpoint Verification (/api/v1/audit/evaluate)
 """
 
-import sys
 import asyncio
-import pytest
 from fastapi.testclient import TestClient
 
-from backend.config import settings
 from backend.services.tinyfish_service import TinyFishService
-from backend.services.document_processor import (
-    DocumentProcessor,
-    ProcessedClauseChunk
-)
 from backend.engine.deterministic_gatekeeper import (
     DeterministicGatekeeper,
     TenderStatutoryCriteria

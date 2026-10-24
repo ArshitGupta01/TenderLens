@@ -22,12 +22,11 @@ Production REST and Server-Sent Events (SSE) router exposing:
 - POST /api/v1/profile/sync
 """
 
-import os
 import uuid
 import json
 import asyncio
 import logging
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Optional
 from fastapi import FastAPI, HTTPException, BackgroundTasks, Query, Header
 from fastapi.middleware.cors import CORSMiddleware
 from sse_starlette.sse import EventSourceResponse
@@ -48,9 +47,6 @@ from backend.engine.deterministic_gatekeeper import (
     TenderStatutoryCriteria
 )
 from backend.engine.qualification_engine import QualificationEngine
-from backend.engine.prebid_legal_generator import PreBidLegalGenerator
-from backend.engine.consortium_matchmaker import ConsortiumMatchmaker
-from backend.engine.compliance_matrix_engine import ComplianceMatrixEngine
 from backend.engine.emd_capital_optimizer import EMDCapitalOptimizer
 from backend.engine.competitor_forensics import CompetitorForensicsEngine
 from backend.engine.precedence_rag_engine import PrecedenceRAGEngine
@@ -64,7 +60,6 @@ from contracts.schema import (
     ComplianceAndBinderPackage,
     EMDCapitalOptimizationReport,
     CompetitorForensicsReport,
-    RAGQueryRequest,
     RAGQueryResponse,
     PrecedenceDAGGraph
 )

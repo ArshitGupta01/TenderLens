@@ -10,13 +10,11 @@ Tests:
 6. FastAPI REST endpoints for RAG query and DAG graph
 """
 
-import pytest
 from fastapi.testclient import TestClient
 
 from backend.main import app
 from backend.services.document_processor import ProcessedClauseChunk, BoundingBox
 from backend.engine.precedence_rag_engine import PrecedenceRAGEngine
-from contracts.schema import RAGPrecedenceCitation
 
 client = TestClient(app)
 

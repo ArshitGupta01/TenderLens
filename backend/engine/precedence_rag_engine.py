@@ -16,14 +16,13 @@ Eliminates Naive Flat Vector RAG Hallucinations in Public Procurement:
 
 import re
 import logging
-from typing import List, Dict, Any, Optional, Tuple
+from typing import List, Dict, Optional, Tuple
 import httpx
 
 from backend.config import settings
-from backend.services.document_processor import ProcessedClauseChunk, BoundingBox
+from backend.services.document_processor import ProcessedClauseChunk
 from contracts.schema import (
     RAGPrecedenceCitation,
-    RAGQueryRequest,
     RAGQueryResponse,
     PrecedenceDAGNode,
     PrecedenceDAGEdge,

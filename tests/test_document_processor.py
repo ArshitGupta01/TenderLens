@@ -4,7 +4,6 @@ TenderLens - Test Suite: Document Processor
 Tests PDF parsing, hidden hyperlink extraction, and Precedence Rank tagging.
 """
 
-import pytest
 import pymupdf
 from pathlib import Path
 from backend.services.document_processor import DocumentProcessor

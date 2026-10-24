@@ -4,8 +4,6 @@ TenderLens - Backend Configuration & Settings
 Manages environment variables, API keys, and operational limits.
 """
 
-import os
-from typing import List
 from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
