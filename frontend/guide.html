@@ -29,37 +29,31 @@
           <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme" aria-pressed="false" title="Switch to dark theme"><span class="theme-toggle-icon" aria-hidden="true">☾</span><span id="theme-toggle-label">Dark mode</span></button>
           <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav"><span class="menu-toggle-label">Menu</span><span class="menu-lines" aria-hidden="true"><i></i><i></i></span></button>
         </div>
-        <nav class="primary-nav" id="primary-nav" aria-label="Main navigation">
+        <nav class="primary-nav" id="primary-nav" data-lenis-prevent aria-label="Main navigation">
           <div class="menu-status-bar">
             <span class="menu-pulse" aria-hidden="true"></span>
-            <span class="menu-status-text">TENDERLENS v1.0.3 LIVE</span>
+            <span class="menu-status-text">TENDERLENS v2.0.2</span>
           </div>
           <div class="menu-group">
-            <div class="menu-section-heading">EXPLORE &amp; REVIEW</div>
-            <a class="menu-item" href="index.html#demo">
-              <span class="menu-item-lead"><span class="menu-item-icon">📋</span><span class="menu-item-text">Qualification Report</span></span>
-            </a>
-            <a class="menu-item" href="index.html#opportunities">
-              <span class="menu-item-lead"><span class="menu-item-icon">🔍</span><span class="menu-item-text">Sample Tenders Desk</span></span>
-            </a>
-            <a class="menu-item" href="index.html#precedence">
-              <span class="menu-item-lead"><span class="menu-item-icon">📑</span><span class="menu-item-text">Document Order (Precedence DAG)</span></span>
-            </a>
-            <a class="menu-item" href="index.html#profile">
-              <span class="menu-item-lead"><span class="menu-item-icon">🏢</span><span class="menu-item-text">Bidder Profile</span></span>
-            </a>
-          </div>
-          <div class="menu-group">
-            <div class="menu-section-heading">STRATEGY &amp; TOOLS</div>
+            <div class="menu-section-heading">EXPLORE &amp; STRATEGY</div>
             <a class="menu-item menu-item-featured" href="strategy.html">
               <span class="menu-item-lead"><span class="menu-item-icon">⚡</span><span class="menu-item-text">Strategy Studio</span></span>
               <span class="menu-tag">5 Pillars</span>
             </a>
+            <a class="menu-item" href="strategy.html#precedence-rag-workbench">
+              <span class="menu-item-lead"><span class="menu-item-icon">📑</span><span class="menu-item-text">Precedence DAG Resolver</span></span>
+            </a>
             <a class="menu-item" href="guide.html">
-              <span class="menu-item-lead"><span class="menu-item-icon">📖</span><span class="menu-item-text">Easy Guide &amp; FAQ</span></span>
+              <span class="menu-item-lead"><span class="menu-item-icon">🛡️</span><span class="menu-item-text">Statutory Exemption Hub</span></span>
+            </a>
+            <a class="menu-item" href="index.html#opportunities">
+              <span class="menu-item-lead"><span class="menu-item-icon">🔍</span><span class="menu-item-text">Sample Tenders Desk</span></span>
+            </a>
+            <a class="menu-item" href="account.html">
+              <span class="menu-item-lead"><span class="menu-item-icon">🏢</span><span class="menu-item-text">Bidder Profile</span></span>
             </a>
             <a class="menu-item" href="saved-tenders.html">
-              <span class="menu-item-lead"><span class="menu-item-icon">⭐</span><span class="menu-item-text">Saved Tenders Shortlist</span></span>
+              <span class="menu-item-lead"><span class="menu-item-icon">⭐</span><span class="menu-item-text">Saved Tenders</span></span>
             </a>
           </div>
           <div class="menu-group menu-group-footer">
@@ -157,48 +151,45 @@
         </div>
       </section>
 
-      <section class="guide-section guide-section-muted" id="live-search" aria-labelledby="live-title">
+      <section class="guide-section guide-section-muted" id="statutory-shield-guide" aria-labelledby="shield-guide-title">
         <div class="container guide-two-column">
           <div>
-            <p class="eyebrow">05 / OPTIONAL LIVE SEARCH</p>
-            <h2 id="live-title">Turn on current tender search</h2>
-            <p class="guide-copy">This needs the TenderLens backend and a TinyFish API key. The key stays on the server; never put it in the website code.</p>
+            <p class="eyebrow">05 / ZERO-HISTORY STARTUP EXEMPTION</p>
+            <h2 id="shield-guide-title">How to bid with zero financial history</h2>
+            <p class="guide-copy">If your company is under 10 years old and recognized by DPIIT, Indian public procurement law gives you statutory exemptions from prior turnover and experience.</p>
+            <div class="guide-final-links">
+              <a class="button button-dark" href="strategy.html">Launch Strategy Studio &amp; Shield <span aria-hidden="true">↗</span></a>
+            </div>
           </div>
           <div class="guide-setup">
             <ol>
-              <li>Install <a href="https://docs.astral.sh/uv/getting-started/installation/" target="_blank" rel="noopener noreferrer">uv</a> and sync the project dependencies.</li>
-              <li>Copy <code>.env.example</code> to <code>.env</code>, then add your TinyFish key to <code>TINYFISH_API_KEY</code>.</li>
-              <li>Start the API with <code>uv run uvicorn backend.main:app --reload</code>.</li>
-              <li>In another terminal, run <code>python -m http.server 4177</code> and open <code>http://localhost:4177</code>.</li>
-              <li>Open “Search current tender notices” and submit a phrase. Only that phrase and the selected portal are sent.</li>
+              <li><strong>GFR 2017 Rule 173(i) Waiver:</strong> Ministry of Finance mandates that prior turnover and prior experience are waived for recognized startups, subject to technical specifications.</li>
+              <li><strong>Technical Equivalence over Past Revenue:</strong> Instead of past balance sheets, provide government-accredited lab test reports (NABL, BIS, STQC) proving your product meets specifications.</li>
+              <li><strong>Annexure-I Quality Control Proforma:</strong> TenderLens automatically drafts the official equipment and quality assurance affidavit that protects the government buyer from audit inquiries.</li>
+              <li><strong>Pre-Bid Legal Representation:</strong> If a buyer attempts to write "No startup exemption" in the fine print, TenderLens auto-drafts a formal challenge letter citing GeM GTC Clause 4(xiii)(h) to remove the unfair barrier.</li>
             </ol>
-            <p class="guide-copy"><strong>Other backend features:</strong> <code>GEMINI_API_KEY</code> turns on clause/conflict analysis, while <code>TAVILY_API_KEY</code> enables the backup web search. Both are optional for the website and account pages; the model setting defaults to <code>gemini-3.8-flash</code>.</p>
-            <p class="guide-warning"><strong>What is connected?</strong> Live search uses the backend, and the separate Strategy tools page builds a preview from values you enter. Tender fetching and source-document scorecard review are not connected to a webpage form.</p>
-            <a class="guide-api-link" href="http://127.0.0.1:8000/docs" target="_blank" rel="noopener noreferrer">Open the local API reference <span aria-hidden="true">↗</span></a>
+            <a class="guide-api-link" href="strategy.html">Test your startup in Strategy Studio <span aria-hidden="true">↗</span></a>
           </div>
         </div>
       </section>
 
-      <section class="guide-section" id="account-setup" aria-labelledby="account-setup-title">
+      <section class="guide-section" id="mse-quota-guide" aria-labelledby="mse-quota-title">
         <div class="container guide-two-column">
           <div>
-            <p class="eyebrow">06 / ACCOUNTS AND SAVED TENDERS</p>
-            <h2 id="account-setup-title">Set up sign-in once</h2>
-            <p class="guide-copy">TenderLens uses Supabase Auth and Supabase Postgres for accounts. FastAPI provides the public project settings and continues to run live tender search. User rows are protected with database policies.</p>
-            <div class="guide-final-links"><a class="button button-dark" href="signup.html">Create an account <span aria-hidden="true">↗</span></a><a href="signin.html">Already have an account? Sign in</a></div>
+            <p class="eyebrow">06 / MANDATORY 25% MSE SUBCONTRACTING</p>
+            <h2 id="mse-quota-title">Unlock guaranteed 25% subcontracts on mega tenders</h2>
+            <p class="guide-copy">Even when a tender is too large (e.g. ₹50 Crore) for a small firm to bid as prime contractor, the law guarantees you a 25% share.</p>
+            <div class="guide-final-links">
+              <a class="button button-dark" href="strategy.html">Calculate Your 25% Quota <span aria-hidden="true">↗</span></a>
+            </div>
           </div>
           <div class="guide-setup account-setup-card">
             <ol>
-              <li>Create a Supabase project. Copy its Project URL and <strong>publishable key</strong> from the Connect dialog into <code>SUPABASE_URL</code> and <code>SUPABASE_PUBLISHABLE_KEY</code> in your private <code>.env</code>. The publishable key is designed to be exposed to the browser; never use a secret or service-role key here.</li>
-              <li>Run <code>supabase/setup.sql</code> once in Supabase Dashboard → SQL Editor. It creates the bidder-profile and saved-tender tables and locks rows to their account with row-level security.</li>
-              <li>In Supabase Authentication, enable the Email/Password provider.</li>
-              <li>Add <code>http://127.0.0.1:4177/**</code> and <code>http://localhost:4177/**</code> under Supabase Authentication → URL Configuration → Redirect URLs. Set the site URL to the address you use locally.</li>
-              <li>For email confirmation and password reset in production, configure a trusted SMTP provider in Supabase. The built-in test mailer is intended for limited development use.</li>
-              <li>Restart FastAPI with <code>uv run uvicorn backend.main:app --reload</code> and serve the pages at <code>http://127.0.0.1:4177</code>. Sign in, update your profile, then test saving a link from a live search result.</li>
+              <li><strong>The ₹2 Crore Mandatory Trigger:</strong> Under Section 4 of the Public Procurement Policy for MSEs Order 2012, any Central Government procurement valued at or above ₹200 Lakhs (₹2 Crore) mandates that the winning prime contractor must subcontract at least 25% of the total order value to registered Micro &amp; Small Enterprises.</li>
+              <li><strong>Carve-Out Package Identification:</strong> TenderLens analyzes the tender scope of work and automatically identifies non-core sub-packages (installation, commissioning, testing, component supply) suitable for small businesses.</li>
+              <li><strong>Ready-to-Send Partnership Outreach:</strong> TenderLens auto-generates a ready-to-mail formal partnership proposal citing the statutory 25% quota to present to prime EPC bidders.</li>
             </ol>
-            <p class="guide-warning"><strong>Keep secrets out of chat and GitHub.</strong> Never expose service-role or secret keys in client-side code.</p>
-            <p class="guide-copy"><strong>Not needed for this connection:</strong> a direct database password or Supabase secret key. The browser uses Supabase Auth and Postgres Data API with row-level security; FastAPI does not bypass those policies.</p>
-            
+            <p class="guide-warning"><strong>Statutory Protection:</strong> Prime contractors who fail to fulfill their 25% MSE subcontracting quota face contract cancellation and debarment under GeM GTC Clause 4(xxii).</p>
           </div>
         </div>
       </section>

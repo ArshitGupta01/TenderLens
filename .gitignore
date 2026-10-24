@@ -57,3 +57,4 @@ repomix-output.*
 
 tmp/
 *.tsbuildinfo
+artifacts/
