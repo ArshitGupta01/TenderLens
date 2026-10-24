@@ -4,7 +4,7 @@
 > **Team**: Team Traxo · HackIIITD (Round 2)  
 > **Agent Owner**: Arshit  
 > **Domain**: Frontend (Next.js), Database (PostgreSQL / Migrations), Object Storage, Async Job Queues & UI Experience  
-> **Status**: Ready for Frontend & Database Scaffolding  
+> **Status**: Interactive static prototype expanded; production frontend and API integration remain pending
 
 ---
 
@@ -98,6 +98,13 @@ Recommended relational tables for Arshit's implementation:
 - [x] Added a responsive static website in the repository root with an illustrative qualification report, evidence details, and audience profiles.
 - [x] Made prototype limitations clear: live search, uploads, automated audits, accounts, and saved reports are not connected.
 - [ ] Next application milestone remains a Next.js frontend wired to the planned backend APIs; the static prototype is not that application.
+
+### Interactive prototype expansion — 2026-10-24
+- [x] Added a searchable, category-filtered sample tender desk with in-page previews and visit-only saved examples.
+- [x] Added an interactive five-layer precedence explorer and a local six-item bidder readiness checklist.
+- [x] Added Lenis smooth scrolling, reading progress, section reveals, active navigation, and a back-to-top control with reduced-motion support.
+- [x] Updated privacy and terms notices for the local-only interactions and locally bundled Lenis library.
+- [ ] Next application milestone remains a real frontend wired to implemented APIs; no live portal search or eligibility evaluation is connected.
 
 - [ ] Initialize Next.js project in `frontend/` (TypeScript, Tailwind CSS, Lucide icons)
 - [ ] Build Bidder Profile configuration screen (Turnover, MSME status, Certifications)

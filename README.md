@@ -16,7 +16,7 @@ The site has no build step or package installation. From the repository root, ru
 python -m http.server 8000
 ```
 
-Then open <http://localhost:8000> in a browser. The interactive sample report runs locally in the browser.
+Then open <http://localhost:8000> in a browser. The tender search, category filters, example previews, document-order explorer and readiness checklist run locally in the browser. Lenis smooth scrolling is bundled locally, respects reduced-motion preferences and falls back to native scrolling if unavailable. Display fonts load from Google Fonts.
 
 ## Product direction
 
@@ -32,7 +32,8 @@ The system is intended as decision support. People must verify tender terms with
 
 ## Repository guide
 
-- `index.html`, `styles.css`, `app.js` — static website and illustrative report.
+- `index.html`, `styles.css`, `app.js` — static website, interactive local demo components and illustrative report.
+- `vendor/` — pinned Lenis smooth-scroll distribution and its MIT license.
 - `privacy.html`, `terms.html`, `404.html` — prototype notices and not-found page.
 - `contracts/schema.py` — shared data contract definitions.
 - `FINAL_IMPLEMENTATION_PLAN.md` — proposed production architecture and delivery phases.

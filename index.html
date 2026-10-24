@@ -10,11 +10,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="vendor/lenis.css">
     <link rel="stylesheet" href="styles.css">
+    <script src="vendor/lenis.min.js" defer></script>
     <script src="app.js" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
+    <div class="scroll-progress" aria-hidden="true"><span id="scroll-progress-bar"></span></div>
     <header class="site-header">
       <div class="container nav-shell">
         <a class="brand" href="#top" aria-label="TenderLens home">
@@ -34,9 +37,9 @@
           <span class="menu-lines" aria-hidden="true"><i></i><i></i></span>
         </button>
         <nav class="primary-nav" id="primary-nav" aria-label="Main navigation">
-          <a href="#approach">The approach</a>
-          <a href="#evidence">Evidence</a>
-          <a href="#for-teams">For teams</a>
+          <a href="#opportunities">Sample tenders</a>
+          <a href="#precedence">Document order</a>
+          <a href="#profile">Bidder checklist</a>
           <a class="nav-cta" href="#demo">Explore the sample <span aria-hidden="true">↗</span></a>
         </nav>
       </div>
@@ -51,7 +54,7 @@
             <p class="hero-lede">TenderLens is a hackathon prototype for reviewing a bidder against the full tender set: the main bid, linked ATCs and later corrigenda. The proposed workflow keeps each finding tied to its source.</p>
             <div class="hero-actions">
               <a class="button button-dark" href="#demo">Explore the sample report <span aria-hidden="true">↗</span></a>
-              <a class="text-link" href="#approach">See how it works <span aria-hidden="true">↓</span></a>
+              <a class="text-link" href="#opportunities">Explore sample tenders <span aria-hidden="true">↓</span></a>
             </div>
             <div class="hero-proof">
               <span class="proof-seal" aria-hidden="true">
@@ -141,9 +144,64 @@
         <div class="hero-ruler" aria-hidden="true"><span>HACKIIITD · TEAM TRAXO</span><span>PROCUREMENT, READ WITH CONTEXT</span><span>INDIA</span></div>
       </section>
 
+      <section class="opportunity-section section-rule" id="opportunities">
+        <div class="container">
+          <div class="section-heading opportunity-heading" data-reveal>
+            <div>
+              <p class="eyebrow">01 / SAMPLE OPPORTUNITY DESK</p>
+              <h2>Start with an opportunity.<br><em>See what needs a closer look.</em></h2>
+            </div>
+            <p>Explore three fictional tender snapshots. Search and filters work locally in this page; no portal is queried.</p>
+          </div>
+          <div class="sample-notice" role="note"><span class="notice-dot" aria-hidden="true"></span><span><strong>Illustrative examples only</strong> — titles, buyers, values and timelines are fictional.</span><span class="sample-saved" aria-live="polite">SAVED <strong id="saved-count">0</strong></span></div>
+          <div class="explorer-toolbar" data-reveal>
+            <label class="search-field" for="tender-search"><span class="search-icon" aria-hidden="true">⌕</span><span class="sr-only">Search sample tenders</span><input id="tender-search" type="search" placeholder="Search title, category or location" autocomplete="off"><kbd>/</kbd></label>
+            <div class="filter-group" role="group" aria-label="Filter sample tenders by category">
+              <button class="filter-chip is-active" type="button" aria-pressed="true" data-filter="all">All samples <span>03</span></button>
+              <button class="filter-chip" type="button" aria-pressed="false" data-filter="goods">Goods</button>
+              <button class="filter-chip" type="button" aria-pressed="false" data-filter="works">Works</button>
+              <button class="filter-chip" type="button" aria-pressed="false" data-filter="services">Services</button>
+            </div>
+            <span class="result-count" id="tender-result-count" aria-live="polite">3 examples shown</span>
+          </div>
+          <span class="sr-only" id="save-status" role="status" aria-live="polite"></span>
+          <div class="tender-grid" id="tender-grid">
+            <article class="tender-card" data-tender-card data-category="goods" data-search="industrial switchgear electrical gem haryana supply">
+              <div class="tender-card-top"><span class="portal-tag">GeM · SAMPLE</span><button class="save-tender" type="button" data-save-tender aria-pressed="false" aria-label="Save industrial switchgear sample">☆</button></div>
+              <p class="tender-category">GOODS / ELECTRICAL</p>
+              <h3>Supply of industrial switchgear</h3>
+              <p class="tender-buyer">Sample buyer · Haryana</p>
+              <div class="tender-facts"><span><small>EXAMPLE VALUE</small><strong>₹48 lakh</strong></span><span><small>EXAMPLE WINDOW</small><strong>12 days</strong></span></div>
+              <div class="tender-card-bottom"><span class="focus-pill focus-review">2 review areas</span><button class="preview-tender" type="button" data-preview-tender="switchgear">Inspect sample <span aria-hidden="true">↗</span></button></div>
+            </article>
+            <article class="tender-card" data-tender-card data-category="works" data-search="solar rooftop epc cppp rajasthan works installation">
+              <div class="tender-card-top"><span class="portal-tag">CPPP · SAMPLE</span><button class="save-tender" type="button" data-save-tender aria-pressed="false" aria-label="Save solar rooftop sample">☆</button></div>
+              <p class="tender-category">WORKS / RENEWABLE ENERGY</p>
+              <h3>Solar rooftop EPC package</h3>
+              <p class="tender-buyer">Sample municipal authority · Jaipur</p>
+              <div class="tender-facts"><span><small>EXAMPLE VALUE</small><strong>₹1.8 crore</strong></span><span><small>EXAMPLE WINDOW</small><strong>8 days</strong></span></div>
+              <div class="tender-card-bottom"><span class="focus-pill focus-check">3 checks to inspect</span><button class="preview-tender" type="button" data-preview-tender="solar">Inspect sample <span aria-hidden="true">↗</span></button></div>
+            </article>
+            <article class="tender-card" data-tender-card data-category="services" data-search="endpoint security subscription psu delhi it software cyber">
+              <div class="tender-card-top"><span class="portal-tag">PSU · SAMPLE</span><button class="save-tender" type="button" data-save-tender aria-pressed="false" aria-label="Save endpoint security sample">☆</button></div>
+              <p class="tender-category">SERVICES / IT SYSTEMS</p>
+              <h3>Endpoint security subscription</h3>
+              <p class="tender-buyer">Sample public sector buyer · Delhi</p>
+              <div class="tender-facts"><span><small>EXAMPLE VALUE</small><strong>₹26 lakh</strong></span><span><small>EXAMPLE WINDOW</small><strong>19 days</strong></span></div>
+              <div class="tender-card-bottom"><span class="focus-pill focus-check">3 checks to inspect</span><button class="preview-tender" type="button" data-preview-tender="security">Inspect sample <span aria-hidden="true">↗</span></button></div>
+            </article>
+          </div>
+          <p class="empty-state" id="tender-empty" hidden>No sample matches that search. Try another word or choose “All samples”.</p>
+          <dialog class="tender-dialog" id="tender-dialog" aria-labelledby="tender-dialog-title">
+            <div class="dialog-top"><span class="dialog-label">ILLUSTRATIVE OPPORTUNITY</span><button class="dialog-close" type="button" aria-label="Close opportunity preview">×</button></div>
+            <div class="dialog-content"><p class="eyebrow" id="tender-dialog-kicker">SAMPLE TENDER</p><h2 id="tender-dialog-title">Opportunity title</h2><p class="dialog-buyer" id="tender-dialog-buyer"></p><div class="dialog-facts" id="tender-dialog-facts"></div><div class="dialog-focus"><span>REVIEW PROMPTS</span><ul id="tender-dialog-prompts"></ul></div><p class="dialog-disclaimer">This preview is fictional. It does not represent a live notice or an eligibility decision.</p><a class="button button-dark" href="#demo" id="dialog-report-link">Open the sample audit <span aria-hidden="true">↓</span></a></div>
+          </dialog>
+        </div>
+      </section>
+
       <section class="intro-section section-rule" id="approach">
         <div class="container intro-grid">
-          <div class="section-aside"><span class="section-number">01 / THE PROBLEM</span><span class="aside-rule"></span><span class="aside-note">A tender is rarely one document.</span></div>
+          <div class="section-aside"><span class="section-number">02 / THE PROBLEM</span><span class="aside-rule"></span><span class="aside-note">A tender is rarely one document.</span></div>
           <div class="intro-main">
             <p class="eyebrow">The hard part comes after discovery</p>
             <h2>The clause that changes everything may be in the <em>third file.</em></h2>
@@ -171,10 +229,36 @@
         </div>
       </section>
 
+      <section class="precedence-section section-rule" id="precedence">
+        <div class="container precedence-grid">
+          <div class="precedence-intro" data-reveal>
+            <p class="eyebrow">03 / DOCUMENT PRECEDENCE</p>
+            <h2>When terms change, <em>order matters.</em></h2>
+            <p>The project plan models each tender as a versioned document set. Choose a layer to see how it relates to the terms below it.</p>
+            <span class="precedence-caveat">PLANNED REVIEW MODEL · NOT A LEGAL RULING</span>
+          </div>
+          <div class="precedence-explorer" data-reveal>
+            <div class="precedence-stack" role="group" aria-label="Choose a tender document layer">
+              <button class="precedence-layer is-active" type="button" data-layer="latest" aria-pressed="true"><span class="layer-rank">01</span><span class="layer-name"><strong>Latest corrigendum</strong><small>Most recent amendment</small></span><span class="layer-arrow" aria-hidden="true">↗</span></button>
+              <button class="precedence-layer" type="button" data-layer="prior" aria-pressed="false"><span class="layer-rank">02</span><span class="layer-name"><strong>Earlier corrigenda</strong><small>Prior amendments</small></span><span class="layer-arrow" aria-hidden="true">↗</span></button>
+              <button class="precedence-layer" type="button" data-layer="uploaded" aria-pressed="false"><span class="layer-rank">03</span><span class="layer-name"><strong>Uploaded ATC / RFP</strong><small>Buyer-linked document</small></span><span class="layer-arrow" aria-hidden="true">↗</span></button>
+              <button class="precedence-layer" type="button" data-layer="text" aria-pressed="false"><span class="layer-rank">04</span><span class="layer-name"><strong>Text-based buyer ATC</strong><small>Clauses in the bid PDF</small></span><span class="layer-arrow" aria-hidden="true">↗</span></button>
+              <button class="precedence-layer" type="button" data-layer="main" aria-pressed="false"><span class="layer-rank">05</span><span class="layer-name"><strong>Main tender</strong><small>Baseline terms</small></span><span class="layer-arrow" aria-hidden="true">↗</span></button>
+            </div>
+            <article class="precedence-detail" aria-live="polite" aria-atomic="true">
+              <div class="precedence-detail-top"><span id="precedence-rank">RANK 01 / HIGHEST</span><span class="precedence-mark" aria-hidden="true">↗</span></div>
+              <h3 id="precedence-title">Latest corrigendum</h3>
+              <p id="precedence-description">The most recent corrigendum can supersede earlier terms in the tender set. Its publication and clause references should remain attached to the changed requirement.</p>
+              <div class="precedence-rule"><span>REVIEW CUE</span><strong id="precedence-cue">Compare every changed threshold with prior language and retain both sources in the audit trail.</strong></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
       <section class="method-section section-rule" id="evidence">
         <div class="container method-grid">
           <div class="method-heading">
-            <p class="eyebrow">02 / THE PROPOSED WORKFLOW</p>
+            <p class="eyebrow">04 / THE PROPOSED WORKFLOW</p>
             <h2>From scattered files to a decision you can <em>inspect.</em></h2>
             <p>The project plan separates rule-based checks from clause interpretation and routes conflicts or uncertainty to a person for review.</p>
             <a class="text-link method-link" href="#demo">Open the sample report <span aria-hidden="true">↗</span></a>
@@ -202,10 +286,36 @@
         </div>
       </section>
 
+      <section class="profile-section section-rule" id="profile">
+        <div class="container profile-grid">
+          <div class="profile-copy" data-reveal>
+            <p class="eyebrow">05 / BIDDER READINESS</p>
+            <h2>Put your evidence in <em>one place.</em></h2>
+            <p>Try a local checklist for the kinds of information a future bidder profile may organize. It does not calculate eligibility, and your selections are not sent or saved.</p>
+            <div class="profile-privacy"><span aria-hidden="true">◎</span><span><strong>Private by design in this demo</strong><small>Checkbox state stays in this page and resets when you reload.</small></span></div>
+          </div>
+          <div class="readiness-card" data-reveal>
+            <div class="readiness-top"><span>DEMO PROFILE</span><span>LOCAL ONLY</span></div>
+            <div class="readiness-summary"><div><p class="micro-label">EVIDENCE CATEGORIES STAGED</p><h3><span id="profile-count">3</span><small> / 6</small></h3></div><span class="readiness-badge" id="profile-badge">IN PROGRESS</span></div>
+            <label class="progress-label" for="profile-progress"><span>Profile organization</span><span id="profile-percent">50%</span></label>
+            <progress id="profile-progress" max="6" value="3">3 of 6</progress>
+            <fieldset class="profile-checklist"><legend class="sr-only">Evidence groups to organize in the sample profile</legend>
+              <label class="profile-check"><input type="checkbox" data-profile-item checked><span class="custom-check" aria-hidden="true">✓</span><span><strong>Business registrations</strong><small>Entity type and registration status</small></span><span class="check-state">READY</span></label>
+              <label class="profile-check"><input type="checkbox" data-profile-item checked><span class="custom-check" aria-hidden="true">✓</span><span><strong>Financial history</strong><small>Turnover across the last three years</small></span><span class="check-state">READY</span></label>
+              <label class="profile-check"><input type="checkbox" data-profile-item checked><span class="custom-check" aria-hidden="true">✓</span><span><strong>Relevant work</strong><small>Similar projects and contract values</small></span><span class="check-state">READY</span></label>
+              <label class="profile-check"><input type="checkbox" data-profile-item><span class="custom-check" aria-hidden="true">✓</span><span><strong>Certifications</strong><small>Standards, test reports and validity</small></span><span class="check-state">ADD</span></label>
+              <label class="profile-check"><input type="checkbox" data-profile-item><span class="custom-check" aria-hidden="true">✓</span><span><strong>MSME / startup proof</strong><small>Registration and exemption evidence</small></span><span class="check-state">ADD</span></label>
+              <label class="profile-check"><input type="checkbox" data-profile-item><span class="custom-check" aria-hidden="true">✓</span><span><strong>OEM & service coverage</strong><small>Authorizations and local support</small></span><span class="check-state">ADD</span></label>
+            </fieldset>
+            <div class="readiness-footer"><p id="profile-guidance" aria-live="polite">Three evidence groups are staged in this sample. Add the remaining groups to complete the demo checklist.</p><button class="reset-profile" id="reset-profile" type="button">Reset demo</button></div>
+          </div>
+        </div>
+      </section>
+
       <section class="principles-section section-rule">
         <div class="container principles-grid">
           <div class="principles-title">
-            <p class="eyebrow">03 / BUILT FOR ACCOUNTABILITY</p>
+            <p class="eyebrow">06 / BUILT FOR ACCOUNTABILITY</p>
             <h2>Confidence comes from knowing <em>why.</em></h2>
           </div>
           <div class="principles-list">
@@ -231,7 +341,7 @@
       <section class="audience-section section-rule" id="for-teams">
         <div class="container audience-grid">
           <div class="audience-copy">
-            <p class="eyebrow">04 / WHO IT IS FOR</p>
+            <p class="eyebrow">07 / WHO IT IS FOR</p>
             <h2>Made for the people who carry the bid risk.</h2>
             <p>Start with the teams for whom a missed clause can cost preparation time, a technical rejection or working capital.</p>
             <div class="audience-tabs" role="tablist" aria-label="TenderLens teams">
@@ -255,7 +365,7 @@
               <div>
                 <p class="audience-mini" id="audience-type">INDIAN MSMEs</p>
                 <h3 id="audience-title">Bid with your credentials in view.</h3>
-                <p id="audience-description">Check whether MSME exemptions apply, whether the right certificates are on file, and which conditions need a closer read.</p>
+                <p id="audience-description">A future review can check MSME exemption language, certificate requirements and which conditions need a closer read.</p>
                 <div class="audience-focus"><span>FOCUS</span><strong id="audience-focus">Turnover · exemptions · certifications</strong></div>
               </div>
             </div>
@@ -287,5 +397,6 @@
       </div>
       <div class="container footer-bottom"><span>© <span id="current-year">2026</span> TENDERLENS · TEAM TRAXO</span><span>THIS PREVIEW USES SAMPLE DATA ONLY</span></div>
     </footer>
+    <button class="back-to-top" id="back-to-top" type="button" aria-label="Back to top"><span aria-hidden="true">↑</span><span>Top</span></button>
   </body>
 </html>
