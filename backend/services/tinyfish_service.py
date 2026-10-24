@@ -148,17 +148,20 @@ class TinyFishService:
         fetched_docs: List[FetchedDocument] = []
         atc_indicators = ["atc", "additional", "terms", "corrigendum", "amendment", "specification", ".pdf"]
 
-        for item in data.get("results", []):
+        results_list = data.get("results") if isinstance(data, dict) else (data if isinstance(data, list) else [])
+        for item in results_list:
+            if not isinstance(item, dict):
+                continue
             url = item.get("url", "")
             markdown = item.get("markdown", "")
-            raw_links = item.get("links", [])
+            raw_links = item.get("links") or []
             etag = item.get("etag")
             last_mod = item.get("last_modified")
 
-            # Extract child URLs matching ATC / Corrigenda patterns
+            # Extract child URLs matching ATC / Corrigenda patterns safely
             child_atc_urls = [
                 link for link in raw_links
-                if any(ind in link.lower() for ind in atc_indicators) and link != url
+                if isinstance(link, str) and any(ind in link.lower() for ind in atc_indicators) and link != url
             ]
 
             fetched_docs.append(FetchedDocument(
@@ -183,7 +186,7 @@ class TinyFishService:
         Retrieves seed tender and crawls discovered child ATCs and Corrigenda up to depth d <= max_depth.
         Deduplicates visited URLs and respects batch limit.
         """
-        visited: Set[str] = set()
+        visited: Set[str] = {seed_url}
         queue: List[tuple[str, int]] = [(seed_url, 0)]
         all_documents: List[FetchedDocument] = []
 
@@ -192,9 +195,7 @@ class TinyFishService:
             current_batch: List[tuple[str, int]] = []
             while queue and len(current_batch) < settings.MAX_BATCH_URLS:
                 u, d = queue.pop(0)
-                if u not in visited:
-                    visited.add(u)
-                    current_batch.append((u, d))
+                current_batch.append((u, d))
 
             if not current_batch:
                 break
@@ -204,11 +205,14 @@ class TinyFishService:
             all_documents.extend(batch_results)
 
             # Discover next hop links if within max_depth limit
-            for doc, (_, depth) in zip(batch_results, current_batch):
-                if depth < max_depth:
+            depth_map = {u: d for u, d in current_batch}
+            for doc in batch_results:
+                d = depth_map.get(doc.url, 0)
+                if d < max_depth:
                     for child_url in doc.extracted_child_urls:
                         if child_url not in visited:
-                            queue.append((child_url, depth + 1))
+                            visited.add(child_url)  # Mark upon enqueue to prevent duplicates
+                            queue.append((child_url, d + 1))
 
         return all_documents
 

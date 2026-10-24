@@ -44,10 +44,18 @@ class QualificationEngine:
         criteria = TenderStatutoryCriteria()
         citations: List[ClauseCitation] = []
 
-        turnover_regex = re.compile(r"(?:turnover|annual\s+turnover)[^\d]*?(?:rs\.?|inr|₹)?\s*([\d,.]+)\s*(crore|cr|lakh|lac)?", re.IGNORECASE)
-        experience_regex = re.compile(r"(\d+)\s*(?:years?|yrs?)[^\n.]*?(?:experience|past\s+performance)", re.IGNORECASE)
+        # Robust regexes handling intermediate phrases like 'last 3 years', 'financial years', etc.
+        turnover_regex = re.compile(
+            r"(?:turnover|annual\s+turnover)(?:[\s\w,()/-]*?(?:last\s*\d+\s*years?|past\s*\d+\s*years?|3\s*financial\s*years?))?[\s\w,()/-]*?(?:rs\.?|inr|₹)?\s*([\d,.]+)\s*(crore|cr|lakh|lac)?",
+            re.IGNORECASE
+        )
+        # Handles both '3 years experience' and 'experience of 3 years'
+        experience_regex = re.compile(
+            r"(?:(\d+)\s*(?:years?|yrs?)[^\n.]*?(?:experience|past\s+performance)|(?:experience|past\s+performance)[^\n.]*?(\d+)\s*(?:years?|yrs?))",
+            re.IGNORECASE
+        )
         emd_regex = re.compile(r"(?:emd|earnest\s+money)[^\d]*?(?:rs\.?|inr|₹)?\s*([\d,.]+)", re.IGNORECASE)
-        no_exemption_regex = re.compile(r"(?:no\s+exemption|not\s+exempted|exemption\s+not\s+allowed|msme\s+relaxation\s+not\s+allowed)", re.IGNORECASE)
+        no_exemption_regex = re.compile(r"(?:no\s+exemption|not\s+exempted|exemption\s+not\s+allowed|msme\s+relaxation\s+not\s+allowed|no\s+relaxation)", re.IGNORECASE)
         oem_maf_regex = re.compile(r"(?:manufacturer\s+authorization|maf|oem\s+authorization|oem\s+certificate)", re.IGNORECASE)
 
         # Track attributes resolved by higher precedence ranks
@@ -100,7 +108,8 @@ class QualificationEngine:
                 e_match = experience_regex.search(text)
                 if e_match:
                     try:
-                        criteria.min_experience_years = int(e_match.group(1))
+                        yrs = int(e_match.group(1) or e_match.group(2))
+                        criteria.min_experience_years = yrs
                         experience_resolved = True
                         citations.append(ClauseCitation(
                             document_name=chunk.document_name,
@@ -110,7 +119,7 @@ class QualificationEngine:
                             risk_level="LOW",
                             status="COMPLIANT"
                         ))
-                    except ValueError:
+                    except (ValueError, TypeError):
                         pass
 
             # 4. OEM MAF Detection
