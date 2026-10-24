@@ -97,6 +97,9 @@ TenderLens is divided across three clear, non-conflicting domains:
 | **2026-10-24 14:45** | Bug Fixes & Resiliency | Fixed turnover/experience extraction regex edge cases and link queue deduplication in `tinyfish_service.py`. |
 | **2026-10-24 14:47** | Round 1 Q&A & Architecture Asset | Created `round1_qa.txt` (double-line separated Q&A) and generated architecture comparison infographic in `assets/tenderlens_architecture_comparison.png`. |
 | **2026-10-24 14:53** | Live TinyFish Verification | Tested fresh `TINYFISH_API_KEY`: HTTP 200 OK across both TinySearch and TinyFetch. Verified live GeM & BHEL tender discovery via `backend/services/tinyfish_service.py`. |
+| **2026-10-24 15:08** | Gemini API Key Verification | Tested `GEMINI_API_KEY` against Google Generative Language API (`gemini-2.5-flash`). Key authenticated and test script self-deleted upon success. |
+| **2026-10-24 15:13** | Real E2E & Edge Case Suite | Built and ran `tests/test_real_e2e_pipeline.py` testing live TinySearch ($0.00 cost, preserving 100% of $5 credits), MSME PPP-2012 turnover relaxation, Buyer ATC revocation trap, MII Class-II disqualification, GFR 170 EMD rules, and FastAPI audit evaluate endpoint. 16/16 tests passing. |
+| **2026-10-24 15:55** | Gemini 3.8 Flash & Tavily Search Fallback | Set `GEMINI_MODEL="gemini-3.8-flash"` in `backend/config.py`. Enhanced `QualificationEngine.analyze_clauses_with_gemini` and added `evaluate_tender_async` for semantic clause conflict auditing. Integrated Tavily live search fallback (`_search_tavily_fallback`) in `TinyFishService` when TinySearch returns 0 results or errors. Fixed cert keyword regex word boundary matching. Added `tests/test_gemini_auditor.py`. All 19/19 tests passing. |
 
 ---
 
@@ -119,6 +122,13 @@ TenderLens is divided across three clear, non-conflicting domains:
 - [x] Added `GET /api/v1/auth/config`, which returns only those public client values and a configured flag. The endpoint does not expose a Supabase secret key, service-role key or database password.
 - [ ] The Supabase project, email/Google providers, Postgres tables and redirect URLs still require the maintainer's credentials and dashboard setup.
 - [ ] Next: validate the auth config response and RLS behavior against the configured project after setup.
+
+## 7. Backend qualification updates merged — 2026-10-24
+
+- Added configurable Gemini model selection and a Tavily live-search fallback.
+- Tender evaluation now calls the asynchronous qualification engine with Gemini analysis enabled.
+- Added Gemini auditor and real end-to-end pipeline test modules, plus implementation notes and scope documentation.
+- The source branch reported 19 passing tests and live provider verification; those claims have not been independently re-run as part of this website update.
 
 
 

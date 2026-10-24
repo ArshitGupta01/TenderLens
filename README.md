@@ -31,7 +31,7 @@ uv sync
 Copy-Item .env.example .env
 ```
 
-Open `.env` and add your TinyFish key to `TINYFISH_API_KEY`. Keep this file private; it is ignored by Git. Do not put API secrets in the website code.
+Open `.env` and add your TinyFish key to `TINYFISH_API_KEY`. Keep this file private; it is ignored by Git. Do not put API secrets in the website code. `GEMINI_API_KEY` enables the backend's clause/conflict analysis, and `TAVILY_API_KEY` enables its web-search fallback. Those two are optional unless you use those backend features. `GEMINI_MODEL` defaults to `gemini-3.8-flash`.
 
 Start the API in one terminal:
 

@@ -93,8 +93,8 @@ class TinyFishService:
                 response.raise_for_status()
                 data = response.json()
             except Exception as e:
-                logger.error(f"TinySearch request failed: {e}")
-                return []
+                logger.error(f"TinySearch request failed: {e}. Attempting Tavily fallback...")
+                return await self._search_tavily_fallback(query=query, limit=limit)
 
         results: List[DiscoveredTender] = []
         for item in data.get("results", [])[:limit]:
@@ -111,7 +111,49 @@ class TinyFishService:
                 snippet=item.get("snippet", ""),
                 source_portal=portal
             ))
+
+        # If TinySearch returned 0 results, trigger Tavily fallback automatically
+        if not results:
+            logger.info("TinySearch returned 0 results. Falling back to Tavily search...")
+            return await self._search_tavily_fallback(query=query, limit=limit)
+
         return results
+
+    async def _search_tavily_fallback(self, query: str, limit: int = 10) -> List[DiscoveredTender]:
+        """
+        Fallback search using Tavily API when TinySearch fails or returns empty.
+        Uses TAVILY_API_KEY from environment.
+        """
+        tavily_key = settings.TAVILY_API_KEY or os.getenv("TAVILY_API_KEY", "")
+        if not tavily_key:
+            logger.warning("Tavily fallback triggered but TAVILY_API_KEY is not configured.")
+            return []
+
+        logger.info(f"Executing Tavily fallback search for query: '{query}'")
+        payload = {
+            "api_key": tavily_key,
+            "query": f"{query} site:gem.gov.in OR site:eprocure.gov.in",
+            "search_depth": "basic",
+            "max_results": limit
+        }
+
+        async with httpx.AsyncClient(timeout=15.0) as client:
+            try:
+                resp = await client.post("https://api.tavily.com/search", json=payload)
+                resp.raise_for_status()
+                data = resp.json()
+                tavily_results: List[DiscoveredTender] = []
+                for item in data.get("results", [])[:limit]:
+                    tavily_results.append(DiscoveredTender(
+                        title=item.get("title", ""),
+                        url=item.get("url", ""),
+                        snippet=item.get("content", ""),
+                        source_portal="Tavily Fallback (gem.gov.in)"
+                    ))
+                return tavily_results
+            except Exception as e:
+                logger.error(f"Tavily fallback search failed: {e}")
+                return []
 
     async def fetch_batch(
         self,

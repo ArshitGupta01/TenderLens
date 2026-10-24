@@ -194,15 +194,16 @@ async def evaluate_tender_endpoint(payload: AuditEvaluationRequest, background_t
                     parsing_method="tinyfetch_markdown"
                 ))
 
-        # 3. Evaluate via Qualification Engine
-        scorecard = QualificationEngine.evaluate_tender(
+        # 3. Evaluate via Qualification Engine (with Gemini clause & conflict auditing)
+        scorecard = await QualificationEngine.evaluate_tender_async(
             tender_id=tender_id,
             tender_title=payload.tender_title,
             source_portal=payload.source_portal or "GeM",
             bidder_profile=payload.bidder_profile,
             chunks=chunks,
             explicit_criteria=payload.explicit_criteria,
-            discovered_atc_urls=list(set(all_atc_urls))
+            discovered_atc_urls=list(set(all_atc_urls)),
+            enable_gemini_analysis=True
         )
 
         return scorecard

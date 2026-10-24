@@ -106,6 +106,7 @@
               <li>In another terminal, run <code>python -m http.server 4177</code> and open <code>http://localhost:4177</code>.</li>
               <li>Open “Search current tender notices” and submit a phrase. Only that phrase and the selected portal are sent.</li>
             </ol>
+            <p class="guide-copy"><strong>Other backend features:</strong> <code>GEMINI_API_KEY</code> turns on clause/conflict analysis, while <code>TAVILY_API_KEY</code> enables the backup web search. Both are optional for the website and account pages; the model setting defaults to <code>gemini-3.8-flash</code>.</p>
             <p class="guide-warning"><strong>What is connected?</strong> Live search uses the backend. Tender fetching and scorecard routes are available to developers, but this page does not yet upload files or send a bidder profile for an audit.</p>
             <a class="guide-api-link" href="http://127.0.0.1:8000/docs" target="_blank" rel="noopener noreferrer">Open the local API reference <span aria-hidden="true">↗</span></a>
           </div>

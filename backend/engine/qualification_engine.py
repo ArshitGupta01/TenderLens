@@ -8,11 +8,14 @@ Synthesizes:
 4. Evidence-backed ClauseCitation generation with exact document coordinates.
 """
 
+import os
 import re
+import json
 import logging
 from typing import List, Dict, Any, Optional
 from pydantic import BaseModel
 
+from backend.config import settings
 from contracts.schema import (
     BidderProfile,
     ClauseCitation,
@@ -29,6 +32,95 @@ logger = logging.getLogger("tenderlens.engine")
 
 
 class QualificationEngine:
+    @classmethod
+    async def analyze_clauses_with_gemini(
+        cls,
+        chunks: List[ProcessedClauseChunk],
+        bidder: BidderProfile,
+        model: Optional[str] = None
+    ) -> List[ClauseCitation]:
+        """
+        Uses Gemini (gemini-3.8-flash) to perform semantic clause
+        grounding, conflict detection, and ambiguous exception discovery.
+        """
+        target_model = model or getattr(settings, "GEMINI_MODEL", "gemini-3.8-flash")
+        api_key = getattr(settings, "GEMINI_API_KEY", "") or os.getenv("GEMINI_API_KEY", "")
+        if not api_key:
+            return []
+
+        prompt_chunks = []
+        for c in sorted(chunks, key=lambda x: x.precedence_rank)[:8]:
+            prompt_chunks.append(f"[{c.document_name} | Pg {c.page_number} | {c.clause_id}]: {c.text_content[:250]}")
+
+        prompt_text = (
+            f"You are TenderLens Procurement AI running on {target_model}.\n"
+            f"Analyze these Indian tender clauses for Bidder: {bidder.company_name} ({bidder.entity_type}, MSME: {bidder.is_msme_registered}).\n"
+            f"Identify if any buyer clauses revoke statutory MSME turnover/experience exemptions or introduce conflicting requirements.\n\n"
+            f"Clauses:\n" + "\n".join(prompt_chunks) + "\n\n"
+            f"Respond concisely with any identified conflict or 'NO_CONFLICT'."
+        )
+
+        # 1. Primary: Direct google.genai SDK (optimized for gemini-3.8-flash)
+        try:
+            from google import genai
+            client = genai.Client(api_key=api_key)
+            loop = asyncio.get_event_loop()
+            resp = await loop.run_in_executor(
+                None,
+                lambda: client.models.generate_content(
+                    model=target_model,
+                    contents=prompt_text
+                )
+            )
+            content = resp.text.strip() if hasattr(resp, "text") and resp.text else ""
+            if content and any(w in content.lower() for w in ["conflict", "revok", "not allowed", "supersede", "ambiguous", "non-compliant", "disqualif"]):
+                return [ClauseCitation(
+                    document_name=f"Gemini-Audit ({target_model})",
+                    page_number=1,
+                    clause_id="LLM-Clause-Conflict-Audit",
+                    verbatim_text=content[:400],
+                    risk_level="HIGH_DISQUALIFIER" if "revok" in content.lower() or "disqualif" in content.lower() else "MEDIUM",
+                    status="AMBIGUOUS_MANUAL_REVIEW"
+                )]
+            return []
+        except Exception as e:
+            logger.info(f"Direct google.genai call fallback: {e}")
+
+        # 2. Secondary Fallback: LangChain ChatGoogleGenerativeAI
+        try:
+            from langchain_google_genai import ChatGoogleGenerativeAI
+            llm = ChatGoogleGenerativeAI(
+                model=target_model,
+                google_api_key=api_key,
+                temperature=0.1,
+                timeout=15
+            )
+            resp = await llm.ainvoke(prompt_text)
+            content = ""
+            raw_content = getattr(resp, "content", resp)
+            if isinstance(raw_content, str):
+                content = raw_content.strip()
+            elif isinstance(raw_content, list):
+                parts = []
+                for p in raw_content:
+                    if isinstance(p, str):
+                        parts.append(p)
+                    elif isinstance(p, dict) and "text" in p:
+                        parts.append(p["text"])
+                content = " ".join(parts).strip()
+            if content and any(w in content.lower() for w in ["conflict", "revok", "not allowed", "supersede", "ambiguous", "disqualif"]):
+                return [ClauseCitation(
+                    document_name=f"Gemini-Audit ({target_model})",
+                    page_number=1,
+                    clause_id="LLM-Clause-Conflict-Audit",
+                    verbatim_text=content[:400],
+                    risk_level="HIGH_DISQUALIFIER" if "revok" in content.lower() or "disqualif" in content.lower() else "MEDIUM",
+                    status="AMBIGUOUS_MANUAL_REVIEW"
+                )]
+            return []
+        except Exception as e:
+            logger.info(f"LangChain Gemini clause analysis ({target_model}) fallback: {e}")
+            return []
     @classmethod
     def extract_criteria_from_chunks(
         cls,
@@ -136,12 +228,14 @@ class QualificationEngine:
                     except ValueError:
                         pass
 
-        # Detect Common Standard Mandatory Certifications
+        # Detect Common Standard Mandatory Certifications with whole word boundary matching
         cert_keywords = ["ISO-9001", "ISO 9001", "BIS", "CMMI", "CE", "RoHS"]
-        full_text = " ".join([c.text_content for c in sorted_chunks]).upper()
+        full_text = " ".join([c.text_content for c in sorted_chunks])
         for ck in cert_keywords:
-            if ck in full_text and ck not in criteria.mandatory_certifications:
-                criteria.mandatory_certifications.append(ck.replace(" ", "-"))
+            pattern = re.compile(rf"\b{re.escape(ck)}\b", re.IGNORECASE)
+            normalized_name = ck.replace(" ", "-").upper()
+            if pattern.search(full_text) and normalized_name not in [c.upper() for c in criteria.mandatory_certifications]:
+                criteria.mandatory_certifications.append(normalized_name)
 
         return criteria, citations
 
@@ -154,19 +248,24 @@ class QualificationEngine:
         bidder_profile: BidderProfile,
         chunks: List[ProcessedClauseChunk],
         explicit_criteria: Optional[TenderStatutoryCriteria] = None,
-        discovered_atc_urls: Optional[List[str]] = None
+        discovered_atc_urls: Optional[List[str]] = None,
+        gemini_citations: Optional[List[ClauseCitation]] = None
     ) -> QualificationScorecard:
         """
         Executes end-to-end qualification audit:
         1. Extracts criteria (or uses explicit)
         2. Evaluates deterministic gates
-        3. Computes recommendation score & executive summary
+        3. Integrates Gemini semantic citations (if provided)
+        4. Computes recommendation score & executive summary
         """
         if explicit_criteria:
             criteria = explicit_criteria
             clause_citations: List[ClauseCitation] = []
         else:
             criteria, clause_citations = cls.extract_criteria_from_chunks(chunks)
+
+        if gemini_citations:
+            clause_citations.extend(gemini_citations)
 
         # Run Deterministic Gatekeeper
         gate_results = DeterministicGatekeeper.evaluate(bidder=bidder_profile, tender=criteria)
@@ -212,4 +311,41 @@ class QualificationEngine:
             clause_citations=clause_citations,
             discovered_atc_urls=discovered_atc_urls or [],
             executive_summary=summary
+        )
+
+    @classmethod
+    async def evaluate_tender_async(
+        cls,
+        tender_id: str,
+        tender_title: str,
+        source_portal: str,
+        bidder_profile: BidderProfile,
+        chunks: List[ProcessedClauseChunk],
+        explicit_criteria: Optional[TenderStatutoryCriteria] = None,
+        discovered_atc_urls: Optional[List[str]] = None,
+        enable_gemini_analysis: bool = True
+    ) -> QualificationScorecard:
+        """
+        Asynchronous pipeline: Augments pure-Python deterministic gates with
+        Gemini (gemini-3.8-flash) semantic clause and conflict auditing.
+        """
+        gemini_citations: List[ClauseCitation] = []
+        if enable_gemini_analysis and chunks:
+            try:
+                gemini_citations = await cls.analyze_clauses_with_gemini(
+                    chunks=chunks,
+                    bidder=bidder_profile
+                )
+            except Exception as e:
+                logger.warning(f"Async Gemini clause audit skipped due to error: {e}")
+
+        return cls.evaluate_tender(
+            tender_id=tender_id,
+            tender_title=tender_title,
+            source_portal=source_portal,
+            bidder_profile=bidder_profile,
+            chunks=chunks,
+            explicit_criteria=explicit_criteria,
+            discovered_atc_urls=discovered_atc_urls,
+            gemini_citations=gemini_citations
         )
