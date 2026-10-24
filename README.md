@@ -4,10 +4,10 @@ TenderLens is a Team Traxo hackathon project for making public tender requiremen
 
 ## What works today
 
-- The website has a fictional sample report, sample tender search and filters, a document-order explorer, and a bidder checklist.
+- The website has a fictional sample report, sample tender search and filters, a document-order explorer, a local bidder profile draft, and an evidence checklist.
 - The website can run optional live tender search through the FastAPI backend when a TinyFish API key is configured.
 - The backend includes early endpoints for finding tenders, fetching linked documents and building a sample qualification scorecard.
-- The website does not upload files, keep company accounts or save audit history. The fetch and scorecard endpoints are not connected to a website form.
+- The website does not upload files, keep cloud company accounts or save audit history. A short organization profile can be saved in the browser on this device only. The fetch and scorecard endpoints are not connected to a website form.
 
 This is an experimental hackathon project. Sample tenders and report results are fictional. Check official documents and ask the buyer before acting on any tender.
 
@@ -19,7 +19,7 @@ The sample website works without a backend or API key. From the project folder, 
 python -m http.server 4177 --bind 127.0.0.1
 ```
 
-Open <http://127.0.0.1:4177>. Sample searches, filters, saved examples and the checklist run in your browser. Their state resets when you reload. The theme choice stays in your browser.
+Open <http://127.0.0.1:4177>. Sample searches, filters, saved examples and the checklist run in your browser and reset when you reload. The theme choice and optional basic bidder profile stay in this browser; clear the profile in the page or remove the site's data in browser settings.
 
 ## Turn on live search
 
@@ -50,7 +50,7 @@ By default, the API allows the local website ports 3000 and 4177. If you serve t
 
 ## Privacy and data
 
-The sample interface does not send tender filters, saved examples or checklist selections to a service. Live search sends only the search phrase and portal, after you press the search button. The website does not send the sample bidder profile. See [the privacy notice](privacy.html), [terms and conditions](terms.html) and [easy guide](guide.html).
+The sample interface does not send tender filters, saved examples, checklist selections or the local bidder profile to a service. Live search sends only the search phrase and portal, after you press the search button. The local profile avoids registration IDs, financial figures and files. See [the privacy notice](privacy.html), [terms and conditions](terms.html) and [easy guide](guide.html).
 
 ## Repository guide
 

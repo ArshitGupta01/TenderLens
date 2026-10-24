@@ -112,12 +112,18 @@ Recommended relational tables for Arshit's implementation:
 - [x] Kept the tender examples and company checklist local and labeled as fictional. Added an optional search form that sends only the phrase and selected portal to the configured backend.
 - [x] Added local preview instructions and linked the guide from the main navigation and footer.
 - [x] Reviewed the desktop and narrow preview layouts; adjusted the navigation and footer to avoid wrapping and horizontal overflow.
-- [ ] A real company profile, file upload, account, saved audit, and connected eligibility review remain future work.
+- [x] Added a local bidder profile draft with organization name, bidder type, years active and region. It is stored only in this browser and can be cleared from the page.
+- [ ] Cloud profiles, file uploads, accounts, saved audits and connected eligibility reviews remain future work.
 
 ### Tablet layout refinement — 2026-10-24
 - [x] Added an 851–1100px breakpoint that replaces the crowded desktop navigation with the menu button and gives the hero a full-width reading column.
 - [x] Reviewed the change against the supplied 1056px screenshot and checked the existing narrow local preview; a dedicated 1056px embedded-browser viewport was unavailable.
 - [ ] Recheck tablet and desktop layouts in a resizable browser preview when available.
+
+### Profile and theme refinement — 2026-10-24
+- [x] Fixed the closing section's dark-theme contrast by using the dark green theme token for its background and increasing its small caption contrast. The floating top button now hides when the footer is visible to keep its links clear.
+- [x] Added a browser-local bidder profile form with a clear control, a four-step easy-guide entry and updated privacy / terms explanations.
+- [ ] Review the form with a resizable tablet browser and design the authenticated, server-backed profile only after its privacy and API requirements are defined.
 
 - [ ] Initialize Next.js project in `frontend/` (TypeScript, Tailwind CSS, Lucide icons)
 - [ ] Build Bidder Profile configuration screen (Turnover, MSME status, Certifications)

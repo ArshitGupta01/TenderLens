@@ -299,6 +299,14 @@ const lenis = window.Lenis && !motionPreference.matches
 const progressBar = document.getElementById('scroll-progress-bar');
 const backToTop = document.getElementById('back-to-top');
 const siteHeader = document.querySelector('.site-header');
+const siteFooter = document.querySelector('.site-footer');
+
+if (backToTop && siteFooter && 'IntersectionObserver' in window) {
+  const footerObserver = new IntersectionObserver((entries) => {
+    backToTop.classList.toggle('is-over-footer', entries.some((entry) => entry.isIntersecting));
+  });
+  footerObserver.observe(siteFooter);
+}
 
 function updateScrollChrome() {
   const scrollTop = lenis ? lenis.scroll : window.scrollY;
@@ -600,3 +608,70 @@ if (resetProfile) {
   });
 }
 updateProfileReadiness();
+
+const bidderProfileForm = document.getElementById('bidder-profile-form');
+if (bidderProfileForm) {
+  const bidderProfileKey = 'tenderlens-bidder-profile-v1';
+  const bidderProfileFields = {
+    organization: document.getElementById('bidder-profile-name'),
+    bidderType: document.getElementById('bidder-profile-type'),
+    years: document.getElementById('bidder-profile-years'),
+    region: document.getElementById('bidder-profile-region')
+  };
+  const bidderProfileStatus = document.getElementById('profile-save-status');
+  const saveBidderProfile = document.getElementById('save-bidder-profile');
+  const clearBidderProfile = document.getElementById('clear-bidder-profile');
+  const setBidderProfileStatus = (message, state = '') => {
+    if (!bidderProfileStatus) return;
+    bidderProfileStatus.textContent = message;
+    if (state) bidderProfileStatus.dataset.state = state;
+    else delete bidderProfileStatus.dataset.state;
+  };
+
+  try {
+    const savedProfile = JSON.parse(window.localStorage.getItem(bidderProfileKey) || 'null');
+    if (savedProfile && typeof savedProfile === 'object' && !Array.isArray(savedProfile)) {
+      Object.entries(bidderProfileFields).forEach(([key, field]) => {
+        if (field && typeof savedProfile[key] === 'string') field.value = savedProfile[key];
+      });
+      setBidderProfileStatus('Your profile is saved in this browser on this device. It is not sent with searches.', 'success');
+    }
+  } catch (error) {
+    setBidderProfileStatus('Browser storage is unavailable. The form still works for this visit, but it cannot save a profile.', 'error');
+  }
+
+  const saveLocalBidderProfile = () => {
+    const profile = Object.fromEntries(Object.entries(bidderProfileFields).map(([key, field]) => [key, field?.value.trim() || '']));
+    if (!profile.organization) {
+      setBidderProfileStatus('Enter an organization name to save this profile.', 'error');
+      bidderProfileFields.organization?.focus();
+      return;
+    }
+    try {
+      window.localStorage.setItem(bidderProfileKey, JSON.stringify(profile));
+      setBidderProfileStatus('Profile saved in this browser on this device. It is not sent with searches.', 'success');
+    } catch (error) {
+      setBidderProfileStatus('Could not save in this browser. Check your storage settings and try again.', 'error');
+    }
+  };
+
+  saveBidderProfile?.addEventListener('click', saveLocalBidderProfile);
+  bidderProfileForm.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' && event.target instanceof HTMLInputElement) {
+      event.preventDefault();
+      saveLocalBidderProfile();
+    }
+  });
+
+  if (clearBidderProfile) {
+    clearBidderProfile.addEventListener('click', () => {
+      try {
+        window.localStorage.removeItem(bidderProfileKey);
+        Object.values(bidderProfileFields).forEach((field) => { if (field) field.value = ''; });
+        setBidderProfileStatus('Local profile cleared from this browser.', 'success');
+      } catch (error) {
+        setBidderProfileStatus('Could not clear browser storage. Remove this site’s saved data in your browser settings.', 'error');
+      }
+    });
+  }
+}

@@ -44,7 +44,7 @@
         <nav class="primary-nav" id="primary-nav" aria-label="Main navigation">
           <a href="#opportunities">Sample tenders</a>
           <a href="#precedence">Document order</a>
-          <a href="#profile">Bidder checklist</a>
+          <a href="#profile">Bidder profile</a>
           <a href="guide.html">Easy guide</a>
           <a class="nav-cta" href="#demo">Explore the sample <span aria-hidden="true">↗</span></a>
         </nav>
@@ -308,10 +308,21 @@
       <section class="profile-section section-rule" id="profile">
         <div class="container profile-grid">
           <div class="profile-copy" data-reveal>
-            <p class="eyebrow">05 / BIDDER READINESS</p>
-            <h2>Put your evidence in <em>one place.</em></h2>
-            <p>Use this checklist to see what documents a bidder profile might hold. It is only a demo; it does not decide whether you qualify.</p>
-            <div class="profile-privacy"><span aria-hidden="true">◎</span><span><strong>Private by design in this demo</strong><small>Checkbox state stays in this page and resets when you reload.</small></span></div>
+            <p class="eyebrow">05 / BIDDER PROFILE</p>
+            <h2>Start with your business <em>basics.</em></h2>
+            <p>Save a short organization profile on this device, then use the checklist to see which evidence groups are ready to gather. This demo does not assess eligibility.</p>
+            <div class="profile-privacy"><span aria-hidden="true">◎</span><span><strong>Saved only in this browser</strong><small>Use basic business details. Skip registration IDs, financial figures and confidential records.</small></span></div>
+            <div class="bidder-profile-form" id="bidder-profile-form" role="form" aria-labelledby="bidder-profile-form-title">
+              <div class="profile-form-heading"><span class="micro-label" id="bidder-profile-form-title">LOCAL PROFILE DRAFT</span><span class="profile-storage-label">NO ACCOUNT</span></div>
+              <label class="profile-field" for="bidder-profile-name">Organization name<input id="bidder-profile-name" name="organization" type="text" maxlength="100" autocomplete="organization" placeholder="Your company name" required></label>
+              <div class="profile-form-grid">
+                <label class="profile-field" for="bidder-profile-type">Bidder type<select id="bidder-profile-type" name="bidder-type"><option value="">Choose a type</option><option value="manufacturer">Manufacturer / OEM</option><option value="epc">EPC / works contractor</option><option value="reseller">Dealer / reseller</option><option value="services">IT / services provider</option><option value="other">Other</option></select></label>
+                <label class="profile-field" for="bidder-profile-years">Years in business<select id="bidder-profile-years" name="years"><option value="">Choose a range</option><option value="under-3">Under 3 years</option><option value="3-5">3–5 years</option><option value="6-10">6–10 years</option><option value="10-plus">Over 10 years</option></select></label>
+                <label class="profile-field" for="bidder-profile-region">Operating region<input id="bidder-profile-region" name="region" type="text" maxlength="60" autocomplete="address-level1" placeholder="e.g. Haryana"></label>
+              </div>
+              <div class="profile-form-actions"><button class="button button-dark" id="save-bidder-profile" type="button">Save profile <span aria-hidden="true">↗</span></button><button class="profile-clear" id="clear-bidder-profile" type="button">Clear profile</button></div>
+              <p class="profile-save-status" id="profile-save-status" role="status" aria-live="polite">Nothing saved on this device yet. Your profile is never sent with a search.</p>
+            </div>
           </div>
           <div class="readiness-card" data-reveal>
             <div class="readiness-top"><span>DEMO PROFILE</span><span>LOCAL ONLY</span></div>
@@ -400,6 +411,7 @@
             <details><summary>Are the tenders and results real?</summary><p>No. Tender names, buyers, dates, amounts and report findings on this page are made-up examples.</p></details>
             <details><summary>Can I check if my company qualifies?</summary><p>Not yet. The checklist is only a local demo. This website does not accept company files or run a real eligibility review.</p></details>
             <details><summary>What happens if I use live search?</summary><p>Live search works only when the optional service is configured. When you submit, it sends your search words and selected portal to that service. Open official notices to confirm every detail.</p></details>
+            <details><summary>Is my bidder profile sent to TenderLens?</summary><p>No. The short profile is saved only in this browser on this device. It is not included in live searches, and you can remove it with the “Clear profile” button.</p></details>
             <details><summary>Where can I learn how to use the page?</summary><p>Open the <a href="guide.html">easy guide</a> for a short walkthrough, glossary, search setup and privacy details.</p></details>
           </div>
         </div>
