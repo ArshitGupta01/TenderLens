@@ -15,6 +15,7 @@ import asyncio
 import logging
 from typing import List, Dict, Any, Optional
 from fastapi import FastAPI, HTTPException, BackgroundTasks, Query
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sse_starlette.sse import EventSourceResponse
 from pydantic import BaseModel, Field
@@ -68,7 +69,7 @@ logger = logging.getLogger("tenderlens.api")
 app = FastAPI(
     title="TenderLens Engine API",
     description="AI-Powered Tender Qualification & Disqualification Engine for Indian Public Procurement",
-    version="1.0.3"
+    version="2.0.2"
 )
 
 # Enable CORS for Arshit's Frontend and local origins
@@ -128,12 +129,35 @@ class SaveBidderProfileRequest(BaseModel):
     region: Optional[str] = ""
 
 
+
+@app.get("/favicon.ico", include_in_schema=False)
+async def get_favicon_ico():
+    ico_path = ROOT_DIR / "frontend" / "favicon.ico"
+    if not ico_path.exists():
+        ico_path = ROOT_DIR / "favicon.ico"
+    return FileResponse(
+        ico_path,
+        media_type="image/x-icon",
+        headers={"Cache-Control": "no-cache, no-store, must-revalidate", "Pragma": "no-cache"}
+    )
+
+@app.get("/favicon.svg", include_in_schema=False)
+async def get_favicon_svg():
+    svg_path = ROOT_DIR / "frontend" / "favicon.svg"
+    if not svg_path.exists():
+        svg_path = ROOT_DIR / "favicon.svg"
+    return FileResponse(
+        svg_path,
+        media_type="image/svg+xml",
+        headers={"Cache-Control": "no-cache, no-store, must-revalidate", "Pragma": "no-cache"}
+    )
+
 @app.get("/healthz")
 async def health_check():
     return {
         "status": "healthy",
         "service": "TenderLens Backend Engine",
-        "version": "2.0.0",
+        "version": app.version,
         "environment": settings.ENVIRONMENT,
         "tech_stack": {
             "api_orchestration": "FastAPI + Pydantic + Celery",

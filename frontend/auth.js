@@ -8,6 +8,17 @@
   let currentSession = null;
   let profileCache = null;
   let authConfigCache = null;
+  const EYE_OPEN_SVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>';
+  const EYE_CLOSED_SVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>';
+
+  // Immediate recovery check on script evaluation
+  var urlParams = new URLSearchParams(window.location.search);
+  var hashStr = window.location.hash || '';
+  if (urlParams.get('mode') === 'reset' || hashStr.indexOf('type=recovery') !== -1) {
+    document.documentElement.classList.add('is-recovery-mode');
+    if (document.body) document.body.classList.add('is-recovery-mode');
+  }
+
 
   function setStatus(element, message, state = '') {
     if (!element) return;
@@ -356,22 +367,41 @@
 
   async function handlePasswordRecovery() {
     const form = document.querySelector('[data-password-recovery]');
-    if (!form || !supabaseClient || form.dataset.recoveryBound === 'true') return;
+    if (!form || form.dataset.recoveryBound === 'true') return;
     form.dataset.recoveryBound = 'true';
     form.hidden = false;
+
+    // Activate clean recovery mode: hide story and other sections, center reset card
+    document.documentElement.classList.add('is-recovery-mode');
+    document.body.classList.add('is-recovery-mode');
+    document.querySelector('.auth-layout')?.classList.add('is-recovery-mode');
+
+    const story = document.querySelector('.auth-story');
+    if (story) story.hidden = true;
+
     document.querySelector('[data-signin-form]')?.setAttribute('hidden', '');
     document.querySelector('[data-auth-title]')?.replaceChildren(document.createTextNode('Choose a new password'));
+    const intro = document.querySelector('.auth-intro');
+    if (intro) intro.textContent = 'Enter and confirm your new secure password.';
+
+    // Hide standard sign-in switch footer and reveal return-to-signin link
+    document.querySelectorAll('[data-signin-switch]').forEach(el => el.hidden = true);
+    document.querySelectorAll('[data-recovery-footer]').forEach(el => el.hidden = false);
+
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       const fields = new FormData(form);
       const password = String(fields.get('password') || '');
       const confirm = String(fields.get('password_confirm') || '');
       const status = form.querySelector('[data-auth-status]');
+      if (password.length < 8) return setStatus(status, 'Password must be at least 8 characters.', 'error');
       if (password !== confirm) return setStatus(status, 'Those passwords do not match.', 'error');
+      if (!supabaseClient) return setStatus(status, 'Authentication service is not connected.', 'error');
+      setStatus(status, 'Updating password…', 'loading');
       const { error } = await supabaseClient.auth.updateUser({ password });
       if (error) return setStatus(status, error.message, 'error');
-      setStatus(status, 'Password updated. You can continue to your account.', 'success');
-      window.setTimeout(() => window.location.assign('account.html'), 800);
+      setStatus(status, 'Password updated successfully! Redirecting to your account…', 'success');
+      window.setTimeout(() => window.location.assign('account.html'), 1000);
     }, { once: true });
   }
 
@@ -430,6 +460,58 @@
       if (signOutError) return setEveryStatus('[data-auth-status]', signOutError.message, 'error');
       window.location.assign('index.html');
     }));
+        // Enhanced password visibility toggles
+    document.querySelectorAll('.auth-password-toggle').forEach((button) => {
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+        const wrapper = button.closest('.auth-input-wrapper');
+        const input = wrapper?.querySelector('input');
+        if (!input) return;
+        const isPassword = input.type === 'password';
+        input.type = isPassword ? 'text' : 'password';
+        const icon = button.querySelector('.eye-icon');
+        if (icon) icon.innerHTML = isPassword ? EYE_CLOSED_SVG : EYE_OPEN_SVG;
+        button.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+        input.focus();
+      });
+    });
+
+    // Enhanced password strength meter
+    const signupPwInput = document.querySelector('#signup-password');
+    const meterWrap = document.querySelector('#password-meter');
+    if (signupPwInput && meterWrap) {
+      signupPwInput.addEventListener('input', () => {
+        const val = signupPwInput.value;
+        const bars = meterWrap.querySelectorAll('.meter-bar');
+        const label = meterWrap.querySelector('[data-meter-label]');
+        if (!val) {
+          bars.forEach((b) => { b.className = 'meter-bar'; });
+          if (label) {
+            label.textContent = 'Password strength';
+            label.className = 'password-meter-label';
+          }
+          return;
+        }
+        let score = 0;
+        if (val.length >= 8) score++;
+        if (/[0-9]/.test(val) || /[^A-Za-z0-9]/.test(val)) score++;
+        if (val.length >= 10 && /[A-Z]/.test(val) && /[a-z]/.test(val)) score++;
+
+        bars.forEach((b, idx) => {
+          if (idx < score) {
+            b.className = 'meter-bar is-active ' + (score === 1 ? 'is-weak' : score === 2 ? 'is-medium' : 'is-strong');
+          } else {
+            b.className = 'meter-bar';
+          }
+        });
+
+        if (label) {
+          label.textContent = score === 1 ? 'Weak ? add numbers or symbols' : score === 2 ? 'Good ? meets security baseline' : 'Strong ? robust enterprise password';
+          label.className = 'password-meter-label ' + (score === 1 ? 'text-weak' : score === 2 ? 'text-medium' : 'text-strong');
+        }
+      });
+    }
+
     await initAccountProfile();
     await initSavedTenders();
     if (signedInUser && ['signin.html', 'signup.html'].includes(currentPage) && new URLSearchParams(window.location.search).get('mode') !== 'reset') {

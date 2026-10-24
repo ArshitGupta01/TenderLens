@@ -368,7 +368,7 @@ export const timeline = (letters: number, crew: number, words: number, actions: 
 
 export type CrewKind = "yeti" | "kid" | "bird" | "cat" | "ghost" | "mushroom"
 
-export type DoodleKind = "flame" | "sandwich" | "star" | "heart" | "bolt" | "sparkle" | "spiral" | "plane"
+export type DoodleKind = "building" | "document" | "shield" | "seal" | "briefcase" | "check" | "flame" | "sandwich" | "star" | "heart" | "bolt" | "sparkle" | "spiral" | "plane"
 
 export type DoodleCrewPreset = "auto" | "paper" | "night" | "riso" | "sunny"
 
@@ -562,15 +562,15 @@ const DEFAULT_COLUMNS: FooterColumn[] = [
 
 const DEFAULT_ACTIONS: FooterAction[] = [
 
-  { label: "Grab a sticker pack", href: "#", icon: "sandwich", variant: "outline" },
+  { label: "Explore Tenders", href: "#opportunities", icon: "document", variant: "outline" },
 
-  { label: "Play free", href: "#", icon: "bolt", variant: "solid" },
+  { label: "Strategy Studio", href: "strategy.html", icon: "shield", variant: "solid" },
 
 ]
 
 
 
-const DEFAULT_DOODLES: DoodleKind[] = ["flame", "sandwich", "star", "flame", "heart", "sandwich", "bolt", "sparkle"]
+const DEFAULT_DOODLES: DoodleKind[] = ["building", "document", "shield", "seal", "building", "document", "briefcase", "check"]
 
 
 
@@ -959,6 +959,62 @@ const ART: { [k: string]: Art } = {
 const Doodle = ({ kind }: { kind: DoodleKind }) => {
 
   switch (kind) {
+
+        case "building":
+      return (
+        <>
+          <path fill="#38bdf8" d="M0 -14 L12 -6 L-12 -6 Z" />
+          <path fill="#0284c7" d="M-11 -6 L11 -6 L11 -3 L-11 -3 Z" />
+          <path fill="#f8fafc" d="M-9 -3 L-6 -3 L-6 9 L-9 9 Z M-2 -3 L1 -3 L1 9 L-2 9 Z M5 -3 L8 -3 L8 9 L5 9 Z" />
+          <path fill="#38bdf8" d="M-13 9 L13 9 L13 13 L-13 13 Z" />
+        </>
+      )
+
+    case "document":
+      return (
+        <>
+          <path fill="#f8fafc" d="M-9 -13 L4 -13 L10 -7 L10 13 L-9 13 Z" />
+          <path fill="#38bdf8" d="M4 -13 L10 -7 L4 -7 Z" />
+          <path fill="#0284c7" d="M-6 -8 L1 -8 L1 -6 L-6 -6 Z M-6 -3 L7 -3 L7 -1 L-6 -1 Z M-6 2 L7 2 L7 4 L-6 4 Z M-6 7 L4 7 L4 9 L-6 9 Z" />
+        </>
+      )
+
+    case "shield":
+      return (
+        <>
+          <path fill="#38bdf8" d="M0 -14 C6 -14 11 -12 11 -12 C11 2 7 9 0 14 C-7 9 -11 2 -11 -12 C-11 -12 -6 -14 0 -14 Z" />
+          <path fill="#0284c7" d="M0 -11 C4 -11 8 -9.5 8 -9.5 C8 1 5 6.5 0 11 C-5 6.5 -8 1 -8 -9.5 C-8 -9.5 -4 -11 0 -11 Z" />
+          <path fill="none" stroke="#f8fafc" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" d="M-4 0 L-1 3 L5 -3" />
+        </>
+      )
+
+    case "seal":
+      return (
+        <>
+          <path fill="#0284c7" d="M-5 4 L-8 14 L-2 11 L0 14 L0 4 Z M5 4 L8 14 L2 11 L0 14 L0 4 Z" />
+          <circle cx="0" cy="-3" r="10" fill="#38bdf8" />
+          <circle cx="0" cy="-3" r="7.5" fill="#f8fafc" />
+          <path fill="#0284c7" d="M0 -8 L1.8 -4 L6 -4 L2.6 -1.5 L3.9 2.5 L0 0.2 L-3.9 2.5 L-2.6 -1.5 L-6 -4 L-1.8 -4 Z" />
+        </>
+      )
+
+    case "briefcase":
+      return (
+        <>
+          <path fill="none" stroke="#38bdf8" strokeWidth="2" d="M-4 -6 L-4 -11 C-4 -12 4 -12 4 -11 L4 -6" />
+          <rect x="-12" y="-6" width="24" height="18" rx="3" fill="#38bdf8" />
+          <path fill="#0284c7" d="M-12 1 L12 1 L12 3 L-12 3 Z" />
+          <rect x="-2" y="-1" width="4" height="4" rx="1" fill="#f8fafc" />
+        </>
+      )
+
+    case "check":
+      return (
+        <>
+          <circle cx="0" cy="0" r="11" fill="#38bdf8" />
+          <path fill="none" stroke="#f8fafc" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" d="M-5 0 L-2 3 L6 -4" />
+        </>
+      )
 
     case "flame":
 

@@ -9,6 +9,7 @@ export function TenderLensHero({ wordmarkOnly = true }: { wordmarkOnly?: boolean
         wordmark="TENDERLENS"
         wordmarkOnly={wordmarkOnly}
         crew={[]}
+        doodles={["building", "document", "shield", "seal", "building", "document", "briefcase", "check"]}
         tracking={-0.025}
         backToTop={false}
         palette={{

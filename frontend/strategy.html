@@ -1,73 +1,78 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#f4f2e9">
-    <meta name="description" content="Build a TenderLens 5-Pillar strategy preview and test Precedence DAG conflict resolution from bidder details and tender requirements.">
-    <meta name="tenderlens-api" content="">
-    <title>Strategy tools — TenderLens</title>
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="stylesheet" href="styles.css">
-    <script src="theme.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0" defer></script>
-    <script src="auth.js" defer></script>
-    <script src="app.js" defer></script>
-    <script src="strategy.js" defer></script>
-  </head>
-  <body class="strategy-page account-page">
-    <a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header">
-      <div class="container nav-shell">
-        <a class="brand" href="index.html" aria-label="TenderLens home"><span class="brand-mark" aria-hidden="true">⌕</span><span class="brand-name">Tender<span>Lens</span></span></a>
-        <div class="header-actions">
-          <a class="header-account-link" data-auth-signin href="signin.html">Sign in</a>
-          <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch theme" aria-pressed="false"><span class="theme-toggle-icon" aria-hidden="true">☾</span><span id="theme-toggle-label">Dark mode</span></button>
-          <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav"><span class="menu-toggle-label">Menu</span><span class="menu-lines" aria-hidden="true"><i></i><i></i></span></button>
-        </div>
-        <nav class="primary-nav" id="primary-nav" aria-label="Main navigation">
-          <!-- 1. SIGN IN & CREATE ACCOUNT (SHOWN FIRST) -->
-          <div class="menu-group menu-group-auth">
-            <div class="menu-section-heading">ACCOUNT ACCESS</div>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f2e9">
+  <meta name="description"
+    content="Build a TenderLens 5-Pillar strategy preview and test Precedence DAG conflict resolution from bidder details and tender requirements.">
+  <meta name="tenderlens-api" content="">
+  <title>Strategy tools — TenderLens</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2.0.2">
+    <link rel="alternate icon" type="image/x-icon" href="favicon.ico?v=2.0.2">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png?v=2.0.2">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png?v=2.0.2">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=2.0.2">
+    <link rel="manifest" href="site.webmanifest?v=2.0.2">
+    <meta name="theme-color" content="#0d1522">
+    <meta property="og:image" content="tenderlens-og.png?v=2.0.2">
+    <meta name="twitter:image" content="tenderlens-og.png?v=2.0.2">
+  <link rel="stylesheet" href="styles.css">
+  <script src="theme.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0" defer></script>
+  <script src="auth.js" defer></script>
+  <script src="app.js" defer></script>
+  <script src="strategy.js" defer></script>
+</head>
+
+<body class="strategy-page account-page">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container nav-shell">
+      <a class="brand" href="index.html" aria-label="TenderLens home"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="9" fill="#0d1522"/><rect width="38" height="38" x="1" y="1" rx="8" stroke="rgba(255,255,255,0.14)" stroke-width="1"/><g transform="translate(4.2, 12.3) scale(0.1)"><path d="M 23 2 L 20 3 L 18 4 L 13 9 L 10 13 L 8 16 L 6 19 L 3 23 L 2 25 L 2 31 L 5 34 L 67 34 L 69 36 L 69 144 L 70 147 L 75 152 L 77 153 L 102 153 L 103 34 L 145 34 L 149 32 L 151 30 L 153 26 L 153 2 Z" fill="#FFFFFF"/><path d="M 166 2 L 166 110 L 167 116 L 168 119 L 169 122 L 173 130 L 175 133 L 179 138 L 182 141 L 186 144 L 189 145 L 191 147 L 195 149 L 197 149 L 200 151 L 204 152 L 209 153 L 301 153 L 303 152 L 308 147 L 309 144 L 311 142 L 313 139 L 315 135 L 315 131 L 314 128 L 310 124 L 308 123 L 220 123 L 214 122 L 208 119 L 201 112 L 198 106 L 197 102 L 196 2 Z" fill="#3B82F6"/></g></svg></span><span class="brand-name">Tender<span>Lens</span></span></a>
+      <div class="header-actions">
+        <a class="header-account-link" data-auth-signin href="signin.html">Sign in</a>
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch theme"
+          aria-pressed="false"><span class="theme-toggle-icon" aria-hidden="true">☾</span><span
+            id="theme-toggle-label">Dark mode</span></button>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav"><span
+            class="menu-toggle-label">Menu</span><span class="menu-lines"
+            aria-hidden="true"><i></i><i></i></span></button>
+      </div>
+      <nav class="primary-nav" id="primary-nav" data-lenis-prevent aria-label="Main navigation">
+          <div class="menu-status-bar">
+            <span class="menu-pulse" aria-hidden="true"></span>
+            <span class="menu-status-text">TENDERLENS v2.0.2</span>
+          </div>
+          <div class="menu-group">
+            <div class="menu-section-heading">EXPLORE &amp; STRATEGY</div>
+            <a class="menu-item menu-item-featured" href="strategy.html">
+              <span class="menu-item-lead"><span class="menu-item-icon">⚡</span><span class="menu-item-text">Strategy Studio</span></span>
+              <span class="menu-tag">5 Pillars</span>
+            </a>
+            <a class="menu-item" href="strategy.html#precedence-rag-workbench">
+              <span class="menu-item-lead"><span class="menu-item-icon">📑</span><span class="menu-item-text">Precedence DAG Resolver</span></span>
+            </a>
+            <a class="menu-item" href="guide.html">
+              <span class="menu-item-lead"><span class="menu-item-icon">🛡️</span><span class="menu-item-text">Statutory Exemption Hub</span></span>
+            </a>
+            <a class="menu-item" href="index.html#opportunities">
+              <span class="menu-item-lead"><span class="menu-item-icon">🔍</span><span class="menu-item-text">Sample Tenders Desk</span></span>
+            </a>
+            <a class="menu-item" href="account.html">
+              <span class="menu-item-lead"><span class="menu-item-icon">🏢</span><span class="menu-item-text">Bidder Profile</span></span>
+            </a>
+            <a class="menu-item" href="saved-tenders.html">
+              <span class="menu-item-lead"><span class="menu-item-icon">⭐</span><span class="menu-item-text">Saved Tenders</span></span>
+            </a>
+          </div>
+          <div class="menu-group menu-group-footer">
+            <div class="menu-section-heading">WORKSPACE &amp; ACCOUNT</div>
             <div class="menu-actions">
               <a class="button button-dark menu-btn" data-auth-signin href="signin.html">Sign in</a>
               <a class="button menu-btn" data-auth-signup href="signup.html">Create account</a>
             </div>
-          </div>
-
-          <!-- 2. STATUS BADGE -->
-          <div class="menu-status-bar">
-            <span class="menu-pulse" aria-hidden="true"></span>
-            <span class="menu-status-text">TENDERLENS PLATFORM LIVE</span>
-          </div>
-
-          <!-- 3. PLATFORM TOOLS (ESSENTIAL WORKFLOWS) -->
-          <div class="menu-group">
-            <div class="menu-section-heading">PLATFORM &amp; TOOLS</div>
-            <a class="menu-item menu-item-featured" href="strategy.html">
-              <span class="menu-item-lead"><span class="menu-item-icon">⚡</span><span class="menu-item-text">Strategy Studio</span></span>
-              <span class="menu-tag">Equalizer Suite</span>
-            </a>
-            <a class="menu-item" href="index.html#opportunities">
-              <span class="menu-item-lead"><span class="menu-item-icon">🔍</span><span class="menu-item-text">Tenders Desk</span></span>
-            </a>
-            <a class="menu-item" href="index.html#demo">
-              <span class="menu-item-lead"><span class="menu-item-icon">📋</span><span class="menu-item-text">Qualification Report</span></span>
-            </a>
-            <a class="menu-item" href="saved-tenders.html">
-              <span class="menu-item-lead"><span class="menu-item-icon">⭐</span><span class="menu-item-text">Saved Tenders Shortlist</span></span>
-            </a>
-            <a class="menu-item" href="index.html#profile">
-              <span class="menu-item-lead"><span class="menu-item-icon">🏢</span><span class="menu-item-text">Bidder Profile</span></span>
-            </a>
-          </div>
-
-          <!-- 4. RESOURCES & LEGAL -->
-          <div class="menu-group menu-group-footer">
-            <div class="menu-section-heading">RESOURCES</div>
-            <a class="menu-item" href="guide.html">
-              <span class="menu-item-lead"><span class="menu-item-icon">📖</span><span class="menu-item-text">Guide &amp; Documentation</span></span>
-            </a>
             <div class="menu-legal-links">
               <a href="privacy.html">Privacy</a>
               <span>·</span>
@@ -75,365 +80,457 @@
             </div>
           </div>
         </nav>
+    </div>
+  </header>
+
+  <main id="main" class="strategy-main">
+    <section class="strategy-hero">
+      <div class="container strategy-hero-inner">
+        <p class="eyebrow"><span class="eyebrow-mark"></span> FIVE STRATEGY TOOLS + PRECEDENCE DAG · INTERACTIVE STUDIO
+        </p>
+        <h1>Put the company details<br><em>in a clearer order.</em></h1>
+        <p>Enter the requirements you see in a tender and your bidder figures — or load a sample scenario in one click.
+          TenderLens runs deterministic mathematical gates, drafts pre-bid clarification packs, models JV capability
+          gaps, builds a CSV compliance matrix with statutory declaration templates, and optimizes EMD liquidity.</p>
+        <div class="strategy-pillar-strip" aria-label="Included tools">
+          <span>01 · Pre-Bid Legal Pack</span>
+          <span>02 · JV Gap Matchmaker</span>
+          <span>03 · Compliance &amp; Affidavits</span>
+          <span>04 · EMD &amp; Surety Optimizer</span>
+          <span>05 · Rejection Forensics</span>
+          <a href="#precedence-rag-workbench" class="strategy-pillar-anchor">06 · Precedence DAG RAG ↓</a>
+        </div>
       </div>
-    </header>
+    </section>
 
-    <main id="main" class="strategy-main">
-      <section class="strategy-hero">
-        <div class="container strategy-hero-inner">
-          <p class="eyebrow"><span class="eyebrow-mark"></span> FIVE STRATEGY TOOLS + PRECEDENCE DAG · INTERACTIVE STUDIO</p>
-          <h1>Put the tender details<br><em>in a clearer order.</em></h1>
-          <p>Enter the requirements you see in a tender and your bidder figures — or load a sample scenario in one click. TenderLens runs deterministic mathematical gates, drafts pre-bid clarification packs, models JV capability gaps, builds a CSV compliance matrix with statutory declaration templates, and optimizes EMD liquidity.</p>
-          <div class="strategy-pillar-strip" aria-label="Included tools">
-            <span>01 · Pre-Bid Legal Pack</span>
-            <span>02 · JV Gap Matchmaker</span>
-            <span>03 · Compliance &amp; Affidavits</span>
-            <span>04 · EMD &amp; Surety Optimizer</span>
-            <span>05 · Rejection Forensics</span>
-            <a href="#precedence-rag-workbench" class="strategy-pillar-anchor">09 · Precedence DAG RAG ↓</a>
-          </div>
+    <section class="strategy-notice container" aria-label="Important information">
+      <span class="strategy-notice-icon" aria-hidden="true">i</span>
+      <p><strong>Review aid only.</strong> This page uses details you enter; it does not verify your documents, give
+        legal advice, confirm exemptions or register real consortium partners. Verify every result against the governing
+        tender schedule and latest corrigenda. Do not enter confidential business information.</p>
+    </section>
+
+    <section class="strategy-preset-bar container" aria-label="Quick scenario presets">
+      <div class="preset-label"><strong>1-Click Scenarios:</strong> Load pre-filled tender criteria to see instant
+        qualification &amp; legal strategy:</div>
+      <div class="preset-buttons" role="group" aria-label="Scenario presets">
+        <button class="preset-btn preset-btn-featured" id="preset-hackathon-demo" type="button"
+          data-load-zero-history-preset data-strategy-preset="bhel-msme">⚡ Zero-History Startup (₹5 Cr GeM
+          Cartel)</button>
+        <button class="preset-btn" id="preset-bhel-turnover" type="button" data-strategy-preset="bhel-msme">BHEL MSME
+          Turnover Trap</button>
+        <button class="preset-btn" id="preset-cppp-epc" type="button" data-strategy-preset="cppp-epc">CPPP EPC Bank
+          Guarantee &amp; 80/50/40</button>
+        <button class="preset-btn" id="preset-icmr-oem" type="button" data-strategy-preset="icmr-medical">ICMR Medical
+          OEM MAF &amp; BIS</button>
+        <button class="preset-btn" id="preset-load-profile" type="button">Sync My Bidder Profile ↗</button>
+      </div>
+    </section>
+
+    <section class="strategy-workspace container" aria-labelledby="strategy-form-title">
+      <div class="strategy-form-column">
+        <div class="strategy-section-heading">
+          <p class="eyebrow">START WITH THE SOURCE</p>
+          <h2 id="strategy-form-title">Build a 5-pillar strategy preview</h2>
+          <p>Only the values marked “optional” can be left blank. Figures are in Indian rupees or lakh as labeled.</p>
         </div>
-      </section>
+        <form class="strategy-form" id="strategy-form">
 
-      <section class="strategy-notice container" aria-label="Important information">
-        <span class="strategy-notice-icon" aria-hidden="true">i</span>
-        <p><strong>Review aid only.</strong> This page uses details you enter; it does not verify your documents, give legal advice, confirm exemptions or register real consortium partners. Verify every result against the governing tender schedule and latest corrigenda. Do not enter confidential business information.</p>
-      </section>
-
-      <section class="strategy-preset-bar container" aria-label="Quick scenario presets">
-        <div class="strategy-preset-bar-inner">
-          <div>
-            <p class="eyebrow">QUICK SCENARIO PRESETS</p>
-            <strong>Load an illustrative tender scenario or pull your synced Bidder Profile:</strong>
-          </div>
-          <div class="strategy-preset-buttons" data-strategy-presets>
-            <button class="demo-login-fill" type="button" data-strategy-preset="bhel-msme-trap">01 · BHEL MSME Trap &amp; Brand Lock</button>
-            <button class="demo-login-fill" type="button" data-strategy-preset="cppp-epc-surety">02 · CPPP EPC Surety Bond &amp; 80/50/40</button>
-            <button class="demo-login-fill" type="button" data-strategy-preset="icmr-medical-maf">03 · ICMR Medical OEM MAF &amp; BIS</button>
-            <button class="demo-login-fill strategy-profile-sync-btn" type="button" data-load-synced-profile>Load my Bidder Profile ↗</button>
-          </div>
-        </div>
-      </section>
-
-      <section class="strategy-workspace container" aria-labelledby="strategy-form-title">
-        <div class="strategy-form-column">
-          <div class="strategy-section-heading"><p class="eyebrow">START WITH THE SOURCE</p><h2 id="strategy-form-title">Build a 5-pillar strategy preview</h2><p>Only the values marked “optional” can be left blank. Figures are in Indian rupees or lakh as labeled.</p></div>
-          <form class="strategy-form" id="strategy-form">
-            <!-- HACKATHON WINNING DEMO PRESET BANNER -->
-            <div class="strategy-preset-banner" style="margin-bottom: 1.5rem; padding: 1.1rem; background: rgba(37, 99, 235, 0.08); border: 1.5px solid #2563eb; border-radius: 8px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
-                <div>
-                  <strong style="display: block; font-size: 0.95rem; color: #1e293b;">⚡ Live Hackathon Demo Preset</strong>
-                  <span style="font-size: 0.85rem; color: #64748b;">Zero-History Startup vs. ₹5 Cr GeM Cartel Tender (GFR 173(i) &amp; GeM GTC 4(xiii)(h))</span>
-                </div>
-                <button class="demo-login-fill button button-primary button-sm" type="button" data-load-zero-history-preset style="background: #2563eb; color: #fff; font-weight: 600; padding: 0.6rem 1.1rem; border-radius: 6px; border: none; cursor: pointer;">
-                  Load Zero-History Demo Preset ↗
-                </button>
-              </div>
+          <fieldset class="strategy-fieldset">
+            <legend><span>01</span> Tender details</legend>
+            <label class="profile-field" for="strategy-tender-title">Tender title<input id="strategy-tender-title"
+                name="tender_title" required minlength="2" maxlength="200"
+                placeholder="Example: Supply and installation of 33kV substation switchgear panels"></label>
+            <div class="strategy-input-grid">
+              <label class="profile-field" for="strategy-tender-id">Tender reference <small>Optional</small><input
+                  id="strategy-tender-id" name="tender_id" maxlength="100" placeholder="e.g. GEM/2026/B/900123"></label>
+              <label class="profile-field" for="strategy-portal">Portal / buyer<select id="strategy-portal"
+                  name="source_portal">
+                  <option>GeM</option>
+                  <option>CPPP</option>
+                  <option>BHEL</option>
+                  <option>ICMR</option>
+                  <option>State eProcurement</option>
+                  <option>Not specified</option>
+                  <option>Other</option>
+                </select></label>
             </div>
+          </fieldset>
 
-            <fieldset class="strategy-fieldset">
-              <legend><span>01</span> Tender details</legend>
-              <label class="profile-field" for="strategy-tender-title">Tender title<input id="strategy-tender-title" name="tender_title" required minlength="2" maxlength="200" placeholder="Example: Supply and installation of 33kV substation switchgear panels"></label>
-              <div class="strategy-input-grid">
-                <label class="profile-field" for="strategy-tender-id">Tender reference <small>Optional</small><input id="strategy-tender-id" name="tender_id" maxlength="100" placeholder="e.g. GEM/2026/B/900123"></label>
-                <label class="profile-field" for="strategy-portal">Portal / buyer<select id="strategy-portal" name="source_portal"><option>GeM</option><option>CPPP</option><option>BHEL</option><option>ICMR</option><option>State eProcurement</option><option>Not specified</option><option>Other</option></select></label>
-              </div>
-            </fieldset>
+          <fieldset class="strategy-fieldset">
+            <legend><span>02</span> Bidder details</legend>
+            <label class="profile-field" for="strategy-company">Business name<input id="strategy-company"
+                name="company_name" required maxlength="120" placeholder="Your company or business name"></label>
+            <div class="strategy-input-grid">
+              <label class="profile-field" for="strategy-entity">Business type<select id="strategy-entity"
+                  name="entity_type">
+                  <option>System Integrator</option>
+                  <option>Manufacturer</option>
+                  <option>OEM</option>
+                  <option>EPC</option>
+                  <option>Reseller</option>
+                  <option>Trader</option>
+                  <option>Other</option>
+                </select></label>
+              <label class="profile-field" for="strategy-years">Years in business<input id="strategy-years"
+                  name="years_in_business" type="number" min="0" max="150" step="1" required placeholder="0"></label>
+            </div>
+            <div class="strategy-checkbox-row">
+              <label class="strategy-check"><input name="is_msme_registered" type="checkbox"><span>Registered MSME
+                  (Udyam)</span></label>
+              <label class="strategy-check"><input name="is_startup_recognized" type="checkbox"><span>Recognized DPIIT
+                  startup</span></label>
+            </div>
+            <p class="strategy-field-help">These details are sent to the configured TenderLens API to calculate this
+              preview and are not saved by this feature.</p>
+            <p class="strategy-subheading">Average annual turnover figures (last 3 financial years)</p>
+            <div class="strategy-input-grid strategy-input-grid-three">
+              <label class="profile-field" for="turnover-year-1">Year 1 · ₹ lakh<input id="turnover-year-1"
+                  name="turnover_year_1_lakhs" type="number" min="0" step="0.01" required placeholder="0"></label>
+              <label class="profile-field" for="turnover-year-2">Year 2 · ₹ lakh<input id="turnover-year-2"
+                  name="turnover_year_2_lakhs" type="number" min="0" step="0.01" required placeholder="0"></label>
+              <label class="profile-field" for="turnover-year-3">Year 3 · ₹ lakh<input id="turnover-year-3"
+                  name="turnover_year_3_lakhs" type="number" min="0" step="0.01" required placeholder="0"></label>
+            </div>
+            <div class="strategy-input-grid">
+              <label class="profile-field" for="local-content">Local content · %<input id="local-content"
+                  name="local_content_percentage" type="number" min="0" max="100" step="0.1" required
+                  placeholder="0"></label>
+              <label class="profile-field" for="certifications">Certifications held <small>Comma-separated</small><input
+                  id="certifications" name="held_certifications" maxlength="500"
+                  placeholder="For example: ISO-9001, BIS, CE"></label>
+            </div>
+            <label class="profile-field" for="past-projects">Completed similar project values · ₹ lakh <small>Optional,
+                comma-separated for CPWD 80/50/40 check</small><input id="past-projects"
+                name="past_similar_project_values_lakhs" maxlength="300"
+                placeholder="For example: 140, 110, 95"></label>
+          </fieldset>
 
-            <fieldset class="strategy-fieldset">
-              <legend><span>02</span> Bidder details</legend>
-              <label class="profile-field" for="strategy-company">Business name<input id="strategy-company" name="company_name" required maxlength="120" placeholder="Your company or business name"></label>
-              <div class="strategy-input-grid">
-                <label class="profile-field" for="strategy-entity">Business type<select id="strategy-entity" name="entity_type"><option>System Integrator</option><option>Manufacturer</option><option>OEM</option><option>EPC</option><option>Reseller</option><option>Trader</option><option>Other</option></select></label>
-                <label class="profile-field" for="strategy-years">Years in business<input id="strategy-years" name="years_in_business" type="number" min="0" max="150" step="1" required placeholder="0"></label>
-              </div>
-              <div class="strategy-checkbox-row">
-                <label class="strategy-check"><input name="is_msme_registered" type="checkbox"><span>Registered MSME (Udyam)</span></label>
-                <label class="strategy-check"><input name="is_startup_recognized" type="checkbox"><span>Recognized DPIIT startup</span></label>
-              </div>
-              <p class="strategy-field-help">These details are sent to the configured TenderLens API to calculate this preview and are not saved by this feature.</p>
-              <p class="strategy-subheading">Average annual turnover figures (last 3 financial years)</p>
-              <div class="strategy-input-grid strategy-input-grid-three">
-                <label class="profile-field" for="turnover-year-1">Year 1 · ₹ lakh<input id="turnover-year-1" name="turnover_year_1_lakhs" type="number" min="0" step="0.01" required placeholder="0"></label>
-                <label class="profile-field" for="turnover-year-2">Year 2 · ₹ lakh<input id="turnover-year-2" name="turnover_year_2_lakhs" type="number" min="0" step="0.01" required placeholder="0"></label>
-                <label class="profile-field" for="turnover-year-3">Year 3 · ₹ lakh<input id="turnover-year-3" name="turnover_year_3_lakhs" type="number" min="0" step="0.01" required placeholder="0"></label>
-              </div>
-              <div class="strategy-input-grid">
-                <label class="profile-field" for="local-content">Local content · %<input id="local-content" name="local_content_percentage" type="number" min="0" max="100" step="0.1" required placeholder="0"></label>
-                <label class="profile-field" for="certifications">Certifications held <small>Comma-separated</small><input id="certifications" name="held_certifications" maxlength="500" placeholder="For example: ISO-9001, BIS, CE"></label>
-              </div>
-              <label class="profile-field" for="past-projects">Completed similar project values · ₹ lakh <small>Optional, comma-separated for CPWD 80/50/40 check</small><input id="past-projects" name="past_similar_project_values_lakhs" maxlength="300" placeholder="For example: 140, 110, 95"></label>
-            </fieldset>
+          <fieldset class="strategy-fieldset">
+            <legend><span>03</span> Tender requirements</legend>
+            <div class="strategy-input-grid strategy-input-grid-three">
+              <label class="profile-field" for="min-turnover">Minimum turnover · ₹ lakh<input id="min-turnover"
+                  name="min_annual_turnover_lakhs" type="number" min="0" step="0.01" required placeholder="0"></label>
+              <label class="profile-field" for="min-experience">Minimum experience · years<input id="min-experience"
+                  name="min_experience_years" type="number" min="0" max="150" step="1" required placeholder="0"></label>
+              <label class="profile-field" for="estimated-value">Estimated bid value · ₹ lakh<input id="estimated-value"
+                  name="estimated_bid_value_lakhs" type="number" min="0" step="0.01" placeholder="Optional"></label>
+            </div>
+            <div class="strategy-input-grid">
+              <label class="profile-field" for="emd-amount">EMD amount · ₹<input id="emd-amount" name="emd_amount_inr"
+                  type="number" min="0" step="1" required placeholder="0"></label>
+              <label class="profile-field" for="min-local-content">Minimum local content · %<input
+                  id="min-local-content" name="min_local_content_percentage" type="number" min="0" max="100" step="0.1"
+                  required value="20"></label>
+            </div>
+            <label class="profile-field" for="required-certifications">Required certifications
+              <small>Comma-separated</small><input id="required-certifications" name="mandatory_certifications"
+                maxlength="500" placeholder="For example: ISO-9001, BIS"></label>
+            <div class="strategy-checkbox-list">
+              <label class="strategy-check"><input name="oem_authorization_mandatory" type="checkbox"><span>Tender
+                  requires OEM authorization (MAF)</span></label>
+              <label class="strategy-check"><input name="emd_exemption_confirmed_by_tender"
+                  type="checkbox"><span>Official tender text confirms an EMD exemption</span></label>
+              <label class="strategy-check"><input name="msme_turnover_relaxation_allowed" type="checkbox"
+                  checked><span>Official tender text confirms turnover relief applies</span></label>
+              <label class="strategy-check"><input name="is_turnover_exemption_revoked_by_atc"
+                  type="checkbox"><span>Buyer ATC / Corrigendum says turnover relief does NOT apply</span></label>
+              <label class="strategy-check"><input name="msme_experience_relaxation_allowed" type="checkbox"
+                  checked><span>Official tender text confirms experience relief applies</span></label>
+              <label class="strategy-check"><input name="is_experience_exemption_revoked_by_atc"
+                  type="checkbox"><span>Buyer ATC / Corrigendum says experience relief does NOT apply</span></label>
+              <label class="strategy-check"><input name="proprietary_brand_lock_detected" type="checkbox"><span>Tender
+                  names a proprietary brand or model without “or equivalent”</span></label>
+            </div>
+            <label class="profile-field" for="brand-details">Exact clause excerpt <small>Optional</small><textarea
+                id="brand-details" name="proprietary_brand_details" rows="3" maxlength="600"
+                placeholder="Paste a short clause excerpt if a brand lock or restrictive condition is present"></textarea></label>
+          </fieldset>
 
-            <fieldset class="strategy-fieldset">
-              <legend><span>03</span> Tender requirements</legend>
-              <div class="strategy-input-grid strategy-input-grid-three">
-                <label class="profile-field" for="min-turnover">Minimum turnover · ₹ lakh<input id="min-turnover" name="min_annual_turnover_lakhs" type="number" min="0" step="0.01" required placeholder="0"></label>
-                <label class="profile-field" for="min-experience">Minimum experience · years<input id="min-experience" name="min_experience_years" type="number" min="0" max="150" step="1" required placeholder="0"></label>
-                <label class="profile-field" for="estimated-value">Estimated bid value · ₹ lakh<input id="estimated-value" name="estimated_bid_value_lakhs" type="number" min="0" step="0.01" placeholder="Optional"></label>
-              </div>
-              <div class="strategy-input-grid">
-                <label class="profile-field" for="emd-amount">EMD amount · ₹<input id="emd-amount" name="emd_amount_inr" type="number" min="0" step="1" required placeholder="0"></label>
-                <label class="profile-field" for="min-local-content">Minimum local content · %<input id="min-local-content" name="min_local_content_percentage" type="number" min="0" max="100" step="0.1" required value="20"></label>
-              </div>
-              <label class="profile-field" for="required-certifications">Required certifications <small>Comma-separated</small><input id="required-certifications" name="mandatory_certifications" maxlength="500" placeholder="For example: ISO-9001, BIS"></label>
-              <div class="strategy-checkbox-list">
-                <label class="strategy-check"><input name="oem_authorization_mandatory" type="checkbox"><span>Tender requires OEM authorization (MAF)</span></label>
-                <label class="strategy-check"><input name="emd_exemption_confirmed_by_tender" type="checkbox"><span>Official tender text confirms an EMD exemption</span></label>
-                <label class="strategy-check"><input name="msme_turnover_relaxation_allowed" type="checkbox" checked><span>Official tender text confirms turnover relief applies</span></label>
-                <label class="strategy-check"><input name="is_turnover_exemption_revoked_by_atc" type="checkbox"><span>Buyer ATC / Corrigendum says turnover relief does NOT apply</span></label>
-                <label class="strategy-check"><input name="msme_experience_relaxation_allowed" type="checkbox" checked><span>Official tender text confirms experience relief applies</span></label>
-                <label class="strategy-check"><input name="is_experience_exemption_revoked_by_atc" type="checkbox"><span>Buyer ATC / Corrigendum says experience relief does NOT apply</span></label>
-                <label class="strategy-check"><input name="proprietary_brand_lock_detected" type="checkbox"><span>Tender names a proprietary brand or model without “or equivalent”</span></label>
-              </div>
-              <label class="profile-field" for="brand-details">Exact clause excerpt <small>Optional</small><textarea id="brand-details" name="proprietary_brand_details" rows="3" maxlength="600" placeholder="Paste a short clause excerpt if a brand lock or restrictive condition is present"></textarea></label>
-            </fieldset>
+          <fieldset class="strategy-fieldset">
+            <legend><span>04</span> Optional EMD scenario</legend>
+            <p class="strategy-field-help">These assumptions estimate working-capital lock-up across concurrent bids and
+              evaluate GFR Rule 170(i) / IRDAI Insurance Surety Bond options.</p>
+            <div class="strategy-input-grid strategy-input-grid-three">
+              <label class="profile-field" for="lockup-days">Lock-up period · days<input id="lockup-days"
+                  name="estimated_emd_lockup_days" type="number" min="1" max="3650" step="1" placeholder="120"></label>
+              <label class="profile-field" for="cost-rate">Annual capital cost · %<input id="cost-rate"
+                  name="annual_capital_cost_rate_pct" type="number" min="0" max="100" step="0.1"
+                  placeholder="12.0"></label>
+              <label class="profile-field" for="active-bids">Concurrent bids<input id="active-bids"
+                  name="active_simultaneous_bids_count" type="number" min="1" max="100" step="1" value="3"></label>
+            </div>
+            <div class="strategy-input-grid">
+              <label class="profile-field" for="working-capital">EMD working capital budget · ₹
+                <small>Optional</small><input id="working-capital" name="available_emd_working_capital_inr"
+                  type="number" min="0" step="1" placeholder="2500000"></label>
+              <label class="profile-field" for="surety-permitted">Tender permits Insurance Surety Bond<select
+                  id="surety-permitted" name="surety_bond_permitted_by_tender">
+                  <option value="true">Yes (MoF OM F.1/1/2022-PPD)</option>
+                  <option value="">Not checked</option>
+                  <option value="false">No (FDR / e-BG only)</option>
+                </select></label>
+            </div>
+          </fieldset>
 
-            <fieldset class="strategy-fieldset">
-              <legend><span>04</span> Optional EMD scenario</legend>
-              <p class="strategy-field-help">These assumptions estimate working-capital lock-up across concurrent bids and evaluate GFR Rule 170(i) / IRDAI Insurance Surety Bond options.</p>
-              <div class="strategy-input-grid strategy-input-grid-three">
-                <label class="profile-field" for="lockup-days">Lock-up period · days<input id="lockup-days" name="estimated_emd_lockup_days" type="number" min="1" max="3650" step="1" placeholder="120"></label>
-                <label class="profile-field" for="cost-rate">Annual capital cost · %<input id="cost-rate" name="annual_capital_cost_rate_pct" type="number" min="0" max="100" step="0.1" placeholder="12.0"></label>
-                <label class="profile-field" for="active-bids">Concurrent bids<input id="active-bids" name="active_simultaneous_bids_count" type="number" min="1" max="100" step="1" value="3"></label>
-              </div>
-              <div class="strategy-input-grid">
-                <label class="profile-field" for="working-capital">EMD working capital budget · ₹ <small>Optional</small><input id="working-capital" name="available_emd_working_capital_inr" type="number" min="0" step="1" placeholder="2500000"></label>
-                <label class="profile-field" for="surety-permitted">Tender permits Insurance Surety Bond<select id="surety-permitted" name="surety_bond_permitted_by_tender"><option value="true">Yes (MoF OM F.1/1/2022-PPD)</option><option value="">Not checked</option><option value="false">No (FDR / e-BG only)</option></select></label>
-              </div>
-            </fieldset>
+          <div class="strategy-submit-row"><button class="auth-submit" id="strategy-submit" type="submit">Create review
+              preview <span aria-hidden="true">↗</span></button><button class="strategy-reset" type="reset">Clear
+              form</button></div>
+          <p class="auth-status" id="strategy-status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
 
-            <div class="strategy-submit-row"><button class="auth-submit" id="strategy-submit" type="submit">Create review preview <span aria-hidden="true">↗</span></button><button class="strategy-reset" type="reset">Clear form</button></div>
-            <p class="auth-status" id="strategy-status" role="status" aria-live="polite"></p>
-          </form>
+      <aside class="strategy-side-note">
+        <p class="eyebrow">WHAT THE STUDIO DOES</p>
+        <ol>
+          <li><strong>Deterministic math gates</strong><span>3Y average turnover, CPWD 80/50/40 ratios, MII Class-I/II,
+              and set-difference certification checks run in pure Python.</span></li>
+          <li><strong>Statutory citation trail</strong><span>Maps GFR 2017 Rules 144(xi), 170(i), 173(i), DPIIT MII
+              Order 2017, and CVC guidelines to entered figures.</span></li>
+          <li><strong>Ready-to-review templates</strong><span>Generates pre-bid query letters, CSV compliance matrices,
+              and draft statutory undertakings.</span></li>
+        </ol>
+        <p class="strategy-side-foot">The preview endpoint calculates results deterministically without storing your
+          form inputs.</p>
+        <a class="text-link" href="guide.html">Read the easy guide <span aria-hidden="true">→</span></a>
+      </aside>
+    </section>
+
+    <section class="strategy-results container" id="strategy-results" hidden aria-labelledby="strategy-results-title">
+      <div class="strategy-results-heading">
+        <div>
+          <p class="eyebrow">YOUR 5-PILLAR REVIEW PACK</p>
+          <h2 id="strategy-results-title">Five pillars, one deterministic source trail.</h2>
+          <p id="strategy-result-context"></p>
         </div>
+        <button class="strategy-reset" type="button" data-new-preview>Edit inputs ↑</button>
+      </div>
+      <p class="strategy-output-note" data-limitations></p>
 
-        <aside class="strategy-side-note">
-          <p class="eyebrow">WHAT THE STUDIO DOES</p>
-          <ol>
-            <li><strong>Deterministic math gates</strong><span>3Y average turnover, CPWD 80/50/40 ratios, MII Class-I/II, and set-difference certification checks run in pure Python.</span></li>
-            <li><strong>Statutory citation trail</strong><span>Maps GFR 2017 Rules 144(xi), 170(i), 173(i), DPIIT MII Order 2017, and CVC guidelines to entered figures.</span></li>
-            <li><strong>Ready-to-review templates</strong><span>Generates pre-bid query letters, CSV compliance matrices, and draft statutory undertakings.</span></li>
-          </ol>
-          <p class="strategy-side-foot">The preview endpoint calculates results deterministically without storing your form inputs.</p>
-          <a class="text-link" href="guide.html">Read the easy guide <span aria-hidden="true">→</span></a>
-        </aside>
-      </section>
-
-      <section class="strategy-results container" id="strategy-results" hidden aria-labelledby="strategy-results-title">
-        <div class="strategy-results-heading">
+      <div class="strategy-gates-overview">
+        <div class="strategy-card-heading">
           <div>
-            <p class="eyebrow">YOUR 5-PILLAR REVIEW PACK</p>
-            <h2 id="strategy-results-title">Five pillars, one deterministic source trail.</h2>
-            <p id="strategy-result-context"></p>
+            <p class="eyebrow">DETERMINISTIC GATEKEEPER</p>
+            <h3>Mathematical &amp; Statutory Gate Results</h3>
           </div>
-          <button class="strategy-reset" type="button" data-new-preview>Edit inputs ↑</button>
+          <span class="strategy-gate-summary-badge" data-gate-summary-badge></span>
         </div>
-        <p class="strategy-output-note" data-limitations></p>
+        <div class="strategy-gate-grid" data-strategy-gate-grid></div>
+      </div>
 
-        <div class="strategy-gates-overview">
+      <div class="strategy-output-grid">
+        <article class="strategy-output-card">
           <div class="strategy-card-heading">
             <div>
-              <p class="eyebrow">DETERMINISTIC GATEKEEPER</p>
-              <h3>Mathematical &amp; Statutory Gate Results</h3>
+              <p class="eyebrow">01 · PRE-BID LEGAL &amp; CLARIFICATION PACK</p>
+              <h3>Statutory challenges &amp; corrigendum requests</h3>
             </div>
-            <span class="strategy-gate-summary-badge" data-gate-summary-badge></span>
+            <span class="demo-login-badge" data-prebid-count-badge>0</span>
           </div>
-          <div class="strategy-gate-grid" data-strategy-gate-grid></div>
-        </div>
+          <p class="strategy-output-copy">Draft questions citing CVC, GFR 2017, and DPIIT orders for buyer review via
+            the official portal window.</p>
+          <ul class="strategy-rich-list" data-prebid-list></ul>
+          <details class="strategy-draft-details" open>
+            <summary>View &amp; copy formal representation letter</summary>
+            <div class="strategy-letter-actions">
+              <button class="demo-login-fill" type="button" data-copy-prebid>Copy letter</button>
+              <button class="demo-login-fill" type="button" data-download-prebid>Download .md ↓</button>
+            </div>
+            <pre data-prebid-letter></pre>
+          </details>
+        </article>
 
-        <div class="strategy-output-grid">
-          <article class="strategy-output-card">
+        <article class="strategy-output-card">
+          <div class="strategy-card-heading">
+            <div>
+              <p class="eyebrow">02 · CONSORTIUM &amp; CAPABILITY GAP MATCHMAKER</p>
+              <h3>Quantified shortfalls &amp; illustrative JV archetypes</h3>
+            </div>
+            <span class="demo-login-badge" data-consortium-badge>STANDALONE</span>
+          </div>
+          <p class="strategy-output-copy" data-consortium-summary></p>
+          <ul class="strategy-rich-list" data-consortium-gaps></ul>
+          <div class="strategy-partner-section" data-consortium-partners-wrap hidden>
+            <p class="strategy-subheading">Illustrative partner archetypes (not a live directory)</p>
+            <div class="strategy-partner-cards" data-consortium-partners></div>
+          </div>
+        </article>
+
+        <article class="strategy-output-card strategy-output-card-wide">
+          <div class="strategy-card-heading">
+            <div>
+              <p class="eyebrow">03 · AUTOMATED COMPLIANCE MATRIX &amp; STATUTORY AFFIDAVITS</p>
+              <h3>Clause-by-clause checklist, CSV export &amp; declaration drafts</h3>
+            </div>
+            <button class="demo-login-fill" type="button" data-download-csv disabled>Download CSV Matrix <span
+                aria-hidden="true">↓</span></button>
+          </div>
+          <p class="strategy-output-copy" data-compliance-note></p>
+          <div class="strategy-table-scroll">
+            <table class="strategy-table">
+              <thead>
+                <tr>
+                  <th>Clause / Gate</th>
+                  <th>Requirement</th>
+                  <th>Status</th>
+                  <th>Evidence &amp; Deviation Note</th>
+                </tr>
+              </thead>
+              <tbody data-compliance-rows></tbody>
+            </table>
+          </div>
+
+          <div class="strategy-affidavits-box" data-affidavits-section hidden>
             <div class="strategy-card-heading">
               <div>
-                <p class="eyebrow">01 · PRE-BID LEGAL &amp; CLARIFICATION PACK</p>
-                <h3>Statutory challenges &amp; corrigendum requests</h3>
+                <p class="eyebrow">STATUTORY UNDERTAKING TEMPLATES</p>
+                <h4>Auto-drafted declarations (Review before signing)</h4>
               </div>
-              <span class="demo-login-badge" data-prebid-count-badge>0</span>
-            </div>
-            <p class="strategy-output-copy">Draft questions citing CVC, GFR 2017, and DPIIT orders for buyer review via the official portal window.</p>
-            <ul class="strategy-rich-list" data-prebid-list></ul>
-            <details class="strategy-draft-details" open>
-              <summary>View &amp; copy formal representation letter</summary>
               <div class="strategy-letter-actions">
-                <button class="demo-login-fill" type="button" data-copy-prebid>Copy letter</button>
-                <button class="demo-login-fill" type="button" data-download-prebid>Download .md ↓</button>
-              </div>
-              <pre data-prebid-letter></pre>
-            </details>
-          </article>
-
-          <article class="strategy-output-card">
-            <div class="strategy-card-heading">
-              <div>
-                <p class="eyebrow">02 · CONSORTIUM &amp; CAPABILITY GAP MATCHMAKER</p>
-                <h3>Quantified shortfalls &amp; illustrative JV archetypes</h3>
-              </div>
-              <span class="demo-login-badge" data-consortium-badge>STANDALONE</span>
-            </div>
-            <p class="strategy-output-copy" data-consortium-summary></p>
-            <ul class="strategy-rich-list" data-consortium-gaps></ul>
-            <div class="strategy-partner-section" data-consortium-partners-wrap hidden>
-              <p class="strategy-subheading">Illustrative partner archetypes (not a live directory)</p>
-              <div class="strategy-partner-cards" data-consortium-partners></div>
-            </div>
-          </article>
-
-          <article class="strategy-output-card strategy-output-card-wide">
-            <div class="strategy-card-heading">
-              <div>
-                <p class="eyebrow">03 · AUTOMATED COMPLIANCE MATRIX &amp; STATUTORY AFFIDAVITS</p>
-                <h3>Clause-by-clause checklist, CSV export &amp; declaration drafts</h3>
-              </div>
-              <button class="demo-login-fill" type="button" data-download-csv disabled>Download CSV Matrix <span aria-hidden="true">↓</span></button>
-            </div>
-            <p class="strategy-output-copy" data-compliance-note></p>
-            <div class="strategy-table-scroll">
-              <table class="strategy-table">
-                <thead>
-                  <tr>
-                    <th>Clause / Gate</th>
-                    <th>Requirement</th>
-                    <th>Status</th>
-                    <th>Evidence &amp; Deviation Note</th>
-                  </tr>
-                </thead>
-                <tbody data-compliance-rows></tbody>
-              </table>
-            </div>
-
-            <div class="strategy-affidavits-box" data-affidavits-section hidden>
-              <div class="strategy-card-heading">
-                <div>
-                  <p class="eyebrow">STATUTORY UNDERTAKING TEMPLATES</p>
-                  <h4>Auto-drafted declarations (Review before signing)</h4>
-                </div>
-                <div class="strategy-letter-actions">
-                  <button class="demo-login-fill" type="button" data-copy-affidavit>Copy selected draft</button>
-                  <button class="demo-login-fill" type="button" data-download-affidavit>Download .md ↓</button>
-                </div>
-              </div>
-              <div class="strategy-affidavit-tabs" data-affidavit-tabs role="tablist"></div>
-              <pre class="strategy-affidavit-pre" data-affidavit-viewer></pre>
-            </div>
-          </article>
-
-          <article class="strategy-output-card">
-            <div class="strategy-card-heading">
-              <div>
-                <p class="eyebrow">04 · EMD CAPITAL RISK &amp; SURETY OPTIMIZER</p>
-                <h3>Working-capital lock-up &amp; instrument analysis</h3>
-              </div>
-              <span class="demo-login-badge" data-emd-instrument-badge>EMD</span>
-            </div>
-            <dl class="strategy-metrics" data-emd-metrics></dl>
-            <p class="strategy-output-copy" data-emd-note></p>
-          </article>
-
-          <article class="strategy-output-card">
-            <div class="strategy-card-heading">
-              <div>
-                <p class="eyebrow">05 · COMPETITOR DISQUALIFICATION FORENSICS</p>
-                <h3>Authority rejection checkpoints &amp; public-source search</h3>
-              </div>
-              <button class="demo-login-fill" type="button" data-forensics-search>Search public sources <span aria-hidden="true">↗</span></button>
-            </div>
-            <p class="strategy-output-copy" data-forensics-advice></p>
-            <p class="strategy-external-note">Static authority checkpoints appear immediately below. Choosing “Search public sources” sends the tender title and portal to the configured public search service.</p>
-            <ul class="strategy-source-list" data-forensics-results></ul>
-            <p class="auth-status" data-forensics-status role="status" aria-live="polite"></p>
-          </article>
-
-          <!-- PILLAR 06: STARTUP STATUTORY SHIELD -->
-          <article class="strategy-output-card" style="border-left: 3px solid #2563eb;">
-            <div class="strategy-card-heading">
-              <div>
-                <p class="eyebrow" style="color: #2563eb;"><span class="eyebrow-mark"></span> 06 · STARTUP STATUTORY SHIELD</p>
-                <h3>Exemption Audit &amp; Void Revocation Scanner</h3>
+                <button class="demo-login-fill" type="button" data-copy-affidavit>Copy selected draft</button>
+                <button class="demo-login-fill" type="button" data-download-affidavit>Download .md ↓</button>
               </div>
             </div>
-            <p class="strategy-output-copy" data-shield-summary></p>
-            <div style="margin: 0.75rem 0;" data-shield-verdict-container></div>
-            <dl class="strategy-metrics" data-shield-metrics></dl>
-            <div style="margin-top: 1rem;">
-              <h4 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; opacity: 0.9;">Anti-Competitive Cartel Alerts</h4>
-              <ul data-shield-alerts class="strategy-source-list"></ul>
-            </div>
-          </article>
-
-          <!-- PILLAR 07: ZERO-HISTORY COMPETENCY ENGINE -->
-          <article class="strategy-output-card" style="border-left: 3px solid #059669;">
-            <div class="strategy-card-heading">
-              <div>
-                <p class="eyebrow" style="color: #059669;"><span class="eyebrow-mark"></span> 07 · ZERO-HISTORY COMPETENCY ENGINE</p>
-                <h3>Technical Equivalence &amp; Proforma for Equipment &amp; QC</h3>
-              </div>
-            </div>
-            <p class="strategy-output-copy" data-tech-proof-note></p>
-            <dl class="strategy-metrics" data-tech-proof-metrics></dl>
-            <details class="strategy-draft-details" style="margin-top: 1rem;">
-              <summary style="cursor: pointer; font-weight: 600; color: #059669;">View Auto-Drafted Annexure-I: Equipment &amp; QC Proforma</summary>
-              <pre data-tech-proof-proforma style="white-space: pre-wrap; font-size: 0.82rem; margin-top: 0.5rem; background: rgba(0,0,0,0.2); padding: 0.75rem; border-radius: 4px;"></pre>
-            </details>
-          </article>
-
-          <!-- PILLAR 08: MANDATORY 25% MSE QUOTA GATEWAY -->
-          <article class="strategy-output-card strategy-output-card-wide" style="border-left: 3px solid #7c3aed;">
-            <div class="strategy-card-heading">
-              <div>
-                <p class="eyebrow" style="color: #7c3aed;"><span class="eyebrow-mark"></span> 08 · MANDATORY 25% MSE QUOTA GATEWAY</p>
-                <h3>Public Procurement Policy for MSEs Order, 2012 Allocation &amp; Split-Order Matching</h3>
-              </div>
-            </div>
-            <p class="strategy-output-copy" data-mse-quota-scope></p>
-            <dl class="strategy-metrics" data-mse-quota-metrics></dl>
-            <details class="strategy-draft-details" style="margin-top: 1rem;">
-              <summary style="cursor: pointer; font-weight: 600; color: #7c3aed;">View Tripartite MSE Subcontracting MoU Draft</summary>
-              <pre data-mse-mou-markdown style="white-space: pre-wrap; font-size: 0.82rem; margin-top: 0.5rem; background: rgba(0,0,0,0.2); padding: 0.75rem; border-radius: 4px;"></pre>
-            </details>
-          </article>
-
-        </div>
-      </section>
-
-      <section class="strategy-rag-section container" id="precedence-rag-workbench" aria-labelledby="rag-workbench-title">
-        <div class="strategy-results-heading">
-          <div>
-            <p class="eyebrow"><span class="eyebrow-mark"></span> 09 · PRECEDENCE DAG &amp; RAG CONFLICT RESOLVER</p>
-            <h2 id="rag-workbench-title">Test how a later Corrigendum overrides an earlier clause.</h2>
-            <p>Indian tenders span multiple PDFs. TenderLens builds a Directed Acyclic Graph (Rank 1 Corrigendum → Rank 2 GeM ATC → Rank 3 Buyer ATC → Rank 5 Main Tender) so superseded terms never mislead your review.</p>
+            <div class="strategy-affidavit-tabs" data-affidavit-tabs role="tablist"></div>
+            <pre class="strategy-affidavit-pre" data-affidavit-viewer></pre>
           </div>
-          <div class="strategy-preset-buttons">
-            <button class="demo-login-fill" type="button" data-rag-preset="turnover-override">Scenario A: Turnover &amp; MSME Override</button>
-            <button class="demo-login-fill" type="button" data-rag-preset="emd-relaxation">Scenario B: Corrigendum EMD Reduction</button>
-          </div>
-        </div>
+        </article>
 
-        <div class="strategy-rag-grid">
-          <form class="strategy-rag-form" id="rag-workbench-form">
-            <label class="profile-field" for="rag-query-input">Procurement question to resolve across documents<input id="rag-query-input" name="query" type="text" required value="What is the governing minimum annual turnover requirement and is MSME exemption allowed?"></label>
-            <div class="strategy-rag-chunks-editor" data-rag-chunks-list></div>
-            <div class="strategy-submit-row">
-              <button class="auth-submit" type="submit" id="rag-submit-btn">Resolve Precedence DAG <span aria-hidden="true">↗</span></button>
+        <article class="strategy-output-card">
+          <div class="strategy-card-heading">
+            <div>
+              <p class="eyebrow">04 · EMD CAPITAL RISK &amp; SURETY OPTIMIZER</p>
+              <h3>Working-capital lock-up &amp; instrument analysis</h3>
             </div>
-            <p class="auth-status" id="rag-status" role="status" aria-live="polite"></p>
-          </form>
-
-          <div class="strategy-rag-output" id="rag-output-panel">
-            <p class="eyebrow">AUTHORITATIVE RESOLUTION</p>
-            <h3 data-rag-answer-title>Click “Resolve Precedence DAG” to inspect conflict resolution</h3>
-            <p class="strategy-output-copy" data-rag-direct-answer>The engine will compare Rank 5 Main Tender clauses against Rank 3 Buyer ATCs and Rank 1 Corrigenda, marking lower-rank conflicting clauses as superseded.</p>
-            <div class="strategy-rag-dag-nodes" data-rag-dag-nodes></div>
-            <details class="strategy-draft-details" open>
-              <summary>Precedence Audit Trail &amp; Supersession Edges</summary>
-              <ul class="strategy-rich-list" data-rag-audit-trail></ul>
-            </details>
+            <span class="demo-login-badge" data-emd-instrument-badge>EMD</span>
           </div>
-        </div>
-      </section>
-    </main>
+          <dl class="strategy-metrics" data-emd-metrics></dl>
+          <p class="strategy-output-copy" data-emd-note></p>
+        </article>
 
-    <footer class="auth-footer"><a href="index.html">← Back to TenderLens</a><span><a href="guide.html">Easy guide</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></span></footer>
-  </body>
+        <article class="strategy-output-card">
+          <div class="strategy-card-heading">
+            <div>
+              <p class="eyebrow">05 · COMPETITOR DISQUALIFICATION FORENSICS</p>
+              <h3>Authority rejection checkpoints &amp; public-source search</h3>
+            </div>
+            <button class="demo-login-fill" type="button" data-forensics-search>Search public sources <span
+                aria-hidden="true">↗</span></button>
+          </div>
+          <p class="strategy-output-copy" data-forensics-advice></p>
+          <p class="strategy-external-note">Static authority checkpoints appear immediately below. Choosing “Search
+            public sources” sends the tender title and portal to the configured public search service.</p>
+          <ul class="strategy-source-list" data-forensics-results></ul>
+          <p class="auth-status" data-forensics-status role="status" aria-live="polite"></p>
+        </article>
+
+        <!-- PILLAR 06: STARTUP STATUTORY SHIELD -->
+        <article class="strategy-output-card" style="border-left: 3px solid #2563eb;">
+          <div class="strategy-card-heading">
+            <div>
+              <p class="eyebrow" style="color: #2563eb;"><span class="eyebrow-mark"></span> 06 · STARTUP STATUTORY
+                SHIELD</p>
+              <h3>Exemption Audit &amp; Void Revocation Scanner</h3>
+            </div>
+          </div>
+          <p class="strategy-output-copy" data-shield-summary></p>
+          <div style="margin: 0.75rem 0;" data-shield-verdict-container></div>
+          <dl class="strategy-metrics" data-shield-metrics></dl>
+          <div style="margin-top: 1rem;">
+            <h4
+              style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; opacity: 0.9;">
+              Anti-Competitive Cartel Alerts</h4>
+            <ul data-shield-alerts class="strategy-source-list"></ul>
+          </div>
+        </article>
+
+        <!-- PILLAR 07: ZERO-HISTORY COMPETENCY ENGINE -->
+        <article class="strategy-output-card" style="border-left: 3px solid #059669;">
+          <div class="strategy-card-heading">
+            <div>
+              <p class="eyebrow" style="color: #059669;"><span class="eyebrow-mark"></span> 07 · ZERO-HISTORY COMPETENCY
+                ENGINE</p>
+              <h3>Technical Equivalence &amp; Proforma for Equipment &amp; QC</h3>
+            </div>
+          </div>
+          <p class="strategy-output-copy" data-tech-proof-note></p>
+          <dl class="strategy-metrics" data-tech-proof-metrics></dl>
+          <details class="strategy-draft-details" style="margin-top: 1rem;">
+            <summary style="cursor: pointer; font-weight: 600; color: #059669;">View Auto-Drafted Annexure-I: Equipment
+              &amp; QC Proforma</summary>
+            <pre data-tech-proof-proforma
+              style="white-space: pre-wrap; font-size: 0.82rem; margin-top: 0.5rem; background: rgba(0,0,0,0.2); padding: 0.75rem; border-radius: 4px;"></pre>
+          </details>
+        </article>
+
+        <!-- PILLAR 08: MANDATORY 25% MSE QUOTA GATEWAY -->
+        <article class="strategy-output-card strategy-output-card-wide" style="border-left: 3px solid #7c3aed;">
+          <div class="strategy-card-heading">
+            <div>
+              <p class="eyebrow" style="color: #7c3aed;"><span class="eyebrow-mark"></span> 08 · MANDATORY 25% MSE QUOTA
+                GATEWAY</p>
+              <h3>Public Procurement Policy for MSEs Order, 2012 Allocation &amp; Split-Order Matching</h3>
+            </div>
+          </div>
+          <p class="strategy-output-copy" data-mse-quota-scope></p>
+          <dl class="strategy-metrics" data-mse-quota-metrics></dl>
+          <details class="strategy-draft-details" style="margin-top: 1rem;">
+            <summary style="cursor: pointer; font-weight: 600; color: #7c3aed;">View Tripartite MSE Subcontracting MoU
+              Draft</summary>
+            <pre data-mse-mou-markdown
+              style="white-space: pre-wrap; font-size: 0.82rem; margin-top: 0.5rem; background: rgba(0,0,0,0.2); padding: 0.75rem; border-radius: 4px;"></pre>
+          </details>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="strategy-rag-section container" id="precedence-rag-workbench" aria-labelledby="rag-workbench-title">
+      <div class="strategy-results-heading">
+        <div>
+          <p class="eyebrow"><span class="eyebrow-mark"></span> 09 · PRECEDENCE DAG &amp; RAG CONFLICT RESOLVER</p>
+          <h2 id="rag-workbench-title">Test how a later Corrigendum overrides an earlier clause.</h2>
+          <p>Indian tenders span multiple PDFs. TenderLens builds a Directed Acyclic Graph (Rank 1 Corrigendum → Rank 2
+            GeM ATC → Rank 3 Buyer ATC → Rank 5 Main Tender) so superseded terms never mislead your review.</p>
+        </div>
+        <div class="strategy-preset-buttons">
+          <button class="demo-login-fill" type="button" data-rag-preset="turnover-override">Scenario A: Turnover &amp;
+            MSME Override</button>
+          <button class="demo-login-fill" type="button" data-rag-preset="emd-relaxation">Scenario B: Corrigendum EMD
+            Reduction</button>
+        </div>
+      </div>
+
+      <div class="strategy-rag-grid">
+        <form class="strategy-rag-form" id="rag-workbench-form">
+          <label class="profile-field" for="rag-query-input">Procurement question to resolve across documents<input
+              id="rag-query-input" name="query" type="text" required
+              value="What is the governing minimum annual turnover requirement and is MSME exemption allowed?"></label>
+          <div class="strategy-rag-chunks-editor" data-rag-chunks-list></div>
+          <div class="strategy-submit-row">
+            <button class="auth-submit" type="submit" id="rag-submit-btn">Resolve Precedence DAG <span
+                aria-hidden="true">↗</span></button>
+          </div>
+          <p class="auth-status" id="rag-status" role="status" aria-live="polite"></p>
+        </form>
+
+        <div class="strategy-rag-output" id="rag-output-panel">
+          <p class="eyebrow">AUTHORITATIVE RESOLUTION</p>
+          <h3 data-rag-answer-title>Click “Resolve Precedence DAG” to inspect conflict resolution</h3>
+          <p class="strategy-output-copy" data-rag-direct-answer>The engine will compare Rank 5 Main Tender clauses
+            against Rank 3 Buyer ATCs and Rank 1 Corrigenda, marking lower-rank conflicting clauses as superseded.</p>
+          <div class="strategy-rag-dag-nodes" data-rag-dag-nodes></div>
+          <details class="strategy-draft-details" open>
+            <summary>Precedence Audit Trail &amp; Supersession Edges</summary>
+            <ul class="strategy-rich-list" data-rag-audit-trail></ul>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="auth-footer"><a href="index.html">← Back to TenderLens</a><span><a href="guide.html">Easy guide</a><a
+        href="privacy.html">Privacy</a><a href="terms.html">Terms</a></span></footer>
+</body>
+
 </html>
