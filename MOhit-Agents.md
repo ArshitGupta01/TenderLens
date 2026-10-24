@@ -105,12 +105,13 @@ TenderLens is divided across three clear, non-conflicting domains:
 
 ## 4. Current State & Next Actions
 
-- **Current State**: Backend routes and qualification logic are implemented. The website calls tender search when configured and connects an entered-value strategy preview. Current external provider access has not been re-verified in this update.
-- **Next Step**: Validate the backend against real source documents, then connect tender fetching and a source-grounded qualification review through the frontend.
+- **Current State**: `main` contains the earlier Mohit backend integration, the five lightweight strategy helpers, and the entered-value Strategy preview. It does not contain every update from the current remote `Mohit-Backend` head; see Section 9. External provider access has not been re-verified in this update.
+- **Next Step**: Review the branch-only Supabase persistence and expanded strategy work. Port only after adding authenticated-subject checks and preserving row-level security; then run the current backend suite.
 
 ## 5. Merge and website connection — 2026-10-24
 
-- [x] Merged `Mohit-Backend` into `main`, including the API, document processor, and qualification engine.
+- [x] Merged the earlier `Mohit-Backend` API, document processor, and qualification engine into `main`.
+- [ ] The latest remote `Mohit-Backend` branch has additional commits that are not in `main`; this does not mean the entire current branch is merged.
 - [x] Added local CORS origins for preview ports 3000 and 4177, controlled through `CORS_ORIGINS`, with credentialed requests disabled.
 - [x] Connected the sample website's optional live-search form to `GET /healthz` and `POST /api/v1/tenders/search`. It submits only the search phrase and selected portal.
 - [ ] Tender fetching and bidder scorecard evaluation are still not connected to the website; verify backend behavior against real source documents before production use.
@@ -138,7 +139,14 @@ TenderLens is divided across three clear, non-conflicting domains:
 - Added input bounds for turnover, experience, local-content percentage, EMD and supporting values. EMD, exemption and compliance labels now retain a manual-review caveat.
 - Public-source search now returns a clear configuration message instead of attempting an unauthenticated provider request when both TinyFish and Tavily keys are absent.
 - Updated the audit summary so unknown rule status requests review instead of implying a firm recommendation. Removed unsupported legal and evidence-verification wording.
-- No full test suite was run for this update. Python syntax compilation, API import/OpenAPI generation, a synthetic local preview response and page rendering passed. A sample-only provider request received HTTP 401 because the configured TinyFish value is a placeholder. GitHub publishing is pending because the workspace has no Git metadata and github.com could not be resolved from the environment. Next: configure a valid search key, verify Android-sized layout and then verify public search and audit paths with controlled examples.
+- No full test suite was run for this update. Python syntax compilation, API import/OpenAPI generation, a synthetic local preview response and page rendering passed. A sample-only provider request received HTTP 401 because the configured TinyFish value is a placeholder. The website/backend update was published to `main` at `527bf0b11f238b05acc5e47e0a196fbff95c4aa3`. Next: compare and safely port the remaining branch work, then verify backend behavior and responsive layouts.
+
+## 9. Latest Mohit branch comparison — 2026-10-24
+
+- Compared `origin/main` (`527bf0b11f238b05acc5e47e0a196fbff95c4aa3`) with `origin/Mohit-Backend` (`ed4cf8d9fa4351a0bbabf9395be25a07c6d9aa9d`). The histories diverge: `main` has 11 commits and `Mohit-Backend` has 4 commits beyond their common base.
+- `main` has the five strategy concepts and a manual-value preview, but the branch contains expanded pillar implementations, additional audit/profile persistence through `backend/services/supabase_service.py`, related FastAPI routes, Supabase schema/tests, and a Supabase Python dependency.
+- These persistence routes are not safe to merge unchanged: they accept a request-supplied `user_id`, and the service can fall back to a service-role key. Add bearer-token verification, bind operations to the verified JWT subject, and preserve row-level security before integrating persistence.
+- This comparison was read-only; no backend source or database schema was changed.
 
 
 
