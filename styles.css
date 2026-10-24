@@ -1693,13 +1693,14 @@ small { font-size: max(12px, 1em); line-height: 1.5; }
 
 
 /* ==========================================================================
-   TenderLens Doodle Crew Hero & Long-Scroll Cover-Up Stage
+   TenderLens Dynamic Wordmark Hero & Aspect-Ratio Scaling System
    ========================================================================== */
 .tenderlens-doodle-stage {
   position: relative;
   width: 100%;
   background: var(--bg-canvas, #090e17);
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .tenderlens-doodle-sticky {
@@ -1709,7 +1710,6 @@ small { font-size: max(12px, 1em); line-height: 1.5; }
 
 #tenderlens-doodle-root {
   width: 100%;
-  min-height: 380px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1724,16 +1724,37 @@ small { font-size: max(12px, 1em); line-height: 1.5; }
   width: 100% !important;
 }
 
+/* Fluid responsive world container that scales with viewport width & aspect ratio */
 #tenderlens-doodle-root .dcf-world {
-  padding: clamp(10px, 2.5vw, 24px) clamp(16px, 4vw, 40px) 16px !important;
-  max-width: 1400px !important;
+  padding: clamp(8px, 2vw, 24px) clamp(12px, 3vw, 48px) !important;
+  max-width: 100% !important;
   width: 100% !important;
   margin: 0 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
   justify-content: center !important;
+  box-sizing: border-box !important;
 }
 
 #tenderlens-doodle-root .dcf-stage {
   width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Fluid SVG sizing: scales dynamically with viewport width, height and aspect ratio */
+#tenderlens-doodle-root .dcf-svg {
+  display: block;
+  width: clamp(290px, 95vw, 1780px);
+  max-height: clamp(160px, 48vh, 460px);
+  height: auto;
+  margin: 0 auto;
+  filter: drop-shadow(0 14px 40px rgba(0, 0, 0, 0.5));
+  transition: width 0.2s ease, max-height 0.2s ease, transform 0.2s ease;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .doodle-scroll-cue {
@@ -1741,7 +1762,7 @@ small { font-size: max(12px, 1em); line-height: 1.5; }
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 8px 16px 20px;
+  padding: 10px 16px 20px;
   font-size: 0.8125rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -1777,10 +1798,46 @@ small { font-size: max(12px, 1em); line-height: 1.5; }
   }
 }
 
+/* ==========================================================================
+   Aspect Ratio Responsive Scaling Rules
+   ========================================================================== */
+
+/* 1. Ultra-Wide Displays (e.g. 21:9, 18:9, aspect-ratio >= 2.0) */
+@media (min-aspect-ratio: 18/9) and (min-width: 769px) {
+  #tenderlens-doodle-root .dcf-svg {
+    width: clamp(960px, 96vw, 1920px);
+    max-height: 54vh;
+  }
+  .tenderlens-doodle-stage {
+    min-height: 115vh;
+  }
+}
+
+/* 2. Standard Widescreen (16:9, 16:10, e.g. 1920x1080, 1440x900) */
+@media (min-aspect-ratio: 14/9) and (max-aspect-ratio: 18/9) and (min-width: 769px) {
+  #tenderlens-doodle-root .dcf-svg {
+    width: clamp(780px, 95vw, 1760px);
+    max-height: 50vh;
+  }
+  .tenderlens-doodle-stage {
+    min-height: 122vh;
+  }
+}
+
+/* 3. Taller / Boxier Viewports (4:3, 5:4, iPad, vertical split screen) */
+@media (max-aspect-ratio: 14/9) and (min-width: 769px) {
+  #tenderlens-doodle-root .dcf-svg {
+    width: clamp(620px, 94vw, 1480px);
+    max-height: 42vh;
+  }
+  .tenderlens-doodle-stage {
+    min-height: 118vh;
+  }
+}
+
 /* Desktop Long-Scroll Curtain Cover-Up Effect */
 @media (min-width: 769px) {
   .tenderlens-doodle-stage {
-    min-height: 125vh;
     z-index: 1;
   }
 
@@ -1806,14 +1863,18 @@ small { font-size: max(12px, 1em); line-height: 1.5; }
   }
 }
 
-/* Mobile Devices: Fully optimized standard touch scroll (NO long-scroll effect) */
+/* ==========================================================================
+   Mobile Devices: Fully Optimized UI & Seamless Touch Experience
+   ========================================================================== */
 @media (max-width: 768px) {
   .tenderlens-doodle-stage {
     position: relative !important;
     min-height: unset !important;
     height: auto !important;
     z-index: auto !important;
-    padding: 12px 0 6px;
+    padding: 16px 0 10px !important;
+    overflow-x: hidden !important;
+    touch-action: pan-y !important;
   }
 
   .tenderlens-doodle-sticky {
@@ -1822,9 +1883,34 @@ small { font-size: max(12px, 1em); line-height: 1.5; }
     height: auto !important;
     min-height: unset !important;
     overflow: visible !important;
-    display: block !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
     z-index: auto !important;
     transform: none !important;
+    padding: 0 !important;
+  }
+
+  #tenderlens-doodle-root {
+    min-height: unset !important;
+    width: 100% !important;
+    padding: 0 !important;
+  }
+
+  #tenderlens-doodle-root .dcf-world {
+    padding: 4px 8px 8px !important;
+    width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  #tenderlens-doodle-root .dcf-svg {
+    /* Maximum legible width on mobile without causing horizontal overflow */
+    width: 100% !important;
+    max-width: calc(100vw - 16px) !important;
+    height: auto !important;
+    max-height: 220px !important;
+    margin: 0 auto !important;
   }
 
   .tenderlens-curtain {
@@ -1837,8 +1923,20 @@ small { font-size: max(12px, 1em); line-height: 1.5; }
   .doodle-scroll-cue {
     display: none !important;
   }
+}
 
-  #tenderlens-doodle-root {
-    min-height: 200px;
+/* Extra small mobile devices (<= 380px, e.g. iPhone SE, small Androids) */
+@media (max-width: 380px) {
+  .tenderlens-doodle-stage {
+    padding: 12px 0 6px !important;
+  }
+
+  #tenderlens-doodle-root .dcf-world {
+    padding: 2px 4px 6px !important;
+  }
+
+  #tenderlens-doodle-root .dcf-svg {
+    max-width: calc(100vw - 10px) !important;
+    max-height: 180px !important;
   }
 }

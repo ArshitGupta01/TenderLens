@@ -167,6 +167,11 @@ Recommended relational tables for Arshit's implementation:
 - [x] Synchronized all root HTML/CSS/JS files with `frontend/` so both FastAPI port `8000` and static server port `4177` serve the unified application.
 - [ ] Next milestone: configure production Google Cloud OAuth Client ID & Secret in Supabase Dashboard and connect multi-PDF file upload to the source-document audit view.
 
+### Repository information document — 2026-10-24
+- [x] Added [`PROJECT_INFO.md`](PROJECT_INFO.md), a current-codebase orientation covering the static frontend, FastAPI backend, shared contracts, precedence model, Supabase/RLS boundaries, routes, tests, configuration, and known gaps.
+- [x] Explicitly separated implemented behavior from older Next.js/Docker plans and illustrative sample workflows.
+- [ ] Next milestone remains production Google OAuth configuration and consent/retention design for multi-PDF source-document auditing.
+
 ### Vercel Multi-Page Deployment, Security Standard & Mobile Menu Banner — 2026-10-24
 - [x] Configured production Vercel deployment with clean multi-page routing, custom error pages (`404.html`, `500.html`), static caching, and HTTP security headers (CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy) in `vercel.json`.
 - [x] Implemented responsive `<aside class="top-menu-banner">` quick navigation menu across all HTML pages (`index.html`, `strategy.html`, `signin.html`, `signup.html`, `account.html`, `saved-tenders.html`, `guide.html`, `privacy.html`, `terms.html`, `404.html`, `500.html`) with live status badge (`TENDERLENS v1.0.3 LIVE`), one-tap access to all key modules, and swipeable horizontal overflow on mobile devices.
@@ -245,3 +250,17 @@ ode --check) across all frontend scripts in both root and rontend/.
 - [x] Completely removed all 6 cartoon characters (Bruno, Pip, Morel, Juno, Boo, Patch) from `components/tenderlens-hero.tsx`, `components/ui/doodle-crew-footer.tsx`, and `frontend/`.
 - [x] Wordmark now renders exclusively as the pure, professional dry-brush ink **T E N D E R L E N S** wordmark with its inline SVG texture, boiling lines, and floating ink particles without any characters sitting or peeking over the letters.
 - [x] Verified zero TypeScript errors (`tsc --noEmit`) and bundled cleanly with `npm run build:doodle`.
+
+### Fluid Wordmark Upscaling & Aspect-Ratio Responsive Optimization - 2026-10-24
+- [x] Substantially increased the size of the TenderLens wordmark:
+  - Tightened inner SVG viewBox padding (`pad = 8`, `b = 16` when `wordmarkOnly`), cutting dead vertical margins by 21% and rendering the letter glyphs 26% taller and bolder.
+  - Removed the restrictive 1400px container width cap to allow fluid expansion up to `min(96vw, 1920px)` and `max-height: 54vh`.
+- [x] Built aspect-ratio responsive scaling rules across display types:
+  - Ultra-wide displays (`min-aspect-ratio: 18/9`): Wordmark expands to fill wide landscape viewports (`clamp(960px, 96vw, 1920px)`).
+  - Standard widescreen (`16:9` / `16:10`): Balanced fluid scale (`clamp(780px, 95vw, 1760px)`).
+  - Taller / boxy screens (`max-aspect-ratio: 14/9`): Preserves breathing room and proportions (`clamp(620px, 94vw, 1480px)`).
+- [x] Optimized UI specifically for mobile devices:
+  - Fitted maximum legible wordmark width without horizontal overflow (`max-width: calc(100vw - 16px)`).
+  - Disabled sticky locking and scroll cues for smooth touch navigation.
+  - Added `touch-action: pan-y;` and contained bounds to eliminate accidental sideways bounce.
+- [x] Verified local server execution on `http://127.0.0.1:8000/`.

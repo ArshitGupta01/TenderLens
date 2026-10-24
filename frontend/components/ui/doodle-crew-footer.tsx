@@ -1303,7 +1303,7 @@ export default function DoodleCrewFooter({
 
     let t = -cap
 
-    let b = 30
+    let b = wordmarkOnly ? 16 : 30
 
     for (const p of placed) {
 
@@ -1319,11 +1319,11 @@ export default function DoodleCrewFooter({
 
     }
 
-    const pad = 24
+    const pad = wordmarkOnly ? 8 : 24
 
     return { x: l - pad, y: t - pad, w: r - l + pad * 2, h: b - t + pad * 2 }
 
-  }, [layout, placed, cap])
+  }, [layout, placed, cap, wordmarkOnly])
 
 
 

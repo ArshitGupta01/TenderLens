@@ -9,6 +9,7 @@ export function TenderLensHero() {
         wordmark="TENDERLENS"
         wordmarkOnly={true}
         crew={[]}
+        tracking={-0.025}
         backToTop={false}
         palette={{
           background: "#090e17",
