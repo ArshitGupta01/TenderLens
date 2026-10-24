@@ -192,7 +192,7 @@ node --check theme.js
 - Deterministic math handles explicit values; LLM output is supplementary.
 - Preserve source-linked evidence, precedence ordering, human review for
   ambiguity, Supabase Auth, and RLS.
-- Next major gaps: production OAuth verification, upload consent/retention,
+- Next major gaps: upload consent/retention,
   multi-PDF audit flow, and reconciliation of older Next.js/Docker plans.
 
 ## Source references

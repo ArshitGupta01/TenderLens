@@ -581,7 +581,6 @@
   }
 
   const ready = init();
-  try { window.localStorage.removeItem('tenderlens_google_client_id'); } catch (e) {}
   window.TenderLensAuth = {
     get client() { return supabaseClient; },
     get user() { return signedInUser; },

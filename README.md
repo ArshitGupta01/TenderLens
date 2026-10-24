@@ -16,8 +16,8 @@ TenderLens is a project for making Indian public tender requirements easier to r
   - **Pillar 04 — EMD Capital Risk & Surety Bond Optimizer**: Computes working-capital lock-up across concurrent bids and compares GFR Rule 170(i) Bid Security Declarations, IRDAI Insurance Surety Bonds, and NeSL e-BGs.
   - **Pillar 05 — Competitor Disqualification Forensics**: Surfaces authority-specific evaluation checkpoints and supports explicit public-source search.
   - **Section 06 — Precedence DAG & RAG Conflict Resolver**: Demonstrates how Rank 1 Corrigenda supersede Rank 3 Buyer ATCs and Rank 5 Main Tender PDFs with a full audit trail.
-- **Supabase Auth, Google Sign-In & RLS Persistence (`signin.html`, `signup.html`, `account.html`, `saved-tenders.html`)**:
-  - Supports email/password sign-in, shared demo sign-in, Supabase Google OAuth redirect (`signInWithOAuth`), and Google Identity Services (`google.accounts.id` + `signInWithIdToken`).
+- **Supabase Auth & RLS Persistence (`signin.html`, `signup.html`, `account.html`, `saved-tenders.html`)**:
+  - Supports secure email/password sign-in, account registration, email confirmation, and password recovery.
   - Syncs the signed-in user's Bidder Profile (both basic organization details and optional statutory/financial capacity metrics) and saved live tender links to Supabase Postgres under Row-Level Security (`supabase/setup.sql`).
 
 This is an experimental hackathon project. Sample tenders, partner archetypes, and report results are illustrative. Always check the official tender documents and consult qualified counsel before acting on any tender.
@@ -56,17 +56,10 @@ python -m http.server 4177 --bind 127.0.0.1
 
 Open <http://127.0.0.1:4177> (or <http://127.0.0.1:8000>).
 
-## Configure Supabase & Google OAuth
+## Configure Supabase
 
 1. **Supabase URL & Keys**: Set `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` (and/or `SUPABASE_ANON_KEY`) in `.env`. Never expose a service-role secret key in browser code.
 2. **Database Schema & RLS**: Run [`supabase/setup.sql`](supabase/setup.sql) in Supabase Dashboard → SQL Editor to create `public.profiles`, `public.saved_tenders`, and `public.tender_audits` with owner-scoped RLS policies (`auth.uid() = user_id`).
-3. **Google OAuth Setup**:
-   - Open [Google Cloud Console → Credentials](https://console.cloud.google.com/apis/credentials) and create an **OAuth 2.0 Client ID** (Application type: **Web application**).
-   - Under **Authorized JavaScript origins**, add `http://localhost:4177`, `http://127.0.0.1:4177`, `http://localhost:8000`, and `http://127.0.0.1:8000`.
-   - Under **Authorized redirect URIs**, add your Supabase Callback URL:
-     `https://<your-project-ref>.supabase.co/auth/v1/callback`
-   - Copy the **Client ID** and **Client Secret** into **Supabase Dashboard → Authentication → Providers → Google**, and optionally set `GOOGLE_CLIENT_ID=` in `.env` (or in the Sign-In page helper) for Google Identity Services One-Tap / ID-Token sign-in.
-
 ## Run tests
 
 ```powershell

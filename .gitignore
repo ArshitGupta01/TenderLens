@@ -61,5 +61,6 @@ artifacts/
 
 # Local Backups (Never commit to git)
 tenderlens back/
-*back*/
+*backup*/
+tenderlens_back*/
 *.bundle

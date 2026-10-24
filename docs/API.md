@@ -33,14 +33,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
     }
     ```
 - **`GET /api/v1/auth/config`**
-  - **Description**: Exposes public Supabase URL, publishable key, and optional Google Client ID to frontend clients.
+  - **Description**: Exposes public Supabase URL and publishable key to frontend clients.
   - **Response 200**:
     ```json
     {
       "configured": true,
       "supabase_url": "https://qiwpkvjzqdyguygowzci.supabase.co",
-      "publishable_key": "sb_publishable_...",
-      "google_client_id": "747711661688-...apps.googleusercontent.com"
+      "publishable_key": "sb_publishable_..."
     }
     ```
 

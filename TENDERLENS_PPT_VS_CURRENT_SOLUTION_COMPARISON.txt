@@ -96,7 +96,7 @@ Key Evolution Highlights:
 |                       | proposed                         | app (HTML5/CSS3/ES6/Lenis) with  | & LIGHTER  |
 |                       |                                  | Top Ribbon overlay & dark mode   |            |
 +-----------------------+----------------------------------+----------------------------------+------------+
-| Cloud Auth & Storage  | PostgreSQL, Redis, Celery, MinIO | Supabase Auth (Email + Google)   | DELIVERED  |
+| Cloud Auth & Storage  | PostgreSQL, Redis, Celery, MinIO | Supabase Auth (Email/Password)   | DELIVERED  |
 |                       |                                  | + PostgreSQL with Row-Level Sec. | (SIMPLIFIED|
 |                       |                                  | (RLS) tied to auth.uid()         | ARCH.)     |
 +-----------------------+----------------------------------+----------------------------------+------------+

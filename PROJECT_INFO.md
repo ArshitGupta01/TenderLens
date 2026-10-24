@@ -87,8 +87,7 @@ static behavior should keep both copies synchronized.
   strategy preview requests, gate cards, legal-pack download/copy, compliance
   CSV export, affidavit tabs, EMD report, forensics search, and RAG workbench.
 - [`auth.js`](./auth.js): fetches public auth configuration, initializes
-  Supabase, manages sessions, email/password flows, Google OAuth/ID-token
-  flows, profile sync, saved-tender CRUD, and account UI state.
+  Supabase, manages sessions, email/password flows, profile sync, saved-tender CRUD, and account UI state.
 - [`theme.js`](./theme.js): light/dark preference and theme-color updates.
 - [`styles.css`](./styles.css): responsive design system, themes, navigation,
   report, account, and Strategy Studio styles.
@@ -323,7 +322,6 @@ primary source of application behavior.
 
 ## 12. Current gaps and next milestones
 
-1. Verify/configure production Google OAuth credentials in Supabase.
 2. Re-verify sign-up, login, recovery, profile sync, saved notices, and RLS
    isolation against the maintained Supabase project.
 3. Design consent, retention, upload validation, and storage before connecting

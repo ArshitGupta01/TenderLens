@@ -4,7 +4,7 @@
 > **Team**: TenderLens  
 > **Agent Owner**: Arshit  
 > **Domain**: Frontend (Next.js), Database (PostgreSQL / Migrations), Object Storage, Async Job Queues & UI Experience  
-> **Status**: Responsive website with optional FastAPI search and configured Supabase auth/profile/bookmark code; Google OAuth and demo-account verification remain pending
+> **Status**: Responsive website with optional FastAPI search and enterprise Supabase email/password auth/profile/bookmark code; Google OAuth retired and completely purged across codebase
 
 ---
 
@@ -391,4 +391,11 @@ ode --check) across all frontend scripts in both root and rontend/.
   - Merged and consolidated all latest v2.0.2 work, logos, auth redesign, and assets onto `main`.
   - Pruned obsolete temporary dumps (`tmp/`, `single.xml`, `tsconfig.tsbuildinfo`) while retaining all documentation (`README.md`, `HOW_TENDERLENS_WORKS_PLAIN_ENGLISH.md`, `FINAL_IMPLEMENTATION_PLAN.md`, `PROJECT_INFO.md`, `SECURITY.md`, etc.) and reference files (`docs/`, `research/`, `contracts/`, `data/`).
   - Deleted all other local branches (`release-v2.0.2`, `repomix`, `audit-mohit`), leaving `main` as the sole active local branch.
+### Google OAuth Retirement & Complete Codebase Purge - 2026-10-25
+- [x] Audited full codebase for all references to Google OAuth, Google Identity Services (GIS), client IDs, redirect callbacks, and token exchange routines.
+- [x] Removed `GOOGLE_CLIENT_ID` from `.env`, `.env.example`, and `backend/config.py`.
+- [x] Verified FastAPI backend `/api/v1/auth/config` strictly returns Supabase public configuration (`configured`, `supabase_url`, `publishable_key`) without exposing Google credentials.
+- [x] Purged legacy Google OAuth client ID cleanup routines from `auth.js` and `frontend/auth.js`.
+- [x] Cleaned Content Security Policy (CSP) in `vercel.json` to eliminate `https://accounts.google.com` and `https://apis.google.com` script/connect/frame whitelist exceptions.
+- [x] Updated legal policies (`privacy.html`, `terms.html`, and `frontend/` mirrors) and system documentation (`README.md`, `PROJECT_INFO.md`, `agent.md`, `supabase/README.md`, `docs/API.md`, `docs/SECURITY.md`, `TECH_STACK.md`) to reflect pure email/password authentication via Supabase Auth with RLS.
 - [ ] Next milestone: Address Wave 1 high-priority remediations from the audit report.

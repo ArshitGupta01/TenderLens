@@ -4,7 +4,7 @@ TenderLens uses **Supabase** (managed PostgreSQL + Auth) to eliminate the comple
 
 With a **free Supabase account**, you get:
 - Full PostgreSQL database with automatic backups
-- Managed Authentication (Email/Password, Google OAuth, Password Recovery)
+- Managed Authentication (Email/Password, Password Recovery)
 - Instant Row-Level Security (RLS) ensuring strict tenant isolation
 - Fast PostgREST API for client and backend persistence
 

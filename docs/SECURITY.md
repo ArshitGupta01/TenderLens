@@ -27,7 +27,7 @@
 
 ### 1.3 Secrets & Token Management
 15. **JWT Secrets:** High-entropy cryptographic secrets sign and verify Supabase Auth tokens exclusively on the server.
-16. **API Secrets Hygiene:** `TINYFISH_API_KEY`, `GEMINI_API_KEY`, `TAVILY_API_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` are stored strictly in private server-side environment variables (`.env`, git-ignored). Only the public `SUPABASE_PUBLISHABLE_KEY` and public `GOOGLE_CLIENT_ID` are exposed to browser clients via `/api/v1/auth/config`.
+16. **API Secrets Hygiene:** `TINYFISH_API_KEY`, `GEMINI_API_KEY`, `TAVILY_API_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` are stored strictly in private server-side environment variables (`.env`, git-ignored). Only the public `SUPABASE_PUBLISHABLE_KEY` is exposed to browser clients via `/api/v1/auth/config`.
 17. **Client Storage Hygiene:** Sensitive tokens and credentials are never stored in unencrypted client storage. Supabase client manages sessions using secure PKCE storage.
 18. **Default Credentials:** Default passwords and sample credentials must never be committed to source control or exposed in production environments.
 

@@ -17,7 +17,7 @@ Updated: 2026-10-24
 - **Supabase Auth & Postgres RLS**:
   - Connected to Supabase project `qiwpkvjzqdyguygowzci` (`https://qiwpkvjzqdyguygowzci.supabase.co`) with tables `public.profiles`, `public.saved_tenders`, and `public.tender_audits` protected by Row-Level Security (`auth.uid() = user_id`).
   - Shared demo user `cm@gmail.com` is provisioned and confirmed in Supabase Auth (`auth.users` and `auth.identities`) and seeded in `public.profiles` (password is never stored in git).
-  - Supports both Supabase Google OAuth redirect (`signInWithOAuth`) and Google Identity Services (`google.accounts.id` + `signInWithIdToken` via `GOOGLE_CLIENT_ID` or local Client ID helper).
+  - Supports Supabase email/password authentication, registration, email confirmation, and password recovery.
   - Backend persistence routes (`/api/v1/audits/save`, `/api/v1/audits/user/{user_id}`, `/api/v1/profile/sync/{user_id}`, `/api/v1/profile/sync`) verify Bearer JWT tokens and scope PostgREST requests to the user's JWT so RLS is enforced.
 
 ## Verification recorded for the latest main update
@@ -28,7 +28,6 @@ Updated: 2026-10-24
 
 ## Next milestones
 
-1. Add the Google Cloud OAuth 2.0 Client ID and Client Secret in the Supabase Dashboard (`Authentication -> Providers -> Google`) using callback URI `https://qiwpkvjzqdyguygowzci.supabase.co/auth/v1/callback`.
 2. Connect multi-PDF tender upload to the source-document audit view once document retention and consent controls are finalized.
 
 ## Working rules
