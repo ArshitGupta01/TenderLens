@@ -1867,7 +1867,7 @@ def test_25pct_mse_quota_calculation():
                        COMPREHENSIVE COMPARISON & SYSTEM AUDIT REPORT
 ====================================================================================================
 Project      : TenderLens (AI-Powered Public Procurement Qualification & Strategy Engine)
-Team         : Team Traxo (HackIIITD - Round 2)
+Team         : TenderLens
 Reference Doc: TenderLens_Hackathon_Presentation.pptx_20261016_142216_0000.pdf
 Date         : October 2026
 Release State: v1.0.3 Production-Ready Architecture & Active Strategy Toolkit
@@ -3432,7 +3432,7 @@ Public procurement across India—spanning the Government e-Marketplace (GeM), t
 
 In the Indian tendering ecosystem, a solicitation is rarely self-contained within a single Portable Document Format (PDF) file. Instead, material eligibility conditions are distributed across a baseline Notice Inviting Tender (NIT) or GeM Bid Document, hyperlinked Buyer Added Bid Specific Additional Terms and Conditions (ATC) files, and sequential corrigenda issued up to hours before bid closure. When an MSME, Original Equipment Manufacturer (OEM), Engineering, Procurement, and Construction (EPC) contractor, or Information Technology (IT) system integrator overlooks a nested sub-clause or an amended financial threshold, the consequences extend beyond administrative rejection. Disqualification during technical evaluation results in sunk bid-preparation engineering hours, forfeiture or prolonged lock-up of working capital committed to Earnest Money Deposits (EMD), and missed revenue cycles.   
 
-TenderLens, architected by Team Traxo for HackIIITD, addresses this verification bottleneck by shifting the paradigm from passive tender discovery to evidence-backed, pre-bid qualification and disqualification auditing. Designed as a decision-support engine rather than an autonomous legal adjudicator, TenderLens ingests a bidder's structured corporate profile, recursively retrieves the complete hierarchy of tender documents via the TinyFish web intelligence stack, parses complex multi-column layouts and tables through a hybrid PyMuPDF and IBM Docling pipeline, and evaluates compliance using deterministic Python rules paired with Large Language Model (LLM) clause analysis. Every identified risk, met criterion, or contractual contradiction is anchored to its exact source document, page number, and clause reference, routing ambiguous or conflicting stipulations to human review before capital is committed.   
+TenderLens addresses this verification bottleneck by shifting the paradigm from passive tender discovery to evidence-backed, pre-bid qualification and disqualification auditing. Designed as a decision-support engine rather than an autonomous legal adjudicator, TenderLens ingests a bidder's structured corporate profile, recursively retrieves the complete hierarchy of tender documents via the TinyFish web intelligence stack, parses complex multi-column layouts and tables through a hybrid PyMuPDF and IBM Docling pipeline, and evaluates compliance using deterministic Python rules paired with Large Language Model (LLM) clause analysis. Every identified risk, met criterion, or contractual contradiction is anchored to its exact source document, page number, and clause reference, routing ambiguous or conflicting stipulations to human review before capital is committed.   
 
 Domain Mechanics: Contractual Precedence and Eligibility Traps in Indian Tenders
 
@@ -3745,7 +3745,7 @@ When invoked via /v1/automation/run-sse, TinyAgent emits Server-Sent Events in t
 →
 → PROGRESS 
 →
-→ COMPLETE, where streaming_url provides a live browser preview valid for 24 hours. If a portal presents a hard CAPTCHA or requires a physical Class-III Digital Signature Certificate (DSC) token that cannot be automated, strict mode terminates the run cleanly, and TenderLens surfaces the streaming_url or transitions the user to the manual PDF upload fallback exactly as specified in Team Traxo's risk controls. Furthermore, to power the MSME Pro subscription tier's "Delta Alerts: Corrigenda Watch" feature without engineering a bespoke cron-scraping loop, TenderLens can programmatically provision a TinyMonitor (POST /v1/monitors) on each shortlisted tender URL with a natural-language trigger condition such as "Alert me when a new Corrigendum PDF link, Addendum, or bid submission date extension is added to this tender page". At $0.005 per completed check—which includes LLM change judgment and webhook delivery, while failed checks remain unbilled—checking an active tender twice daily for 10 days prior to bid closure costs just $0.10 (~₹8.40) and automatically initiates a Celery delta-reverification workflow whenever an amendment is published.   
+→ COMPLETE, where streaming_url provides a live browser preview valid for 24 hours. If a portal presents a hard CAPTCHA or requires a physical Class-III Digital Signature Certificate (DSC) token that cannot be automated, strict mode terminates the run cleanly, and TenderLens surfaces the streaming_url or transitions the user to the manual PDF upload fallback exactly as specified in TenderLens's risk controls. Furthermore, to power the MSME Pro subscription tier's "Delta Alerts: Corrigenda Watch" feature without engineering a bespoke cron-scraping loop, TenderLens can programmatically provision a TinyMonitor (POST /v1/monitors) on each shortlisted tender URL with a natural-language trigger condition such as "Alert me when a new Corrigendum PDF link, Addendum, or bid submission date extension is added to this tender page". At $0.005 per completed check—which includes LLM change judgment and webhook delivery, while failed checks remain unbilled—checking an active tender twice daily for 10 days prior to bid closure costs just $0.10 (~₹8.40) and automatically initiates a Celery delta-reverification workflow whenever an amendment is published.   
 
 Document Intelligence Pipeline: Hybrid PyMuPDF and Docling Extraction
 
@@ -4182,7 +4182,7 @@ Beyond direct SaaS subscriptions, OfBusiness's monetization of BidAssist demonst
 
 Risk Matrix and Actionable Implementation Roadmap
 
-To transition TenderLens from its hackathon proposal architecture to a production-hardened system capable of auditing thousands of Haryana, GeM, and PSU tenders daily, Team Traxo must address six primary operational and legal risk vectors.   
+To transition TenderLens from its hackathon proposal architecture to a production-hardened system capable of auditing thousands of Haryana, GeM, and PSU tenders daily, TenderLens must address six primary operational and legal risk vectors.   
 
 Architectural Risk Vector	Root Technical Cause	Production Mitigation Strategy
 Missed External ATC Files (< 90% Capture)	
@@ -4273,7 +4273,7 @@ Isolate PDF parsing inside an internal microservice or evaluate Docling's native
   
 Immediate Engineering Sequence for Milestone 01 to Milestone 03
 
-Executing this roadmap begins with enrolling TenderLens in the TinyFish for Startups program (tinyfish.ai/startups) under Tier 1 (for independent pre-production teams, providing up to $7,000 in value, $100/month in wallet credits for 6 months, and 50 concurrent TinyAgent runs) or Tier 2 (for accelerator or investor-backed teams, providing up to $12,000 in value, $500 initial wallet credits, and 50% off TinyAgent for 24 months). Both tiers immediately quadrupled standard rate limits to 120 TinySearch requests per minute and 600 TinyFetch URLs per minute, enabling Team Traxo to ingest the 6,155-tender Haryana beachhead and construct the 50-tender GeM benchmark dataset at zero infrastructure cost.   
+Executing this roadmap begins with enrolling TenderLens in the TinyFish for Startups program (tinyfish.ai/startups) under Tier 1 (for independent pre-production teams, providing up to $7,000 in value, $100/month in wallet credits for 6 months, and 50 concurrent TinyAgent runs) or Tier 2 (for accelerator or investor-backed teams, providing up to $12,000 in value, $500 initial wallet credits, and 50% off TinyAgent for 24 months). Both tiers immediately quadrupled standard rate limits to 120 TinySearch requests per minute and 600 TinyFetch URLs per minute, enabling TenderLens to ingest the 6,155-tender Haryana beachhead and construct the 50-tender GeM benchmark dataset at zero infrastructure cost.   
 
 In parallel with API provisioning, the engineering team should assemble the 50-tender GeM evaluation harness by curating a stratified sample across Haryana electrical and IT categories—combining straightforward single-PDF bids, tenders with hyperlinked multi-page buyer ATCs, and complex solicitations featuring multiple superseding corrigenda and MSME or MII exemption overrides. Validating the two-tier PyMuPDF and Docling router alongside the deterministic Python rules engine against this golden dataset will empirically establish the 85%+ precision and 80%+ recall baselines prior to onboarding pilot MSMEs. Finally, wiring TinyMonitor (POST /v1/monitors) into the FastAPI backend will operationalize automated corrigenda monitoring at $0.005 per check, ensuring that whenever an MSME shortlists a Strong Bid or Conditional Bid, any subsequent portal amendment automatically triggers a delta re-verification before bid submission.   
 
@@ -4287,7 +4287,7 @@ Public procurement across India—spanning the Government e-Marketplace (GeM), t
 
 In the Indian tendering ecosystem, a solicitation is rarely self-contained within a single Portable Document Format (PDF) file. Instead, material eligibility conditions are distributed across a baseline Notice Inviting Tender (NIT) or GeM Bid Document, hyperlinked Buyer Added Bid Specific Additional Terms and Conditions (ATC) files, and sequential corrigenda issued up to hours before bid closure. When an MSME, Original Equipment Manufacturer (OEM), Engineering, Procurement, and Construction (EPC) contractor, or Information Technology (IT) system integrator overlooks a nested sub-clause or an amended financial threshold, the consequences extend beyond administrative rejection. Disqualification during technical evaluation results in sunk bid-preparation engineering hours, forfeiture or prolonged lock-up of working capital committed to Earnest Money Deposits (EMD), and missed revenue cycles.   
 
-TenderLens, architected by Team Traxo for HackIIITD, addresses this verification bottleneck by shifting the paradigm from passive tender discovery to evidence-backed, pre-bid qualification and disqualification auditing. Designed as a decision-support engine rather than an autonomous legal adjudicator, TenderLens ingests a bidder's structured corporate profile, recursively retrieves the complete hierarchy of tender documents via the TinyFish web intelligence stack, parses complex multi-column layouts and tables through a hybrid PyMuPDF and IBM Docling pipeline, and evaluates compliance using deterministic Python rules paired with Large Language Model (LLM) clause analysis. Every identified risk, met criterion, or contractual contradiction is anchored to its exact source document, page number, and clause reference, routing ambiguous or conflicting stipulations to human review before capital is committed.   
+TenderLens addresses this verification bottleneck by shifting the paradigm from passive tender discovery to evidence-backed, pre-bid qualification and disqualification auditing. Designed as a decision-support engine rather than an autonomous legal adjudicator, TenderLens ingests a bidder's structured corporate profile, recursively retrieves the complete hierarchy of tender documents via the TinyFish web intelligence stack, parses complex multi-column layouts and tables through a hybrid PyMuPDF and IBM Docling pipeline, and evaluates compliance using deterministic Python rules paired with Large Language Model (LLM) clause analysis. Every identified risk, met criterion, or contractual contradiction is anchored to its exact source document, page number, and clause reference, routing ambiguous or conflicting stipulations to human review before capital is committed.   
 
 Domain Mechanics: Contractual Precedence and Eligibility Traps in Indian Tenders
 
@@ -4600,7 +4600,7 @@ When invoked via /v1/automation/run-sse, TinyAgent emits Server-Sent Events in t
 →
 → PROGRESS 
 →
-→ COMPLETE, where streaming_url provides a live browser preview valid for 24 hours. If a portal presents a hard CAPTCHA or requires a physical Class-III Digital Signature Certificate (DSC) token that cannot be automated, strict mode terminates the run cleanly, and TenderLens surfaces the streaming_url or transitions the user to the manual PDF upload fallback exactly as specified in Team Traxo's risk controls. Furthermore, to power the MSME Pro subscription tier's "Delta Alerts: Corrigenda Watch" feature without engineering a bespoke cron-scraping loop, TenderLens can programmatically provision a TinyMonitor (POST /v1/monitors) on each shortlisted tender URL with a natural-language trigger condition such as "Alert me when a new Corrigendum PDF link, Addendum, or bid submission date extension is added to this tender page". At $0.005 per completed check—which includes LLM change judgment and webhook delivery, while failed checks remain unbilled—checking an active tender twice daily for 10 days prior to bid closure costs just $0.10 (~₹8.40) and automatically initiates a Celery delta-reverification workflow whenever an amendment is published.   
+→ COMPLETE, where streaming_url provides a live browser preview valid for 24 hours. If a portal presents a hard CAPTCHA or requires a physical Class-III Digital Signature Certificate (DSC) token that cannot be automated, strict mode terminates the run cleanly, and TenderLens surfaces the streaming_url or transitions the user to the manual PDF upload fallback exactly as specified in TenderLens's risk controls. Furthermore, to power the MSME Pro subscription tier's "Delta Alerts: Corrigenda Watch" feature without engineering a bespoke cron-scraping loop, TenderLens can programmatically provision a TinyMonitor (POST /v1/monitors) on each shortlisted tender URL with a natural-language trigger condition such as "Alert me when a new Corrigendum PDF link, Addendum, or bid submission date extension is added to this tender page". At $0.005 per completed check—which includes LLM change judgment and webhook delivery, while failed checks remain unbilled—checking an active tender twice daily for 10 days prior to bid closure costs just $0.10 (~₹8.40) and automatically initiates a Celery delta-reverification workflow whenever an amendment is published.   
 
 Document Intelligence Pipeline: Hybrid PyMuPDF and Docling Extraction
 
@@ -5037,7 +5037,7 @@ Beyond direct SaaS subscriptions, OfBusiness's monetization of BidAssist demonst
 
 Risk Matrix and Actionable Implementation Roadmap
 
-To transition TenderLens from its hackathon proposal architecture to a production-hardened system capable of auditing thousands of Haryana, GeM, and PSU tenders daily, Team Traxo must address six primary operational and legal risk vectors.   
+To transition TenderLens from its hackathon proposal architecture to a production-hardened system capable of auditing thousands of Haryana, GeM, and PSU tenders daily, TenderLens must address six primary operational and legal risk vectors.   
 
 Architectural Risk Vector	Root Technical Cause	Production Mitigation Strategy
 Missed External ATC Files (< 90% Capture)	
@@ -5128,7 +5128,7 @@ Isolate PDF parsing inside an internal microservice or evaluate Docling's native
   
 Immediate Engineering Sequence for Milestone 01 to Milestone 03
 
-Executing this roadmap begins with enrolling TenderLens in the TinyFish for Startups program (tinyfish.ai/startups) under Tier 1 (for independent pre-production teams, providing up to $7,000 in value, $100/month in wallet credits for 6 months, and 50 concurrent TinyAgent runs) or Tier 2 (for accelerator or investor-backed teams, providing up to $12,000 in value, $500 initial wallet credits, and 50% off TinyAgent for 24 months). Both tiers immediately quadrupled standard rate limits to 120 TinySearch requests per minute and 600 TinyFetch URLs per minute, enabling Team Traxo to ingest the 6,155-tender Haryana beachhead and construct the 50-tender GeM benchmark dataset at zero infrastructure cost.   
+Executing this roadmap begins with enrolling TenderLens in the TinyFish for Startups program (tinyfish.ai/startups) under Tier 1 (for independent pre-production teams, providing up to $7,000 in value, $100/month in wallet credits for 6 months, and 50 concurrent TinyAgent runs) or Tier 2 (for accelerator or investor-backed teams, providing up to $12,000 in value, $500 initial wallet credits, and 50% off TinyAgent for 24 months). Both tiers immediately quadrupled standard rate limits to 120 TinySearch requests per minute and 600 TinyFetch URLs per minute, enabling TenderLens to ingest the 6,155-tender Haryana beachhead and construct the 50-tender GeM benchmark dataset at zero infrastructure cost.   
 
 In parallel with API provisioning, the engineering team should assemble the 50-tender GeM evaluation harness by curating a stratified sample across Haryana electrical and IT categories—combining straightforward single-PDF bids, tenders with hyperlinked multi-page buyer ATCs, and complex solicitations featuring multiple superseding corrigenda and MSME or MII exemption overrides. Validating the two-tier PyMuPDF and Docling router alongside the deterministic Python rules engine against this golden dataset will empirically establish the 85%+ precision and 80%+ recall baselines prior to onboarding pilot MSMEs. Finally, wiring TinyMonitor (POST /v1/monitors) into the FastAPI backend will operationalize automated corrigenda monitoring at $0.005 per check, ensuring that whenever an MSME shortlists a Strong Bid or Conditional Bid, any subsequent portal amendment automatically triggers a delta re-verification before bid submission.   
 
@@ -6363,7 +6363,7 @@ Thumbs.db
         <a class="button button-dark" href="index.html">Return to TenderLens <span aria-hidden="true">↗</span></a>
       </div>
     </main>
-    <footer class="site-footer"><div class="container footer-bottom"><span>TENDERLENS · TEAM TRAXO</span><span>ILLUSTRATIVE PREVIEW</span></div></footer>
+    <footer class="site-footer"><div class="container footer-bottom"><span>TENDERLENS</span><span>ILLUSTRATIVE PREVIEW</span></div></footer>
   </body>
 </html>
 </file>
@@ -6417,7 +6417,7 @@ Thumbs.db
 # `single.md` — TenderLens Master Context & Engineering Blueprint for Antigravity
 
 > **Project**: TenderLens (AI-Powered Public Procurement Qualification & Disqualification Engine)[cite: 1]  
-> **Team**: Team Traxo · HackIIITD (Round 2)[cite: 1]  
+> **Team**: TenderLens[cite: 1]  
 > **Active Agent Scope**: **Mohit & Antigravity AI** (Backend, Web Intelligence, Document Intelligence, Deterministic Qualification Engine & API Orchestration)[cite: 1]  
 > **Environment**: Python 3.12 (`uv` package manager) · Windows (`d:\softwares\Tenderlens\TenderLens`)[cite: 1]
 
@@ -9113,7 +9113,7 @@ class PreBidLegalGenerator:
         <a class="button button-dark" href="index.html">Return to TenderLens <span aria-hidden="true">↗</span></a>
       </div>
     </main>
-    <footer class="site-footer"><div class="container footer-bottom"><span>TENDERLENS · TEAM TRAXO</span><span>ILLUSTRATIVE PREVIEW</span></div></footer>
+    <footer class="site-footer"><div class="container footer-bottom"><span>TENDERLENS</span><span>ILLUSTRATIVE PREVIEW</span></div></footer>
   </body>
 </html>
 </file>
@@ -10167,7 +10167,7 @@ if (bidderProfileForm) {
       </section>
     </main>
 
-    <footer class="site-footer"><div class="container footer-main"><a class="brand footer-brand" href="index.html"><span class="brand-mark" aria-hidden="true">TL</span><span class="brand-name">Tender<span>Lens</span></span></a><p>Clearer tender reviews, with the source close by.<br>Built by Team Traxo for HackIIITD.</p><div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms &amp; conditions</a></div></div><div class="container footer-bottom"><span>© <span id="current-year">2026</span> TENDERLENS · TEAM TRAXO</span><span>SAMPLE DATA ONLY</span></div></footer>
+    <footer class="site-footer"><div class="container footer-main"><a class="brand footer-brand" href="index.html"><span class="brand-mark" aria-hidden="true">TL</span><span class="brand-name">Tender<span>Lens</span></span></a><p>Clearer tender reviews, with the source close by.<br>Powered by TenderLens.</p><div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms &amp; conditions</a></div></div><div class="container footer-bottom"><span>© <span id="current-year">2026</span> TENDERLENS</span><span>SAMPLE DATA ONLY</span></div></footer>
   </body>
 </html>
 </file>
@@ -10344,7 +10344,7 @@ if (bidderProfileForm) {
             <p class="preview-disclaimer">Illustrative sample only. No live tender data or company profile is shown.</p>
           </div>
         </div>
-        <div class="hero-ruler" aria-hidden="true"><span>HACKIIITD · TEAM TRAXO</span><span>PROCUREMENT, READ WITH CONTEXT</span><span>INDIA</span></div>
+        <div class="hero-ruler" aria-hidden="true"><span>TENDERLENS</span><span>PROCUREMENT, READ WITH CONTEXT</span><span>INDIA</span></div>
       </section>
 
       <section class="opportunity-section section-rule" id="opportunities">
@@ -10596,7 +10596,7 @@ if (bidderProfileForm) {
                 <div class="audience-focus"><span>FOCUS</span><strong id="audience-focus">Turnover · exemptions · certifications</strong></div>
               </div>
             </div>
-          <div class="audience-display-bottom"><span>GeM · PSU · STATE PROCUREMENT</span><span>TEAM TRAXO</span></div>
+          <div class="audience-display-bottom"><span>GeM · PSU · STATE PROCUREMENT</span><span>TENDERLENS</span></div>
           </div>
         </div>
       </section>
@@ -10617,7 +10617,7 @@ if (bidderProfileForm) {
       <section class="closing-section">
         <div class="container closing-inner">
           <div class="closing-stamp" data-parallax="0.07" aria-hidden="true"><span>TL</span><i></i></div>
-          <p class="eyebrow">TENDERLENS · TEAM TRAXO</p>
+          <p class="eyebrow">TENDERLENS</p>
           <h2>Read the full tender.<br><em>Then decide.</em></h2>
             <p>See how a clear source trail can help a team decide whether to prepare a bid.</p>
           <a class="button button-light" href="#demo">Explore the sample report <span aria-hidden="true">↗</span></a>
@@ -10632,10 +10632,10 @@ if (bidderProfileForm) {
           <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M7 12.5V8h4.5M28.5 8H33v4.5M33 27.5V32h-4.5M11.5 32H7v-4.5" stroke="currentColor" stroke-width="1.7"/><circle cx="20" cy="18.5" r="7.2" stroke="currentColor" stroke-width="1.7"/><path d="m25.2 23.7 6.1 6.1" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/><circle cx="20" cy="18.5" r="2" fill="currentColor"/></svg></span>
           <span class="brand-name">Tender<span>Lens</span></span>
         </a>
-        <p>Tender reviews with source links.<br>Built by Team Traxo for HackIIITD.</p>
+        <p>Tender reviews with source links.<br>Powered by TenderLens.</p>
         <div class="footer-links"><a href="guide.html">Easy guide</a><a href="#faq">Quick answers</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms &amp; conditions</a><a href="https://github.com/ArshitGupta01/TenderLens/blob/main/FINAL_IMPLEMENTATION_PLAN.md" target="_blank" rel="noopener">Project plan ↗</a><a href="#top">Back to top ↑</a></div>
       </div>
-      <div class="container footer-bottom"><span>© <span id="current-year">2026</span> TENDERLENS · TEAM TRAXO</span><span>SAMPLE REPORT IS FICTIONAL · ACCOUNT FEATURES REQUIRE SETUP</span></div>
+      <div class="container footer-bottom"><span>© <span id="current-year">2026</span> TENDERLENS</span><span>SAMPLE REPORT IS FICTIONAL · ACCOUNT FEATURES REQUIRE SETUP</span></div>
     </footer>
     <button class="back-to-top" id="back-to-top" type="button" aria-label="Back to top"><span aria-hidden="true">↑</span><span>Top</span></button>
   </body>
@@ -10730,11 +10730,11 @@ if (bidderProfileForm) {
         <h2>Other services</h2>
         <p>The website may load fonts from Google Fonts and the Supabase JavaScript client from jsDelivr. Lenis, the smooth-scrolling library, is included with the project and runs locally. The site does not use advertising pixels or analytics tools.</p>
         <h2>Questions</h2>
-        <p>This preview is presented by Team Traxo for HackIIITD. A support email address has not been provided.</p>
+        <p>This preview is presented by TenderLens. A support email address has not been provided.</p>
         <a class="button button-dark legal-back" href="index.html">Return to TenderLens <span aria-hidden="true">↗</span></a>
       </div>
     </main>
-    <footer class="site-footer"><div class="container footer-main"><a class="brand footer-brand" href="index.html"><span class="brand-mark" aria-hidden="true">TL</span><span class="brand-name">Tender<span>Lens</span></span></a><p>Clearer tender reviews, with the source close by.<br>Built by Team Traxo for HackIIITD.</p><div class="footer-links"><a href="guide.html">Easy guide</a><a href="terms.html">Terms &amp; conditions</a><a href="index.html">Home</a></div></div><div class="container footer-bottom"><span>© <span id="current-year">2026</span> TENDERLENS · TEAM TRAXO</span><span>SAMPLE DATA ONLY</span></div></footer>
+    <footer class="site-footer"><div class="container footer-main"><a class="brand footer-brand" href="index.html"><span class="brand-mark" aria-hidden="true">TL</span><span class="brand-name">Tender<span>Lens</span></span></a><p>Clearer tender reviews, with the source close by.<br>Powered by TenderLens.</p><div class="footer-links"><a href="guide.html">Easy guide</a><a href="terms.html">Terms &amp; conditions</a><a href="index.html">Home</a></div></div><div class="container footer-bottom"><span>© <span id="current-year">2026</span> TENDERLENS</span><span>SAMPLE DATA ONLY</span></div></footer>
   </body>
 </html>
 </file>
@@ -12561,11 +12561,11 @@ small { font-size: max(12px, 1em); line-height: 1.5; }
         <h2>Using this preview</h2>
         <p>Use this website to explore the project and its sample interface. Do not rely on it for a purchase, bid, compliance decision or legal conclusion. The prototype is provided as-is while the team continues development.</p>
         <h2>Project contact</h2>
-        <p>TenderLens is presented by Team Traxo for HackIIITD. No support address or commercial service has been provided.</p>
+        <p>TenderLens is presented by TenderLens. No support address or commercial service has been provided.</p>
         <a class="button button-dark legal-back" href="index.html">Return to TenderLens <span aria-hidden="true">↗</span></a>
       </div>
     </main>
-    <footer class="site-footer"><div class="container footer-main"><a class="brand footer-brand" href="index.html"><span class="brand-mark" aria-hidden="true">TL</span><span class="brand-name">Tender<span>Lens</span></span></a><p>Clearer tender reviews, with the source close by.<br>Built by Team Traxo for HackIIITD.</p><div class="footer-links"><a href="guide.html">Easy guide</a><a href="privacy.html">Privacy</a><a href="index.html">Home</a></div></div><div class="container footer-bottom"><span>© <span id="current-year">2026</span> TENDERLENS · TEAM TRAXO</span><span>SAMPLE DATA ONLY</span></div></footer>
+    <footer class="site-footer"><div class="container footer-main"><a class="brand footer-brand" href="index.html"><span class="brand-mark" aria-hidden="true">TL</span><span class="brand-name">Tender<span>Lens</span></span></a><p>Clearer tender reviews, with the source close by.<br>Powered by TenderLens.</p><div class="footer-links"><a href="guide.html">Easy guide</a><a href="privacy.html">Privacy</a><a href="index.html">Home</a></div></div><div class="container footer-bottom"><span>© <span id="current-year">2026</span> TENDERLENS</span><span>SAMPLE DATA ONLY</span></div></footer>
   </body>
 </html>
 </file>
@@ -13489,8 +13489,8 @@ comment on table public.tender_audits is 'Stores full AI qualification scorecard
 
 <file path="FINAL_IMPLEMENTATION_PLAN.md">
 # TenderLens: Final Engineering Implementation Plan
-**HackIIITD · Round 2 Product Execution Plan**  
-*Team Traxo · Government Procurement AI*
+**TenderLens · Product Execution Plan**  
+*TenderLens · Government Procurement AI*
 
 ---
 
@@ -13650,10 +13650,10 @@ Pure Python logic enforcing statutory procurement rules (zero math hallucination
 | **Phase 2: Backend Dependencies & Services** | • `uv add fastapi uvicorn httpx pymupdf pydantic-settings python-dotenv sse-starlette`<br>• Build `backend/services/tinyfish_service.py`<br>• Build `backend/services/document_processor.py` | Mohit & Antigravity |
 | **Phase 3: Qualification Engine** | • Build `backend/engine/deterministic_gatekeeper.py`<br>• Build `backend/engine/qualification_engine.py`<br>• Unit tests for turnover, MSME exemptions, and EMD rules | Mohit & Antigravity |
 | **Phase 4: API Wiring & Live Streaming** | • Build `backend/main.py` with CORS & SSE endpoints<br>• Connect TinyAgent SSE stream to `/audit/stream/{task_id}` | Mohit & Antigravity |
-| **Phase 5: Evaluation & Demo** | • Run 50-tender GeM benchmark in `research/evals/`<br>• Validate $\ge 85\%$ precision and $\ge 80\%$ recall<br>• Record end-to-end demo video for Round 2 pitch | All (Traxo Team) |
+| **Phase 5: Evaluation & Demo** | • Run 50-tender GeM benchmark in `research/evals/`<br>• Validate $\ge 85\%$ precision and $\ge 80\%$ recall<br>• Record end-to-end demo video for Round 2 pitch | TenderLens Team |
 
 ---
-*Created for Team Traxo · TenderLens · HackIIITD Round 2*
+*Created for TenderLens*
 
 ## Current integration status — 2026-10-24
 
@@ -14539,7 +14539,7 @@ SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
       </section>
     </main>
 
-    <footer class="site-footer"><div class="container footer-main"><a class="brand footer-brand" href="index.html"><span class="brand-mark" aria-hidden="true">TL</span><span class="brand-name">Tender<span>Lens</span></span></a><p>Clearer tender reviews, with the source close by.<br>Built by Team Traxo for HackIIITD.</p><div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms &amp; conditions</a></div></div><div class="container footer-bottom"><span>© <span id="current-year">2026</span> TENDERLENS · TEAM TRAXO</span><span>SAMPLE DATA ONLY</span></div></footer>
+    <footer class="site-footer"><div class="container footer-main"><a class="brand footer-brand" href="index.html"><span class="brand-mark" aria-hidden="true">TL</span><span class="brand-name">Tender<span>Lens</span></span></a><p>Clearer tender reviews, with the source close by.<br>Powered by TenderLens.</p><div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms &amp; conditions</a></div></div><div class="container footer-bottom"><span>© <span id="current-year">2026</span> TENDERLENS</span><span>SAMPLE DATA ONLY</span></div></footer>
   </body>
 </html>
 </file>
@@ -16474,11 +16474,11 @@ if (bidderProfileForm) {
         <h2>Other services</h2>
         <p>The website may load fonts from Google Fonts and the Supabase JavaScript client from jsDelivr. Lenis, the smooth-scrolling library, is included with the project and runs locally. The site does not use advertising pixels or analytics tools.</p>
         <h2>Questions</h2>
-        <p>This preview is presented by Team Traxo for HackIIITD. A support email address has not been provided.</p>
+        <p>This preview is presented by TenderLens. A support email address has not been provided.</p>
         <a class="button button-dark legal-back" href="index.html">Return to TenderLens <span aria-hidden="true">↗</span></a>
       </div>
     </main>
-    <footer class="site-footer"><div class="container footer-main"><a class="brand footer-brand" href="index.html"><span class="brand-mark" aria-hidden="true">TL</span><span class="brand-name">Tender<span>Lens</span></span></a><p>Clearer tender reviews, with the source close by.<br>Built by Team Traxo for HackIIITD.</p><div class="footer-links"><a href="guide.html">Easy guide</a><a href="terms.html">Terms &amp; conditions</a><a href="index.html">Home</a></div></div><div class="container footer-bottom"><span>© <span id="current-year">2026</span> TENDERLENS · TEAM TRAXO</span><span>SAMPLE DATA ONLY</span></div></footer>
+    <footer class="site-footer"><div class="container footer-main"><a class="brand footer-brand" href="index.html"><span class="brand-mark" aria-hidden="true">TL</span><span class="brand-name">Tender<span>Lens</span></span></a><p>Clearer tender reviews, with the source close by.<br>Powered by TenderLens.</p><div class="footer-links"><a href="guide.html">Easy guide</a><a href="terms.html">Terms &amp; conditions</a><a href="index.html">Home</a></div></div><div class="container footer-bottom"><span>© <span id="current-year">2026</span> TENDERLENS</span><span>SAMPLE DATA ONLY</span></div></footer>
   </body>
 </html>
 </file>
@@ -16532,11 +16532,11 @@ if (bidderProfileForm) {
         <h2>Using this preview</h2>
         <p>Use this website to explore the project and its sample interface. Do not rely on it for a purchase, bid, compliance decision or legal conclusion. The prototype is provided as-is while the team continues development.</p>
         <h2>Project contact</h2>
-        <p>TenderLens is presented by Team Traxo for HackIIITD. No support address or commercial service has been provided.</p>
+        <p>TenderLens is presented by TenderLens. No support address or commercial service has been provided.</p>
         <a class="button button-dark legal-back" href="index.html">Return to TenderLens <span aria-hidden="true">↗</span></a>
       </div>
     </main>
-    <footer class="site-footer"><div class="container footer-main"><a class="brand footer-brand" href="index.html"><span class="brand-mark" aria-hidden="true">TL</span><span class="brand-name">Tender<span>Lens</span></span></a><p>Clearer tender reviews, with the source close by.<br>Built by Team Traxo for HackIIITD.</p><div class="footer-links"><a href="guide.html">Easy guide</a><a href="privacy.html">Privacy</a><a href="index.html">Home</a></div></div><div class="container footer-bottom"><span>© <span id="current-year">2026</span> TENDERLENS · TEAM TRAXO</span><span>SAMPLE DATA ONLY</span></div></footer>
+    <footer class="site-footer"><div class="container footer-main"><a class="brand footer-brand" href="index.html"><span class="brand-mark" aria-hidden="true">TL</span><span class="brand-name">Tender<span>Lens</span></span></a><p>Clearer tender reviews, with the source close by.<br>Powered by TenderLens.</p><div class="footer-links"><a href="guide.html">Easy guide</a><a href="privacy.html">Privacy</a><a href="index.html">Home</a></div></div><div class="container footer-bottom"><span>© <span id="current-year">2026</span> TENDERLENS</span><span>SAMPLE DATA ONLY</span></div></footer>
   </body>
 </html>
 </file>
@@ -16743,7 +16743,7 @@ Updated: 2026-10-24
             <p class="preview-disclaimer">Illustrative sample only. No live tender data or company profile is shown.</p>
           </div>
         </div>
-        <div class="hero-ruler" aria-hidden="true"><span>HACKIIITD · TEAM TRAXO</span><span>PROCUREMENT, READ WITH CONTEXT</span><span>INDIA</span></div>
+        <div class="hero-ruler" aria-hidden="true"><span>TENDERLENS</span><span>PROCUREMENT, READ WITH CONTEXT</span><span>INDIA</span></div>
       </section>
 
       <section class="opportunity-section section-rule" id="opportunities">
@@ -16995,7 +16995,7 @@ Updated: 2026-10-24
                 <div class="audience-focus"><span>FOCUS</span><strong id="audience-focus">Turnover · exemptions · certifications</strong></div>
               </div>
             </div>
-          <div class="audience-display-bottom"><span>GeM · PSU · STATE PROCUREMENT</span><span>TEAM TRAXO</span></div>
+          <div class="audience-display-bottom"><span>GeM · PSU · STATE PROCUREMENT</span><span>TENDERLENS</span></div>
           </div>
         </div>
       </section>
@@ -17016,7 +17016,7 @@ Updated: 2026-10-24
       <section class="closing-section">
         <div class="container closing-inner">
           <div class="closing-stamp" data-parallax="0.07" aria-hidden="true"><span>TL</span><i></i></div>
-          <p class="eyebrow">TENDERLENS · TEAM TRAXO</p>
+          <p class="eyebrow">TENDERLENS</p>
           <h2>Read the full tender.<br><em>Then decide.</em></h2>
             <p>See how a clear source trail can help a team decide whether to prepare a bid.</p>
           <a class="button button-light" href="#demo">Explore the sample report <span aria-hidden="true">↗</span></a>
@@ -17031,10 +17031,10 @@ Updated: 2026-10-24
           <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M7 12.5V8h4.5M28.5 8H33v4.5M33 27.5V32h-4.5M11.5 32H7v-4.5" stroke="currentColor" stroke-width="1.7"/><circle cx="20" cy="18.5" r="7.2" stroke="currentColor" stroke-width="1.7"/><path d="m25.2 23.7 6.1 6.1" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/><circle cx="20" cy="18.5" r="2" fill="currentColor"/></svg></span>
           <span class="brand-name">Tender<span>Lens</span></span>
         </a>
-        <p>Tender reviews with source links.<br>Built by Team Traxo for HackIIITD.</p>
+        <p>Tender reviews with source links.<br>Powered by TenderLens.</p>
         <div class="footer-links"><a href="guide.html">Easy guide</a><a href="strategy.html">Strategy tools</a><a href="#faq">Quick answers</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms &amp; conditions</a><a href="https://github.com/ArshitGupta01/TenderLens/blob/main/FINAL_IMPLEMENTATION_PLAN.md" target="_blank" rel="noopener">Project plan ↗</a><a href="#top">Back to top ↑</a></div>
       </div>
-      <div class="container footer-bottom"><span>© <span id="current-year">2026</span> TENDERLENS · TEAM TRAXO</span><span>SAMPLE REPORT IS FICTIONAL · ACCOUNT FEATURES REQUIRE SETUP</span></div>
+      <div class="container footer-bottom"><span>© <span id="current-year">2026</span> TENDERLENS</span><span>SAMPLE REPORT IS FICTIONAL · ACCOUNT FEATURES REQUIRE SETUP</span></div>
     </footer>
     <button class="back-to-top" id="back-to-top" type="button" aria-label="Back to top"><span aria-hidden="true">↑</span><span>Top</span></button>
   </body>
@@ -17080,7 +17080,7 @@ asyncio_mode = "auto"
 <file path="README.md">
 # TenderLens
 
-TenderLens is a Team Traxo hackathon project for making public tender requirements easier to review. It brings the main tender, extra buyer terms and official updates into one place, with findings linked to their source.
+TenderLens is a project for making public tender requirements easier to review. It brings the main tender, extra buyer terms and official updates into one place, with findings linked to their source.
 
 ## What works today
 
@@ -18478,7 +18478,7 @@ small { font-size: max(12px, 1em); line-height: 1.5; }
 # arshit-agents.md — Arshit's Memory & Progress Tracker
 
 > **Project**: TenderLens (AI-Powered Tender Qualification & Disqualification Engine)  
-> **Team**: Team Traxo · HackIIITD (Round 2)  
+> **Team**: TenderLens  
 > **Agent Owner**: Arshit  
 > **Domain**: Frontend (Next.js), Database (PostgreSQL / Migrations), Object Storage, Async Job Queues & UI Experience  
 > **Status**: Responsive website with optional FastAPI search and configured Supabase auth/profile/bookmark code; Google OAuth and demo-account verification remain pending
@@ -19267,7 +19267,7 @@ if frontend_dir.exists():
 # MOhit-Agents.md — Mohit & Antigravity Agent Memory & Progress Tracker
 
 > **Project**: TenderLens (AI-Powered Tender Qualification & Disqualification Engine)  
-> **Team**: Team Traxo · HackIIITD (Round 2)  
+> **Team**: TenderLens  
 > **Agent Owner**: Mohit & Antigravity AI  
 > **Domain**: Backend, Web Intelligence, Document Intelligence, Deterministic Qualification Engine & API Orchestration  
 > **Status**: Backend merged into `main`; experimental API routes remain subject to verification
@@ -19373,7 +19373,7 @@ TenderLens is divided across three clear, non-conflicting domains:
 | **2026-10-24 18:38** | Precedence DAG RAG Engine (v1.0.3) | Built `backend/engine/precedence_rag_engine.py`: Canonical Category classification (Turnover, Experience, EMD, MII, MAF, Certs, LD, Arbitration, Payment Terms), versioned Directed Acyclic Graph (DAG) construction with strict legal precedence (Rank 1 Corrigendum overrides Rank 5 Main PDF), safe uncertainty detection, audit trail tracing, and Gemini-powered synthesis. Added `POST /api/v1/rag/query` and `POST /api/v1/rag/precedence-graph` in `backend/main.py`. Added comprehensive test suite `tests/test_precedence_rag.py`. 33/33 tests passing across 8 test modules. Bumped version to `v1.0.3`. |
 | **2026-10-24 19:22** | PPT Comparison & Repomix Repack | Extracted and audited `TenderLens_Hackathon_Presentation.pptx_20261016_142216_0000.pdf` against current v1.0.3 implementation. Generated comprehensive comparison audit with ASCII tables in `TENDERLENS_PPT_VS_CURRENT_SOLUTION_COMPARISON.txt`. Re-ran Repomix packing into `single.xml`, including the new comparison file while strictly excluding `UPDATES_IMPLEMENTATION_GUIDE.md`, `updates_scope.md`, `TenderLens_Hackathon_Presentation.pptx_20261016_142216_0000.pdf`, `scope.md`, and `round1_qa.txt` (66 files, 222,339 tokens). |
 | **2026-10-24 21:00** | v2.0.0 Zero-History Pipeline (Pillar F — Startup Statutory Shield) | **THE HACKATHON DIFFERENTIATOR**: Built the complete Zero-History-to-First-Win Pipeline that no other team has. Added to `contracts/schema.py`: `ZeroHistoryCompetencySignal`, `ZeroHistoryCompetencyProfile`, `MSESubcontractingOpportunity`, `StartupRunwayTender`, `StartupShieldReport`, extended `BidderProfile` with `competency_profile` field. Created `backend/engine/startup_statutory_shield.py` — a trust-tiered competency evidence scorer (NABL=2.5pts, STQC=2.5pts, IP_PATENT=2.0pts, DPIIT=1.5pts, GEM_RATING=1.0pts, INCUBATOR=1.0pts, PILOT=0.75pts), ATC Override Risk detector, MSE 25% Subcontracting Gateway (PPP-MSE 2012 §4), Startup Runway Tender classifier, auto-generated GFR 173(i) Pre-Bid Legal Letter. Wired into `QualificationEngine.evaluate_tender()` as Pillar F. Updated `backend/engine/__init__.py` exports. Live test: DPIIT startup with NABL cert + 0 turnover → Shield Strength 9.42/10, SAFE override, Rs.125L MSE subcontracting opportunity surfaced. Strategy document at `HACKATHON_WIN_STRATEGY.md` artifact. |
-| **2026-10-24 21:55** | v1.1.0 Fair Play Guardian & Zero-History Equalizer Release | **HACKIIITD ROUND 2 SPECIFICATION COMPLETE**: Implemented the full architectural blueprint from `Architecting Fair Play_ A Blueprint for TenderLens to Win HackIIITD by Solving the Zero-History Company Dilemma.pdf`: (1) Added `LabTestReportItem`, `FairPlayViolationAlert`, `StartupExemptionAudit`, `TechnicalEquivalenceProof`, `MSESubcontractingMatch` to `contracts/schema.py` with backward-compatible defaults. (2) Built `backend/engine/fair_play_guardian.py` implementing `FairPlayGuardianEngine.run_startup_statutory_shield()`, `evaluate_zero_history_competency()`, and `match_25pct_mse_subcontracting_quota()`. (3) Upgraded `DeterministicGatekeeper` with `is_public_safety_or_security_exception` and GFR 173(i) / GeM GTC 4(xiii)(h) statutory shield overrides. (4) Wired into `QualificationEngine.evaluate_tender()`, auto-generating `MOE_STARTUP_EQUIPMENT_QC_PROFORMA` statutory affidavit. (5) Added `POST /api/v1/strategy/preview` and `POST /api/v1/audit/fair-play-shield` in `backend/main.py`. (6) Updated `strategy.html` & `strategy.js` with 1-Click Demo Preset and Cards 06, 07, 08. (7) Built `tests/test_fair_play_guardian.py` (3 new tests) verifying 36/36 tests passing (100%). |
+| **2026-10-24 21:55** | v1.1.0 Fair Play Guardian & Zero-History Equalizer Release | **TENDERLENS ROUND 2 SPECIFICATION COMPLETE**: Implemented the full architectural blueprint from `Architecting Fair Play_ A Blueprint for TenderLens by Solving the Zero-History Company Dilemma.pdf`: (1) Added `LabTestReportItem`, `FairPlayViolationAlert`, `StartupExemptionAudit`, `TechnicalEquivalenceProof`, `MSESubcontractingMatch` to `contracts/schema.py` with backward-compatible defaults. (2) Built `backend/engine/fair_play_guardian.py` implementing `FairPlayGuardianEngine.run_startup_statutory_shield()`, `evaluate_zero_history_competency()`, and `match_25pct_mse_subcontracting_quota()`. (3) Upgraded `DeterministicGatekeeper` with `is_public_safety_or_security_exception` and GFR 173(i) / GeM GTC 4(xiii)(h) statutory shield overrides. (4) Wired into `QualificationEngine.evaluate_tender()`, auto-generating `MOE_STARTUP_EQUIPMENT_QC_PROFORMA` statutory affidavit. (5) Added `POST /api/v1/strategy/preview` and `POST /api/v1/audit/fair-play-shield` in `backend/main.py`. (6) Updated `strategy.html` & `strategy.js` with 1-Click Demo Preset and Cards 06, 07, 08. (7) Built `tests/test_fair_play_guardian.py` (3 new tests) verifying 36/36 tests passing (100%). |
 
 ---
 

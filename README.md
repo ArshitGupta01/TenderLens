@@ -1,6 +1,6 @@
 # TenderLens
 
-TenderLens is a Team Traxo hackathon project for making Indian public tender requirements easier to review. It brings the main tender, extra buyer terms (ATCs), and official corrigenda into one place, with deterministic checks and source-linked evidence.
+TenderLens is a project for making Indian public tender requirements easier to review. It brings the main tender, extra buyer terms (ATCs), and official corrigenda into one place, with deterministic checks and source-linked evidence.
 
 ## What works today
 

@@ -5,7 +5,7 @@
 
 ## 1. What the project is
 
-TenderLens is an experimental Team Traxo hackathon application for reviewing
+TenderLens is an application for reviewing
 Indian public-procurement tenders. Its central design principle is that a
 tender is not a single document: the main bid, buyer-added terms, and
 corrigenda form a precedence-ordered evidence set.

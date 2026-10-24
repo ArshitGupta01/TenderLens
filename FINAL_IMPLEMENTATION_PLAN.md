@@ -1,6 +1,6 @@
 # TenderLens: Final Engineering Implementation Plan
-**HackIIITD · Round 2 Product Execution Plan**  
-*Team Traxo · Government Procurement AI*
+**TenderLens · Product Execution Plan**  
+*TenderLens · Government Procurement AI*
 
 ---
 
@@ -160,10 +160,10 @@ Pure Python logic enforcing statutory procurement rules (zero math hallucination
 | **Phase 2: Backend Dependencies & Services** | • `uv add fastapi uvicorn httpx pymupdf pydantic-settings python-dotenv sse-starlette`<br>• Build `backend/services/tinyfish_service.py`<br>• Build `backend/services/document_processor.py` | Mohit & Antigravity |
 | **Phase 3: Qualification Engine** | • Build `backend/engine/deterministic_gatekeeper.py`<br>• Build `backend/engine/qualification_engine.py`<br>• Unit tests for turnover, MSME exemptions, and EMD rules | Mohit & Antigravity |
 | **Phase 4: API Wiring & Live Streaming** | • Build `backend/main.py` with CORS & SSE endpoints<br>• Connect TinyAgent SSE stream to `/audit/stream/{task_id}` | Mohit & Antigravity |
-| **Phase 5: Evaluation & Demo** | • Run 50-tender GeM benchmark in `research/evals/`<br>• Validate $\ge 85\%$ precision and $\ge 80\%$ recall<br>• Record end-to-end demo video for Round 2 pitch | All (Traxo Team) |
+| **Phase 5: Evaluation & Demo** | • Run 50-tender GeM benchmark in `research/evals/`<br>• Validate $\ge 85\%$ precision and $\ge 80\%$ recall<br>• Record end-to-end demo video for Round 2 pitch | TenderLens Team |
 
 ---
-*Created for Team Traxo · TenderLens · HackIIITD Round 2*
+*Created for TenderLens*
 
 ## Current integration status — 2026-10-24
 

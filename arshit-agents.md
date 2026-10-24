@@ -1,7 +1,7 @@
 # arshit-agents.md — Arshit's Memory & Progress Tracker
 
 > **Project**: TenderLens (AI-Powered Tender Qualification & Disqualification Engine)  
-> **Team**: Team Traxo · HackIIITD (Round 2)  
+> **Team**: TenderLens  
 > **Agent Owner**: Arshit  
 > **Domain**: Frontend (Next.js), Database (PostgreSQL / Migrations), Object Storage, Async Job Queues & UI Experience  
 > **Status**: Responsive website with optional FastAPI search and configured Supabase auth/profile/bookmark code; Google OAuth and demo-account verification remain pending
@@ -342,3 +342,11 @@ ode --check) across all frontend scripts in both root and rontend/.
   - `pytest -q`: **36/36 tests passing (100%)** in 121s across all 9 test suites.
 - [x] Synced and deployed to GitHub across `main` and `repomix` branches.
 - [ ] Next milestone: Live hackathon presentation walkthrough and final submission readiness check.
+
+### Codebase Branding Harmonization - 2026-10-24
+- [x] Removed all associations and references to 'Team Traxo' and 'IIITD' across entire codebase:
+  - Cleaned all HTML templates (index.html, 404.html, 500.html, guide.html, privacy.html, 	erms.html, and their rontend/ counterparts).
+  - Cleaned all Markdown guides and reports (README.md, PROJECT_INFO.md, FINAL_IMPLEMENTATION_PLAN.md, rgon.md, esearch/argon_report.md, ound1_qa.txt).
+  - Cleaned single.xml and memory trackers (rshit-agents.md, MOhit-Agents.md).
+  - Replaced all footers, hero rulers, eyebrows, and credits with pure **TenderLens** branding.
+  - Verified 0 remaining occurrences of 'traxo' or 'iiitd' across workspace.
