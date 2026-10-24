@@ -17,6 +17,7 @@ dependencies = [
     "pymupdf>=2.0",
     "python-dotenv>=1.2.4",
     "sse-starlette>=3.5.0",
+    "supabase>=2.33.0",
     "uvicorn[standard]>=0.54.0",
 ]
 

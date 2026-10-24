@@ -31,9 +31,29 @@ class Settings(BaseSettings):
         description="Comma-separated browser origins allowed to call this API"
     )
 
-    # Supabase & Database Pairing
-    SUPABASE_URL: str = Field(default="", description="Supabase project URL used by the browser auth client")
-    SUPABASE_PUBLISHABLE_KEY: str = Field(default="", description="Public Supabase publishable key; safe to return to browsers when RLS is enabled")
+    # Supabase Cloud Database & Authentication (Free Tier Compatible)
+    SUPABASE_URL: str = Field(default="", description="Supabase project URL (e.g. https://xyz.supabase.co)")
+    SUPABASE_ANON_KEY: str = Field(default="", description="Supabase anonymous public key from Project Settings > API")
+    SUPABASE_PUBLISHABLE_KEY: str = Field(default="", description="Supabase publishable key alias")
+    SUPABASE_SERVICE_ROLE_KEY: str = Field(default="", description="Supabase service role secret key (optional for backend admin operations)")
+
+    @property
+    def supabase_public_key(self) -> str:
+        """Returns the public anon or publishable key for client consumption."""
+        return (self.SUPABASE_ANON_KEY or self.SUPABASE_PUBLISHABLE_KEY).strip()
+
+    @property
+    def is_supabase_configured(self) -> bool:
+        """Validates if a real Supabase project URL and API key are configured."""
+        url = self.SUPABASE_URL.strip()
+        key = self.supabase_public_key
+        return (
+            url.startswith("https://")
+            and "your-project" not in url.lower()
+            and len(key) > 20
+            and "your-key" not in key.lower()
+            and "your-project" not in key.lower()
+        )
 
     # Indian Procurement Web Intelligence Defaults
     ALLOWED_DOMAINS: str = Field(

@@ -20,6 +20,7 @@ from sse_starlette.sse import EventSourceResponse
 from pydantic import BaseModel, Field
 
 from backend.config import settings, ROOT_DIR
+from backend.services.supabase_service import SupabaseService
 from backend.services.tinyfish_service import (
     TinyFishService,
     DiscoveredTender,
@@ -72,6 +73,7 @@ app.add_middleware(
 )
 
 tinyfish = TinyFishService()
+supabase_service = SupabaseService()
 
 # In-memory pipeline task event bus for SSE streaming
 pipeline_task_events: Dict[str, asyncio.Queue] = {}
@@ -99,6 +101,21 @@ class AuditEvaluationRequest(BaseModel):
     explicit_criteria: Optional[TenderStatutoryCriteria] = None
 
 
+class SaveAuditRequest(BaseModel):
+    user_id: str
+    tender_title: str
+    tender_url: str
+    source_portal: Optional[str] = "GeM"
+    scorecard: QualificationScorecard
+
+
+class SaveBidderProfileRequest(BaseModel):
+    user_id: str
+    bidder_profile: BidderProfile
+    full_name: Optional[str] = ""
+    region: Optional[str] = ""
+
+
 @app.get("/healthz")
 async def health_check():
     return {
@@ -106,29 +123,24 @@ async def health_check():
         "service": "TenderLens Backend Engine",
         "version": "1.0.1",
         "environment": settings.ENVIRONMENT,
-        "tinyfish_configured": bool(settings.TINYFISH_API_KEY and not settings.TINYFISH_API_KEY.startswith("sk-tinyfish-your-key"))
+        "tinyfish_configured": bool(settings.TINYFISH_API_KEY and not settings.TINYFISH_API_KEY.startswith("sk-tinyfish-your-key")),
+        "supabase_configured": settings.is_supabase_configured,
+        "supabase_status": supabase_service.get_status()
     }
 
 
 @app.get("/api/v1/auth/config")
 async def auth_config():
-    """Return the Supabase project URL and publishable key to the browser frontend.
+    """Return the Supabase project URL and publishable/anon key to the browser frontend.
 
     Publishable keys identify a public client and are safe to expose. Secret keys
     and database passwords must never be returned here; RLS protects user rows.
     """
-    supabase_url = settings.SUPABASE_URL.strip()
-    publishable_key = settings.SUPABASE_PUBLISHABLE_KEY.strip()
-    configured = (
-        supabase_url.startswith("https://")
-        and "your-project" not in supabase_url.lower()
-        and publishable_key.startswith("sb_publishable_")
-        and "your-project" not in publishable_key.lower()
-    )
+    configured = settings.is_supabase_configured
     return {
         "configured": configured,
-        "supabase_url": supabase_url if configured else "",
-        "publishable_key": publishable_key if configured else "",
+        "supabase_url": settings.SUPABASE_URL.strip() if configured else "",
+        "publishable_key": settings.supabase_public_key if configured else "",
     }
 
 
@@ -309,6 +321,58 @@ async def get_competitor_forensics_endpoint(
         tender_title=tender_title,
         source_portal=source_portal
     )
+
+
+# ---------------------------------------------------------------------------
+# Supabase Cloud Database Persistence Endpoints (Free Tier)
+# ---------------------------------------------------------------------------
+@app.post("/api/v1/audits/save")
+async def save_audit_endpoint(payload: SaveAuditRequest):
+    """Save an evaluated qualification scorecard into Supabase tender_audits table."""
+    result = await supabase_service.save_audit_scorecard(
+        user_id=payload.user_id,
+        scorecard=payload.scorecard,
+        tender_title=payload.tender_title,
+        tender_url=payload.tender_url,
+        source_portal=payload.source_portal or "GeM"
+    )
+    if not result:
+        if not settings.is_supabase_configured:
+            return {"status": "unconfigured", "message": "Supabase credentials not configured in .env"}
+        raise HTTPException(status_code=500, detail="Failed to persist audit to Supabase")
+    return {"status": "saved", "data": result}
+
+
+@app.get("/api/v1/audits/user/{user_id}")
+async def get_user_audits_endpoint(user_id: str, limit: int = Query(20, ge=1, le=100)):
+    """Retrieve historical saved audits for an authenticated user from Supabase."""
+    audits = await supabase_service.get_user_audits(user_id=user_id, limit=limit)
+    return {"user_id": user_id, "audits": audits}
+
+
+@app.get("/api/v1/profile/sync/{user_id}", response_model=Optional[BidderProfile])
+async def get_synced_bidder_profile_endpoint(user_id: str):
+    """Fetch the stored BidderProfile for an authenticated user from Supabase."""
+    profile = await supabase_service.get_bidder_profile(user_id=user_id)
+    if not profile:
+        raise HTTPException(status_code=404, detail="No profile found for user in Supabase")
+    return profile
+
+
+@app.post("/api/v1/profile/sync")
+async def save_synced_bidder_profile_endpoint(payload: SaveBidderProfileRequest):
+    """Sync a BidderProfile into Supabase profiles table."""
+    result = await supabase_service.save_bidder_profile(
+        user_id=payload.user_id,
+        profile=payload.bidder_profile,
+        full_name=payload.full_name or "",
+        region=payload.region or ""
+    )
+    if not result:
+        if not settings.is_supabase_configured:
+            return {"status": "unconfigured", "message": "Supabase credentials not configured in .env"}
+        raise HTTPException(status_code=500, detail="Failed to save profile to Supabase")
+    return {"status": "saved", "data": result}
 
 
 # Pair up Frontend: Mount static files if frontend/ directory exists

@@ -103,13 +103,14 @@ TenderLens is divided across three clear, non-conflicting domains:
 | **2026-10-24 16:45** | TenderLens v1.0.1 Strategic Expansion (5 Pillars) | Implemented full v1.0.1 active execution & strategy blueprint: `contracts/schema.py` (v1.0.1 models), `backend/engine/prebid_legal_generator.py` (Pillar A), `backend/engine/consortium_matchmaker.py` (Pillar B), `backend/engine/compliance_matrix_engine.py` (Pillar C), `backend/engine/emd_capital_optimizer.py` (Pillar D), `backend/engine/competitor_forensics.py` (Pillar E), updated `deterministic_gatekeeper.py` with CPWD 80/50/40 gate, updated `qualification_engine.py` with 5-pillar synthesis, added dedicated REST routes in `backend/main.py`. Full test suite: 24/24 tests passing across 6 test modules. |
 | **2026-10-24 17:00** | Release Tagging & Harmonization (v1.0.1) | Resolved all versioning/tagging conflicts across `pyproject.toml`, `backend/main.py`, `backend/services/tinyfish_service.py`, `contracts/schema.py`, engines, and docs to uniform tag `v1.0.1`. Created annotated git tag `v1.0.1`. |
 | **2026-10-24 17:25** | Frontend & Database Pairing (Arshit's Branch) | Pulled Arshit's frontend into `frontend/` and Supabase SQL into `supabase/setup.sql` from `origin/main` without conflicting with our backend. Added Supabase auth config (`/api/v1/auth/config`) and CORS settings to `backend/main.py` and `backend/config.py`. Mounted `frontend/` directly on FastAPI root `/`. Built a high-aesthetic Top Ribbon Overlay (`#top-ribbon`) across all pages with animated live engine pulse (`v1.0.1 LIVE`), GFR 2017 highlights, and dark/light theme support. |
+| **2026-10-24 17:40** | Supabase Free Tier Cloud Database Activation | Configured live Supabase credentials (`qiwpkvjzqdyguygowzci.supabase.co`). Created `backend/services/supabase_service.py` with `SupabaseService` for persisting scorecards to `tender_audits`, syncing `BidderProfile` with `profiles`, and managing bookmarks. Added `/api/v1/audits/save`, `/api/v1/audits/user/{user_id}`, and `/api/v1/profile/sync` endpoints in `backend/main.py`. Updated `supabase/setup.sql` with full RLS policies and `tender_audits` schema. Created `supabase/README.md`. 28/28 tests passing across 7 test modules. |
 
 ---
 
 ## 4. Current State & Next Actions
 
-- **Current State**: All 24 unit, integration, and live end-to-end tests pass across 6 test modules. All 5 Strategic Pillars, deterministic gates, and dedicated REST endpoints are live. Frontend and Supabase database paired with backend server.
-- **Next Step**: Keep pairing verified, commit frontend integration cleanly, and prepare live demonstration.
+- **Current State**: All 28 unit, integration, and live end-to-end tests pass across 7 test modules (`test_api_endpoints.py`, `test_deterministic_gatekeeper.py`, `test_document_processor.py`, `test_gemini_auditor.py`, `test_real_e2e_pipeline.py`, `test_supabase_service.py`, `test_v3_pillars.py`). Live Supabase cloud database connected and active.
+- **Next Step**: Run `supabase/setup.sql` in Supabase SQL editor (if not already run) to verify all tables, and launch live end-to-end demonstrations.
 
 
 
