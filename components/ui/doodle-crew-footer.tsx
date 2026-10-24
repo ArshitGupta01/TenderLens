@@ -542,27 +542,13 @@ const PRESETS = {
 
 
 
-const DEFAULT_CREW: CrewMember[] = [
-
-  { kind: "yeti", letter: 0, seat: "front", offset: -0.32, name: "Bruno", says: "Hungry. Got snacks?" },
-
-  { kind: "bird", letter: 1, seat: "top", offset: 0.02, name: "Pip", says: "Tweet us! Seriously." },
-
-  { kind: "mushroom", letter: 2, seat: "front", offset: 0.12, scale: 0.95, name: "Morel", says: "I'm a fun guy." },
-
-  { kind: "kid", letter: 4, seat: "top", offset: -0.05, name: "Juno", says: "Up here! Best seat in the house." },
-
-  { kind: "ghost", letter: 6, seat: "behind", offset: 0, name: "Boo", says: "Boo! …sorry. Hi." },
-
-  { kind: "cat", letter: 7, seat: "front", offset: 0.42, flip: true, name: "Patch", says: "Arr. Nice cursor." },
-
-]
+const DEFAULT_CREW: CrewMember[] = []
 
 
 
 const DEFAULT_COLUMNS: FooterColumn[] = [
 
-  { title: "Play", links: [{ label: "Download", href: "#" }, { label: "Patch notes", href: "#" }, { label: "Roadmap", href: "#" }, { label: "Wiki", href: "#" }] },
+  { title: "Play", links: [{ label: "Download", href: "#" }, { label: "Release notes", href: "#" }, { label: "Roadmap", href: "#" }, { label: "Wiki", href: "#" }] },
 
   { title: "Shop", links: [{ label: "Sticker packs", href: "#" }, { label: "Plushies", href: "#" }, { label: "Art prints", href: "#" }, { label: "Gift cards", href: "#" }] },
 

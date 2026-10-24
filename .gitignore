@@ -54,3 +54,5 @@ Thumbs.db
 single.xml
 repomix-output.*
 .vercel
+
+tmp/

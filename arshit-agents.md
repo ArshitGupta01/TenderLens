@@ -240,3 +240,8 @@ ode --check) across all frontend scripts in both root and rontend/.
   - Mobile: Clean, natural vertical touch scroll with fluid wordmark scaling and zero scroll traps.
 - [x] Rebuilt client bundle (`npm run build:doodle`) and verified with `npm run typecheck` (0 errors).
 - [x] Synchronized all assets between root and `frontend/`.
+
+### Doodle Crew Characters Purge - 2026-10-24
+- [x] Completely removed all 6 cartoon characters (Bruno, Pip, Morel, Juno, Boo, Patch) from `components/tenderlens-hero.tsx`, `components/ui/doodle-crew-footer.tsx`, and `frontend/`.
+- [x] Wordmark now renders exclusively as the pure, professional dry-brush ink **T E N D E R L E N S** wordmark with its inline SVG texture, boiling lines, and floating ink particles without any characters sitting or peeking over the letters.
+- [x] Verified zero TypeScript errors (`tsc --noEmit`) and bundled cleanly with `npm run build:doodle`.
