@@ -768,15 +768,14 @@ function setupDoodleHero() {
         return;
       }
       const rect = stage.getBoundingClientRect();
-      const travel = stage.offsetHeight - window.innerHeight;
+      const travel = stage.offsetHeight - (window.innerHeight - 72);
       if (travel > 0) {
-        const scrolled = -rect.top;
+        const scrolled = -rect.top + 72;
         const progress = Math.max(0, Math.min(1, scrolled / travel));
-        // Subtle depth: slight scale down and soft fade as curtain covers
-        const scale = 1 - progress * 0.05;
-        const opacity = 1 - progress * 0.35;
-        const translateY = progress * 24;
-        sticky.style.transform = scale() translateY(px);
+        const scale = 1 - progress * 0.04;
+        const opacity = 1 - progress * 0.3;
+        const translateY = progress * 18;
+        sticky.style.transform = `scale(${scale.toFixed(3)}) translateY(${translateY.toFixed(1)}px)`;
         sticky.style.opacity = opacity.toFixed(3);
       } else {
         sticky.style.transform = '';

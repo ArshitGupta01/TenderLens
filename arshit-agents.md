@@ -230,3 +230,13 @@ ode --check) across all frontend scripts in both root and rontend/.
 - [x] Updated documentation in `guide.html` and `privacy.html` to reflect pure email/password credentials and verified session tokens under Supabase Auth without external social providers.
 - [x] Verified local pages load cleanly at `http://127.0.0.1:8000/signin.html` and `http://127.0.0.1:8000/signup.html` with zero Google artifacts.
 - [ ] Next milestone: Continue local feature development and connect multi-file PDF ingestion to the live compliance DAG.
+
+### TenderLens Wordmark Refinement & Header-Below Placement - 2026-10-24
+- [x] Repositioned the TenderLens interactive doodle stage so it sits **directly below the top header banner** (`<header class="site-header">`), keeping the header navigation and menu permanently anchored at the top of the viewport.
+- [x] Refined `components/ui/doodle-crew-footer.tsx` and `components/tenderlens-hero.tsx` with a `wordmarkOnly={true}` mode that completely removes extraneous columns, tagline, pill buttons, and secondary footer links (matching Image 2).
+- [x] Preserved the giant hand-drawn **T E N D E R L E N S** wordmark, animated character crew (Bruno, Pip, Morel, Juno, Boo, Patch), interactive eye tracking, ink boiling lines, click speech bubbles, and floating ink doodles.
+- [x] Fine-tuned responsive behavior:
+  - Desktop: Long-scroll curtain cover-up effect slides smoothly over the wordmark directly under the 72px sticky header banner.
+  - Mobile: Clean, natural vertical touch scroll with fluid wordmark scaling and zero scroll traps.
+- [x] Rebuilt client bundle (`npm run build:doodle`) and verified with `npm run typecheck` (0 errors).
+- [x] Synchronized all assets between root and `frontend/`.

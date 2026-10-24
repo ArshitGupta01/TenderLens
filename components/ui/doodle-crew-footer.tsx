@@ -447,6 +447,8 @@ export interface FooterAction {
 
 
 export interface DoodleCrewFooterProps {
+  /** If true, renders only the pure wordmark and crew animation, hiding brand, columns, tagline, buttons, and bottom bar. */
+  wordmarkOnly?: boolean
 
   /** The giant word. Short, upper case, 4–9 letters reads best. */
 
@@ -1147,6 +1149,7 @@ const Link = ({ link, className }: { link: FooterLink; className?: string }) =>
 
 
 export default function DoodleCrewFooter({
+  wordmarkOnly = false,
 
   wordmark = "MISCHIEF",
 
@@ -2018,6 +2021,7 @@ export default function DoodleCrewFooter({
 
 
 
+      {!wordmarkOnly && (
       <div className="dcf-top dcf-rise" style={{ "--d": "0ms" } as React.CSSProperties}>
 
         <div className="dcf-brand">
@@ -2085,6 +2089,7 @@ export default function DoodleCrewFooter({
         )}
 
       </div>
+      )}
 
 
 
@@ -2350,6 +2355,7 @@ export default function DoodleCrewFooter({
 
 
 
+        {!wordmarkOnly && (
         <div className="dcf-cta">
 
           <p className="dcf-tagline">
@@ -2413,11 +2419,13 @@ export default function DoodleCrewFooter({
           )}
 
         </div>
+        )}
 
       </div>
 
 
 
+      {!wordmarkOnly && (
       <div className="dcf-bar dcf-rise" style={{ "--d": "120ms" } as React.CSSProperties}>
 
         <p className="dcf-copy">{copyright}</p>
@@ -2475,6 +2483,7 @@ export default function DoodleCrewFooter({
         )}
 
       </div>
+      )}
 
     </footer>
 
