@@ -1,13 +1,14 @@
 [project]
 name = "tenderlens"
 version = "0.1.0"
-description = "Add your description here"
+description = "Evidence-backed tender review for Indian public procurement"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.162.0",
     "httpx>=0.28.1",
     "playwright>=1.64.1",
+    "pydantic>=2.11.0",
     "pydantic-settings>=2.16.1",
     "pymupdf>=2.0",
     "python-dotenv>=1.2.4",

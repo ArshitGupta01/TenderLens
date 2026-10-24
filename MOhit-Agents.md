@@ -4,7 +4,7 @@
 > **Team**: Team Traxo · HackIIITD (Round 2)  
 > **Agent Owner**: Mohit & Antigravity AI  
 > **Domain**: Backend, Web Intelligence, Document Intelligence, Deterministic Qualification Engine & API Orchestration  
-> **Status**: Active / Initialized with UV (Python 3.12)  
+> **Status**: Backend merged into `main`; experimental API routes remain subject to verification
 
 ---
 
@@ -71,7 +71,7 @@ TenderLens is divided across three clear, non-conflicting domains:
 
 ### Milestone 5: FastAPI Router & API Endpoints — *Completed*
 - [x] Built `backend/main.py`:
-  - CORS middleware enabled for `http://localhost:3000` (Arshit's Next.js frontend).
+  - CORS middleware reads the local origin allowlist from `CORS_ORIGINS`; credentials are disabled.
   - `POST /api/v1/tenders/search`
   - `POST /api/v1/tenders/fetch`
   - `POST /api/v1/audit/evaluate`
@@ -102,8 +102,16 @@ TenderLens is divided across three clear, non-conflicting domains:
 
 ## 4. Current State & Next Actions
 
-- **Current State**: TinyFish API is 100% authenticated and operational. Live Indian procurement search retrieves live GeM/BHEL PDFs in real time. Backend engine is fully verified.
-- **Next Step**: Support Arshit with frontend integration (connecting UI to FastAPI endpoints) and support Argon with the 50-tender evaluation benchmark.
+- **Current State**: Backend routes and qualification logic are implemented. The website calls the tender-search route only when the optional service is configured. Current provider access and behavior have not been re-verified in this update.
+- **Next Step**: Validate the backend against real source documents, then connect tender fetching and qualification review through a production-ready frontend.
+
+## 5. Merge and website connection — 2026-10-24
+
+- [x] Merged `Mohit-Backend` into `main`, including the API, document processor, and qualification engine.
+- [x] Added local CORS origins for preview ports 3000 and 4177, controlled through `CORS_ORIGINS`, with credentialed requests disabled.
+- [x] Connected the sample website's optional live-search form to `GET /healthz` and `POST /api/v1/tenders/search`. It submits only the search phrase and selected portal.
+- [ ] Tender fetching and bidder scorecard evaluation are still not connected to the website; verify backend behavior against real source documents before production use.
+- [ ] Re-run the backend suite and provider checks when a maintainer is ready to validate them; they were not run as part of this interface update.
 
 
 

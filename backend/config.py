@@ -24,6 +24,10 @@ class Settings(BaseSettings):
     BACKEND_PORT: int = Field(default=8000, description="FastAPI server port")
     BACKEND_HOST: str = Field(default="0.0.0.0", description="FastAPI server host")
     ENVIRONMENT: str = Field(default="development", description="Environment: development, test, production")
+    CORS_ORIGINS: str = Field(
+        default="http://localhost:3000,http://127.0.0.1:3000,http://localhost:4177,http://127.0.0.1:4177",
+        description="Comma-separated browser origins allowed to call this API"
+    )
 
     # Indian Procurement Web Intelligence Defaults
     ALLOWED_DOMAINS: str = Field(

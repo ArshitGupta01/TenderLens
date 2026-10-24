@@ -2,32 +2,32 @@ const evidence = {
   turnover: {
     source: 'BIDDER PROFILE / FINANCIAL CAPACITY',
     title: 'The sample profile clears this threshold.',
-    description: 'In this illustrative case, the bidder profile contains a three-year average above the requirement extracted from the tender set. A deterministic comparison marks the check as met.'
+    description: 'In this made-up example, the company’s average sales over three years are above the amount asked for. A simple number check marks the requirement as met.'
   },
   certification: {
-    source: 'BUYER-ADDED ATC / PAGE 18 / CLAUSE 7.2',
+    source: 'EXTRA BUYER TERMS / PAGE 18',
     title: 'No matching certificate appears in the sample profile.',
-    description: 'The sample ATC asks for ISO 9001 evidence. TenderLens links the requirement to the bidder profile so a reviewer can confirm whether a valid certificate should be added.'
+    description: 'The example asks for an ISO 9001 certificate, but the sample company details do not show one. A person should check whether a valid certificate is available.'
   },
   exemption: {
-    source: 'CORRIGENDUM 02 / PAGE 3 / AMENDED CONDITION',
+    source: 'OFFICIAL UPDATE 02 / PAGE 3 / CHANGED RULE',
     title: 'The amendment changes the earlier exemption language.',
-    description: 'This simulated source relationship routes the MSME exemption to human review. The earlier clause stays in the audit trail while the latest wording is checked.'
+    description: 'This example sends the small-business exemption for a closer check. Keep the earlier wording beside the latest change so a person can compare them.'
   },
   corrigendum: {
-    source: 'CORRIGENDUM 02 / LATEST AMENDMENT',
-    title: 'Latest terms in the illustrative document set.',
-    description: 'A corrigendum can supersede an earlier bid or ATC clause. This sample marks the latest amendment as current while keeping the replaced language available for review.'
+    source: 'OFFICIAL UPDATE 02 / LATEST CHANGE',
+    title: 'Latest terms in the sample files.',
+    description: 'An official update can replace an earlier tender rule. This example shows the newest wording while keeping the old wording available to compare.'
   },
   atc: {
-    source: 'BUYER-ADDED ATC / 24 PAGES',
+    source: 'EXTRA BUYER TERMS / 24 PAGES',
     title: 'Specific eligibility terms from the buyer.',
-    description: 'The buyer-added terms may contain experience, certification, OEM authorization or local service requirements. A later corrigendum can override part of this document.'
+    description: 'The buyer’s extra terms may add experience, certificates or product rules. A later official update may change some of these rules.'
   },
   main: {
     source: 'MAIN BID DOCUMENT / 42 PAGES',
     title: 'Baseline requirements for the opportunity.',
-    description: 'The main bid provides baseline thresholds, EMD and timelines. The proposed workflow would compare it with linked terms and later amendments.'
+    description: 'The main bid contains the starting requirements, deposit and deadlines. A full TenderLens review is planned to compare it with the buyer’s extra terms and later updates.'
   }
 };
 
@@ -162,6 +162,131 @@ if (menuToggle && primaryNav) {
 
 const year = document.getElementById('current-year');
 if (year) year.textContent = String(new Date().getFullYear());
+
+const themeToggle = document.getElementById('theme-toggle');
+const themeToggleLabel = document.getElementById('theme-toggle-label');
+const themeToggleIcon = themeToggle?.querySelector('.theme-toggle-icon');
+const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+
+function applyTheme(theme, save = false) {
+  const isDark = theme === 'dark';
+  document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+  if (themeToggle) {
+    themeToggle.setAttribute('aria-pressed', String(isDark));
+    themeToggle.setAttribute('aria-label', `Switch to ${isDark ? 'light' : 'dark'} theme`);
+    themeToggle.title = `Switch to ${isDark ? 'light' : 'dark'} theme`;
+  }
+  if (themeToggleLabel) themeToggleLabel.textContent = isDark ? 'Light mode' : 'Dark mode';
+  if (themeToggleIcon) themeToggleIcon.textContent = isDark ? '☼' : '☾';
+  if (themeColorMeta) themeColorMeta.content = isDark ? '#111b18' : '#f4f2e9';
+  if (save) {
+    try { window.localStorage.setItem('tenderlens-theme', isDark ? 'dark' : 'light'); } catch (error) { /* Theme still works for this page. */ }
+  }
+}
+
+applyTheme(document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
+if (themeToggle) themeToggle.addEventListener('click', () => {
+  applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark', true);
+});
+
+const liveSearchForm = document.getElementById('live-search-form');
+const liveSearchInput = document.getElementById('live-search-query');
+const liveSearchPortal = document.getElementById('live-search-portal');
+const liveSearchStatus = document.getElementById('live-search-status');
+const liveSearchResults = document.getElementById('live-search-results');
+const liveSearchButton = liveSearchForm?.querySelector('button[type="submit"]');
+const liveSearchButtonLabel = liveSearchForm?.querySelector('.live-search-button-label');
+const configuredApiBase = document.querySelector('meta[name="tenderlens-api"]')?.content.trim();
+const isLocalPreview = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+const apiBaseUrl = (configuredApiBase || (isLocalPreview ? 'http://127.0.0.1:8000' : '')).replace(/\/$/, '');
+
+function showLiveSearchStatus(message, state = '') {
+  if (!liveSearchStatus) return;
+  liveSearchStatus.textContent = message;
+  liveSearchStatus.dataset.state = state;
+}
+
+function makeLiveSearchResult(tender) {
+  const card = document.createElement('article');
+  card.className = 'live-result-card';
+
+  const source = document.createElement('p');
+  source.className = 'live-result-source';
+  source.textContent = [tender.source_portal || 'Tender portal', tender.published_date].filter(Boolean).join(' · ');
+
+  const title = document.createElement('h3');
+  title.textContent = tender.title || 'Tender notice';
+
+  const snippet = document.createElement('p');
+  snippet.textContent = tender.snippet || 'Open the official notice to review its details.';
+
+  card.append(source, title, snippet);
+  if (tender.url) {
+    try {
+      const linkUrl = new URL(tender.url);
+      if (linkUrl.protocol === 'https:' || linkUrl.protocol === 'http:') {
+        const link = document.createElement('a');
+        link.href = linkUrl.href;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.textContent = 'Open official notice';
+        card.append(link);
+      }
+    } catch (error) { /* Ignore malformed result links. */ }
+  }
+  return card;
+}
+
+if (liveSearchForm) {
+  liveSearchForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const keywords = liveSearchInput?.value.trim();
+    if (!keywords) {
+      liveSearchInput?.focus();
+      return;
+    }
+    if (!apiBaseUrl) {
+      showLiveSearchStatus('Live search is not connected on this website yet. Use the sample tenders or check the easy guide.', 'unavailable');
+      return;
+    }
+
+    if (liveSearchButton) liveSearchButton.disabled = true;
+    if (liveSearchButtonLabel) liveSearchButtonLabel.textContent = 'Searching…';
+    liveSearchResults?.replaceChildren();
+    showLiveSearchStatus('Connecting to the TenderLens service…', 'loading');
+
+    try {
+      const healthResponse = await fetch(`${apiBaseUrl}/healthz`, { headers: { Accept: 'application/json' } });
+      if (!healthResponse.ok) throw new Error('service-unavailable');
+      const health = await healthResponse.json();
+      if (!health.tinyfish_configured) {
+        showLiveSearchStatus('The service is running, but live search needs a TinyFish key. Follow the setup guide. Your search was not sent.', 'needs-key');
+        return;
+      }
+
+      showLiveSearchStatus('Searching supported public tender portals…', 'loading');
+      const searchResponse = await fetch(`${apiBaseUrl}/api/v1/tenders/search`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ keywords, portal: liveSearchPortal?.value || null, limit: 8 })
+      });
+      if (!searchResponse.ok) throw new Error('search-failed');
+      const tenders = await searchResponse.json();
+      if (!Array.isArray(tenders) || !tenders.length) {
+        showLiveSearchStatus('No notices came back for that search. Try broader words, or explore the sample tenders.', 'empty');
+        return;
+      }
+
+      tenders.slice(0, 8).forEach((tender) => liveSearchResults?.append(makeLiveSearchResult(tender)));
+      showLiveSearchStatus(`${Math.min(tenders.length, 8)} notice${tenders.length === 1 ? '' : 's'} found. Open each official notice and check its latest terms before acting.`, 'success');
+    } catch (error) {
+      showLiveSearchStatus('The live search service could not be reached. Start it using the easy guide. The sample explorer is still available.', 'unavailable');
+    } finally {
+      if (liveSearchButton) liveSearchButton.disabled = false;
+      if (liveSearchButtonLabel) liveSearchButtonLabel.textContent = 'Search live tenders';
+    }
+  });
+}
 
 const printButton = document.querySelector('.print-report');
 if (printButton) printButton.addEventListener('click', () => window.print());
@@ -306,7 +431,7 @@ const tenderExamples = {
     buyer: 'Sample buyer · Haryana · fictional example',
     value: '₹48 lakh · example value',
     window: '12 days · example timeline',
-    prompts: ['Check the latest amendment against the original turnover and exemption language.', 'Locate certification requirements in the buyer-added ATC.']
+    prompts: ['Compare the latest update with the original sales and exemption rules.', 'Find certificate requirements in the buyer’s extra terms.']
   },
   solar: {
     kicker: 'CPPP · RENEWABLE ENERGY WORKS',
@@ -314,7 +439,7 @@ const tenderExamples = {
     buyer: 'Sample municipal authority · Jaipur · fictional example',
     value: '₹1.8 crore · example value',
     window: '8 days · example timeline',
-    prompts: ['Compare similar-work definitions with the bidder’s project references.', 'Check local-content and EMD terms across the tender set.', 'Review whether later notices changed the delivery scope.']
+    prompts: ['Compare similar-work rules with the company’s project history.', 'Check local-content and deposit rules across the tender files.', 'See whether later notices changed the delivery work.']
   },
   security: {
     kicker: 'PSU · IT SERVICES',
@@ -322,7 +447,7 @@ const tenderExamples = {
     buyer: 'Sample public sector buyer · Delhi · fictional example',
     value: '₹26 lakh · example value',
     window: '19 days · example timeline',
-    prompts: ['Find mandatory OEM authorization and product certifications.', 'Review support coverage, deployment conditions and service levels.', 'Check whether the ATC adds terms beyond the main bid.']
+    prompts: ['Find required manufacturer letters and product certificates.', 'Review support, setup conditions and service levels.', 'Check what extra rules the buyer added to the main bid.']
   }
 };
 
@@ -384,34 +509,34 @@ if (dialogReportLink && tenderDialog) dialogReportLink.addEventListener('click',
 
 const precedenceContent = {
   latest: {
-    rank: 'RANK 01 / HIGHEST',
-    title: 'Latest corrigendum',
-    description: 'The most recent corrigendum can supersede earlier terms in the tender set. Its publication and clause references should remain attached to the changed requirement.',
-    cue: 'Compare changed thresholds with prior language and retain both sources in the audit trail.'
+    rank: 'FILE 1 OF 5 · NEWEST',
+    title: 'Latest official update',
+    description: 'The newest official notice may change a tender requirement. Check its date and compare the new wording with earlier files.',
+    cue: 'Keep both the new wording and the earlier source in the review notes.'
   },
   prior: {
-    rank: 'RANK 02 / PRIOR AMENDMENTS',
-    title: 'Earlier corrigenda',
-    description: 'Earlier amendments remain part of the history. A later corrigendum may revise them, so the sequence and publication dates matter.',
-    cue: 'Keep each version visible and check whether a newer notice replaced the clause.'
+    rank: 'FILE 2 OF 5 · OLDER UPDATE',
+    title: 'Earlier official updates',
+    description: 'Older notices help explain how a rule changed. A newer notice may replace part of an earlier one.',
+    cue: 'Compare dates and wording so the change is clear.'
   },
   uploaded: {
-    rank: 'RANK 03 / BUYER DOCUMENT',
-    title: 'Uploaded ATC or RFP',
-    description: 'A linked buyer document may add specific technical, experience, certification or OEM requirements beyond the standard bid template.',
-    cue: 'Follow the link, identify the exact page and clause, and check for later amendments or governing terms.'
+    rank: 'FILE 3 OF 5 · BUYER FILE',
+    title: 'Buyer’s extra file',
+    description: 'The buyer may link another file with extra experience, certificate, product or service rules.',
+    cue: 'Open the file and note the page and section for each requirement.'
   },
   text: {
-    rank: 'RANK 04 / EMBEDDED ATC',
-    title: 'Text-based buyer ATC',
-    description: 'Buyer-added clauses inside the main bid can change baseline parameters. The project model checks them alongside uploaded terms and corrigenda.',
-    cue: 'Compare overlapping clauses and surface same-rank or legal conflicts for human review.'
+    rank: 'FILE 4 OF 5 · EXTRA TERMS',
+    title: 'Extra terms inside the bid',
+    description: 'The main file can include extra buyer rules. These can add to or change the basic tender requirements.',
+    cue: 'If two rules disagree, ask a reviewer to check the original documents.'
   },
   main: {
-    rank: 'RANK 05 / BASELINE',
+    rank: 'FILE 5 OF 5 · MAIN FILE',
     title: 'Main tender document',
-    description: 'The main bid provides the baseline thresholds, EMD, timelines and standard terms when higher-priority documents do not amend them.',
-    cue: 'Keep baseline language available so reviewers can see what later documents changed.'
+    description: 'The main tender sets the starting rules, deadlines, deposit and standard requirements.',
+    cue: 'Keep it nearby so you can see what later files changed.'
   }
 };
 

@@ -4,39 +4,43 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#f4f2e9">
-    <meta name="description" content="TenderLens preview privacy notice.">
+    <meta name="description" content="Plain-language TenderLens privacy notice for the website and optional live search.">
     <title>Privacy — TenderLens</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="vendor/lenis.css">
+    <script src="theme.js"></script>
     <link rel="stylesheet" href="styles.css">
+    <script src="vendor/lenis.min.js" defer></script>
+    <script src="app.js" defer></script>
   </head>
   <body class="legal-page">
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="site-header">
       <div class="container nav-shell">
-        <a class="brand" href="index.html" aria-label="TenderLens home">
-          <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M7 12.5V8h4.5M28.5 8H33v4.5M33 27.5V32h-4.5M11.5 32H7v-4.5" stroke="currentColor" stroke-width="1.7"/><circle cx="20" cy="18.5" r="7.2" stroke="currentColor" stroke-width="1.7"/><path d="m25.2 23.7 6.1 6.1" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/><circle cx="20" cy="18.5" r="2" fill="currentColor"/></svg></span>
-          <span class="brand-name">Tender<span>Lens</span></span><span class="brand-descriptor">PROCUREMENT INTELLIGENCE</span>
-        </a>
-        <nav class="primary-nav" aria-label="Main navigation"><a href="index.html#approach">The approach</a><a href="index.html#evidence">Evidence</a><a class="nav-cta" href="index.html#demo">Explore the sample <span aria-hidden="true">↗</span></a></nav>
+        <a class="brand" href="index.html" aria-label="TenderLens home"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M7 12.5V8h4.5M28.5 8H33v4.5M33 27.5V32h-4.5M11.5 32H7v-4.5" stroke="currentColor" stroke-width="1.7"/><circle cx="20" cy="18.5" r="7.2" stroke="currentColor" stroke-width="1.7"/><path d="m25.2 23.7 6.1 6.1" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/><circle cx="20" cy="18.5" r="2" fill="currentColor"/></svg></span><span class="brand-name">Tender<span>Lens</span></span><span class="brand-descriptor">PROCUREMENT, MADE CLEAR</span></a>
+        <div class="header-actions"><button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme" aria-pressed="false" title="Switch to dark theme"><span class="theme-toggle-icon" aria-hidden="true">☾</span><span id="theme-toggle-label">Dark mode</span></button><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav"><span class="menu-toggle-label">Menu</span><span class="menu-lines" aria-hidden="true"><i></i><i></i></span></button></div>
+        <nav class="primary-nav" id="primary-nav" aria-label="Main navigation"><a href="index.html">Home</a><a href="guide.html">Easy guide</a><a href="privacy.html" aria-current="page">Privacy</a><a href="terms.html">Terms</a><a class="nav-cta" href="index.html#opportunities">Explore tenders <span aria-hidden="true">↗</span></a></nav>
       </div>
     </header>
     <main class="legal-main" id="main">
       <div class="container legal-copy">
-        <p class="eyebrow"><span class="eyebrow-mark"></span> TENDERLENS · PREVIEW NOTICE</p>
+        <p class="eyebrow"><span class="eyebrow-mark"></span> A PLAIN-LANGUAGE NOTICE · UPDATED 24 OCTOBER 2026</p>
         <h1>Privacy</h1>
-        <p class="legal-intro">This TenderLens website is a presentation prototype. It does not accept tender uploads, create bidder accounts, or run a live tender search.</p>
-        <h2>Information on this website</h2>
-        <p>The sample qualification report and opportunity explorer use illustrative data embedded in the page. Search terms, filters, saved examples and checklist selections remain in page memory; this prototype does not store or send them to a server. It does not use analytics, advertising pixels, or tracking cookies.</p>
-        <h2>External services</h2>
-        <p>The page may request display fonts from Google Fonts. Your browser may share standard connection information with that service when the fonts load. The Lenis smooth-scroll library is included with this prototype and runs locally. The website itself does not send profile or tender information to external services.</p>
-        <h2>Uploads and future product use</h2>
-        <p>Do not enter confidential business information into this prototype. Any future TenderLens service that processes company profiles or tender files will need a separate privacy notice describing its collection, storage, retention, and deletion practices.</p>
+        <p class="legal-intro">TenderLens is a hackathon project. This notice explains what happens when you use its sample website and optional live search.</p>
+        <h2>Using the sample</h2>
+        <p>Searching sample tenders, changing filters, saving an example, using the checklist and opening a sample report all happen in your browser. These actions do not send your profile or selections to a server. They reset when you reload the page. Your light or dark theme choice is saved in this browser so it stays the same on your next visit.</p>
+        <h2>Choosing live search</h2>
+        <p>Live search is optional. After you press “Search live tenders,” the page checks whether the TenderLens service is available. If it is ready, the search words and the portal you chose are sent to the configured service, which asks TinyFish for public tender notices. The website does not send your sample checklist or bidder profile with this search.</p>
+        <p>The search provider and the server that runs TenderLens may process ordinary connection details needed to answer the request. The website does not save searches to a user account or bidder profile. Results may be incomplete or out of date; open the official notice before relying on it.</p>
+        <h2>Files and company information</h2>
+        <p>This website does not upload tender files or company records. The backend also contains early developer routes for fetching a tender and making a sample scorecard, but this page does not call those routes. Do not send confidential files or business information to an experimental server.</p>
+        <h2>Other services</h2>
+        <p>The website may load fonts from Google Fonts. Lenis, the smooth-scrolling library, is included with the project and runs locally. The site does not use advertising pixels or analytics tools.</p>
         <h2>Questions</h2>
-        <p>This preview is presented by Team Traxo for HackIIITD. A contact address has not been provided for this prototype.</p>
+        <p>This preview is presented by Team Traxo for HackIIITD. A support email address has not been provided.</p>
         <a class="button button-dark legal-back" href="index.html">Return to TenderLens <span aria-hidden="true">↗</span></a>
       </div>
     </main>
-    <footer class="site-footer"><div class="container footer-bottom"><span>© <span id="year">2026</span> TENDERLENS · TEAM TRAXO</span><span><a href="terms.html">TERMS</a> · SAMPLE DATA ONLY</span></div></footer>
-    <script>document.getElementById('year').textContent = String(new Date().getFullYear());</script>
+    <footer class="site-footer"><div class="container footer-main"><a class="brand footer-brand" href="index.html"><span class="brand-mark" aria-hidden="true">TL</span><span class="brand-name">Tender<span>Lens</span></span></a><p>Clearer tender reviews, with the source close by.<br>Built by Team Traxo for HackIIITD.</p><div class="footer-links"><a href="guide.html">Easy guide</a><a href="terms.html">Terms &amp; conditions</a><a href="index.html">Home</a></div></div><div class="container footer-bottom"><span>© <span id="current-year">2026</span> TENDERLENS · TEAM TRAXO</span><span>SAMPLE DATA ONLY</span></div></footer>
   </body>
 </html>

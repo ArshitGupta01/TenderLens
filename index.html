@@ -4,13 +4,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#f4f2e9">
-    <meta name="description" content="Explore the TenderLens hackathon prototype: a proposed, evidence-backed way to review Indian public tenders, linked ATCs and corrigenda.">
+    <meta name="description" content="TenderLens helps teams read tender requirements, official updates and bidder evidence in one clear review.">
+    <meta name="tenderlens-api" content="">
     <title>TenderLens — Know where you stand before you bid</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="vendor/lenis.css">
+    <script src="theme.js"></script>
     <link rel="stylesheet" href="styles.css">
     <script src="vendor/lenis.min.js" defer></script>
     <script src="app.js" defer></script>
@@ -30,16 +32,20 @@
             </svg>
           </span>
           <span class="brand-name">Tender<span>Lens</span></span>
-          <span class="brand-descriptor">PROCUREMENT INTELLIGENCE</span>
+          <span class="brand-descriptor">TENDER REVIEW, MADE CLEAR</span>
         </a>
-        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">
-          <span class="menu-toggle-label">Menu</span>
-          <span class="menu-lines" aria-hidden="true"><i></i><i></i></span>
-        </button>
+        <div class="header-actions">
+          <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme" aria-pressed="false" title="Switch to dark theme"><span class="theme-toggle-icon" aria-hidden="true">☾</span><span id="theme-toggle-label">Dark mode</span></button>
+          <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">
+            <span class="menu-toggle-label">Menu</span>
+            <span class="menu-lines" aria-hidden="true"><i></i><i></i></span>
+          </button>
+        </div>
         <nav class="primary-nav" id="primary-nav" aria-label="Main navigation">
           <a href="#opportunities">Sample tenders</a>
           <a href="#precedence">Document order</a>
           <a href="#profile">Bidder checklist</a>
+          <a href="guide.html">Easy guide</a>
           <a class="nav-cta" href="#demo">Explore the sample <span aria-hidden="true">↗</span></a>
         </nav>
       </div>
@@ -51,7 +57,7 @@
           <div class="hero-copy">
             <p class="eyebrow"><span class="eyebrow-mark"></span> A clearer view of public procurement</p>
             <h1>Know where you stand <em>before</em> you bid.</h1>
-            <p class="hero-lede">TenderLens is a hackathon prototype for reviewing a bidder against the full tender set: the main bid, linked ATCs and later corrigenda. The proposed workflow keeps each finding tied to its source.</p>
+            <p class="hero-lede">See how TenderLens can bring a tender, the buyer’s extra terms and official updates into one clear review. Each sample finding points back to its source.</p>
             <div class="hero-actions">
               <a class="button button-dark" href="#demo">Explore the sample report <span aria-hidden="true">↗</span></a>
               <a class="text-link" href="#opportunities">Explore sample tenders <span aria-hidden="true">↓</span></a>
@@ -60,16 +66,16 @@
               <span class="proof-seal" aria-hidden="true">
                 <svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="12.4" stroke="currentColor" stroke-width="1.3"/><path d="M10 16.4 14 20l8-8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </span>
-              <p><strong>Presentation prototype.</strong><br>This sample is not connected to live tender search, uploads or automated audits.</p>
+              <p><strong>Sample report.</strong><br>Sample results are fictional. Live tender search is optional and needs a configured service.</p>
             </div>
             <div class="hero-index"><span>01</span><span>DISCOVER · VERIFY · DECIDE</span></div>
           </div>
 
           <div class="hero-demo" id="demo">
             <div class="demo-caption"><span>PRODUCT PREVIEW</span><span class="sample-label"><i></i> ILLUSTRATIVE SAMPLE</span></div>
-            <article class="report-window" aria-label="Interactive sample tender qualification report">
+            <article class="report-window" aria-label="Interactive sample tender report">
               <div class="report-topbar">
-                <div class="report-brand"><span class="mini-mark">TL</span><span>TenderLens <small>/ AUDIT</small></span></div>
+                <div class="report-brand"><span class="mini-mark">TL</span><span>TenderLens <small>/ SAMPLE REPORT</small></span></div>
                 <span class="report-id">SAMPLE 01</span>
               </div>
               <div class="report-heading">
@@ -84,7 +90,7 @@
               </div>
               <div class="decision-band">
                 <div class="decision-symbol" aria-hidden="true"><span>!</span></div>
-                <div class="decision-copy"><span class="micro-label">PRELIMINARY OUTCOME</span><strong>Conditional bid</strong><p>Resolve 2 items before making a decision.</p></div>
+                <div class="decision-copy"><span class="micro-label">SAMPLE SUMMARY</span><strong>Needs a closer look</strong><p>Check 2 items before you decide.</p></div>
                 <span class="decision-count">02<br><small>REVIEW</small></span>
               </div>
               <div class="report-tabs" role="tablist" aria-label="Sample report sections">
@@ -93,39 +99,39 @@
                 <button class="report-tab" id="tab-documents" type="button" role="tab" aria-selected="false" aria-controls="panel-documents" data-panel="panel-documents" tabindex="-1">Documents <span>3</span></button>
               </div>
               <div class="report-panel is-active" id="panel-overview" role="tabpanel" aria-labelledby="tab-overview">
-                <div class="panel-intro"><span>QUALIFICATION CHECKS</span><span>3 CHECKS</span></div>
+                <div class="panel-intro"><span>REQUIREMENTS TO CHECK</span><span>3 ITEMS</span></div>
                 <div class="check-list">
                   <button class="check-row" type="button" data-evidence="turnover" aria-expanded="false">
                     <span class="check-icon check-met" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="m5 10.5 3.2 3.2L15 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    <span class="check-copy"><strong>Average annual turnover</strong><small>Bidder profile · last 3 financial years</small></span>
-                    <span class="status-text status-met">MET</span><span class="row-chevron" aria-hidden="true">+</span>
+                    <span class="check-copy"><strong>Average yearly sales</strong><small>Sample company details · last 3 years</small></span>
+                    <span class="status-text status-met">MEETS</span><span class="row-chevron" aria-hidden="true">+</span>
                   </button>
                   <button class="check-row" type="button" data-evidence="certification" aria-expanded="false">
                     <span class="check-icon check-missing" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M10 4.3v6.1m0 4.2h.01" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
-                    <span class="check-copy"><strong>ISO 9001 certification</strong><small>Buyer-added ATC · page 18 · clause 7.2</small></span>
-                    <span class="status-text status-missing">NOT FOUND</span><span class="row-chevron" aria-hidden="true">+</span>
+                    <span class="check-copy"><strong>ISO 9001 certificate</strong><small>Extra buyer terms · page 18</small></span>
+                    <span class="status-text status-missing">MISSING</span><span class="row-chevron" aria-hidden="true">+</span>
                   </button>
                   <button class="check-row" type="button" data-evidence="exemption" aria-expanded="false">
                     <span class="check-icon check-review" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M10 4.3v6.1m0 4.2h.01" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
-                    <span class="check-copy"><strong>MSME turnover exemption</strong><small>Corrigendum 02 · page 3 · changed clause</small></span>
-                    <span class="status-text status-review">REVIEW</span><span class="row-chevron" aria-hidden="true">+</span>
+                    <span class="check-copy"><strong>Small-business exemption</strong><small>Official update 02 · page 3 · changed rule</small></span>
+                    <span class="status-text status-review">CHECK</span><span class="row-chevron" aria-hidden="true">+</span>
                   </button>
                 </div>
               </div>
               <div class="report-panel" id="panel-requirements" role="tabpanel" aria-labelledby="tab-requirements" hidden>
-                <div class="panel-intro"><span>REQUIREMENT REGISTER</span><span>ORDERED BY DECISION IMPACT</span></div>
+                <div class="panel-intro"><span>REQUIREMENTS</span><span>MOST IMPORTANT FIRST</span></div>
                 <div class="requirement-list">
-                  <div class="requirement-row"><span class="requirement-number">01</span><div><strong>Financial capacity</strong><small>3-year average turnover · deterministic comparison</small></div><span class="status-text status-met">MET</span></div>
-                  <div class="requirement-row"><span class="requirement-number">02</span><div><strong>Quality certification</strong><small>ISO 9001 · required evidence not in sample profile</small></div><span class="status-text status-missing">GAP</span></div>
-                  <div class="requirement-row"><span class="requirement-number">03</span><div><strong>MSME exemption</strong><small>Corrigendum language changes the earlier condition</small></div><span class="status-text status-review">REVIEW</span></div>
+                  <div class="requirement-row"><span class="requirement-number">01</span><div><strong>Annual sales</strong><small>Three-year average · sample calculation</small></div><span class="status-text status-met">MEETS</span></div>
+                  <div class="requirement-row"><span class="requirement-number">02</span><div><strong>Quality certificate</strong><small>ISO 9001 · not shown in the sample profile</small></div><span class="status-text status-missing">MISSING</span></div>
+                  <div class="requirement-row"><span class="requirement-number">03</span><div><strong>Small-business exemption</strong><small>Official update changes an earlier rule</small></div><span class="status-text status-review">CHECK</span></div>
                 </div>
                 <p class="panel-footnote">Numerical gates are checked against the profile. Conflicts and missing evidence stay visible.</p>
               </div>
               <div class="report-panel" id="panel-documents" role="tabpanel" aria-labelledby="tab-documents" hidden>
-                <div class="panel-intro"><span>DOCUMENT SET</span><span>VERSION-AWARE REVIEW</span></div>
+                <div class="panel-intro"><span>TENDER FILES</span><span>UPDATES INCLUDED</span></div>
                 <div class="document-list">
-                  <button class="document-row" type="button" data-evidence="corrigendum"><span class="doc-type doc-latest">C02</span><span><strong>Corrigendum 02</strong><small>Latest amendment · 3 pages</small></span><span class="doc-state">CURRENT</span></button>
-                  <button class="document-row" type="button" data-evidence="atc"><span class="doc-type doc-atc">ATC</span><span><strong>Buyer-added ATC</strong><small>Qualification terms · 24 pages</small></span><span class="doc-state doc-state-muted">PARTLY SUPERSEDED</span></button>
+                  <button class="document-row" type="button" data-evidence="corrigendum"><span class="doc-type doc-latest">UPDATE</span><span><strong>Official update 02</strong><small>Latest change · 3 pages</small></span><span class="doc-state">LATEST</span></button>
+                  <button class="document-row" type="button" data-evidence="atc"><span class="doc-type doc-atc">TERMS</span><span><strong>Extra buyer terms</strong><small>Added rules · 24 pages</small></span><span class="doc-state doc-state-muted">SOME RULES CHANGED</span></button>
                   <button class="document-row" type="button" data-evidence="main"><span class="doc-type doc-main">BID</span><span><strong>Main bid document</strong><small>Baseline terms · 42 pages</small></span><span class="doc-state doc-state-muted">BASELINE</span></button>
                 </div>
                 <p class="panel-footnote">A later amendment can change a requirement without erasing the earlier source from the audit trail.</p>
@@ -151,9 +157,22 @@
               <p class="eyebrow">01 / SAMPLE OPPORTUNITY DESK</p>
               <h2>Start with an opportunity.<br><em>See what needs a closer look.</em></h2>
             </div>
-            <p>Explore three fictional tender snapshots. Search and filters work locally in this page; no portal is queried.</p>
+            <p>Try the fictional examples below, or search current notices if the TenderLens service is configured.</p>
           </div>
-          <div class="sample-notice" role="note"><span class="notice-dot" aria-hidden="true"></span><span><strong>Illustrative examples only</strong> — titles, buyers, values and timelines are fictional.</span><span class="sample-saved" aria-live="polite">SAVED <strong id="saved-count">0</strong></span></div>
+          <div class="sample-notice" role="note"><span class="notice-dot" aria-hidden="true"></span><span><strong>Sample data</strong> — these tenders, buyers and dates are made up. ATC means “extra buyer terms.”</span><span class="sample-saved" aria-live="polite">SAVED THIS VISIT <strong id="saved-count">0</strong></span></div>
+          <details class="live-search-card" data-reveal>
+            <summary class="live-search-summary"><span class="live-search-symbol" aria-hidden="true">⌕</span><span class="live-search-copy"><strong>Search current tender notices</strong><small>Optional · needs the TenderLens service and a search key</small></span><span class="live-search-open">Open search <span aria-hidden="true">＋</span></span></summary>
+            <div class="live-search-content">
+              <p>When you press search, only your search words and chosen portal are sent to the configured search provider. Your checklist and sample profile are never sent.</p>
+              <form class="live-search-form" id="live-search-form">
+                <label class="live-query-field" for="live-search-query"><span>What are you looking for?</span><input id="live-search-query" name="keywords" type="search" placeholder="Example: solar rooftop work in Haryana" required></label>
+                <label class="live-portal-field" for="live-search-portal"><span>Where should we look?</span><select id="live-search-portal" name="portal"><option value="">All supported portals</option><option value="gem.gov.in">GeM</option><option value="eprocure.gov.in">CPPP / eProcure</option><option value="tenders.bhel.com">BHEL</option><option value="icmr.nic.in">ICMR</option></select></label>
+                <button class="button button-dark live-search-submit" type="submit"><span class="live-search-button-label">Search live tenders</span><span aria-hidden="true">↗</span></button>
+              </form>
+              <p class="live-search-status" id="live-search-status" role="status" aria-live="polite">The sample explorer works without a service. See the <a href="guide.html#live-search">easy guide</a> to turn on live search.</p>
+              <div class="live-search-results" id="live-search-results" aria-live="polite"></div>
+            </div>
+          </details>
           <div class="explorer-toolbar" data-reveal>
             <label class="search-field" for="tender-search"><span class="search-icon" aria-hidden="true">⌕</span><span class="sr-only">Search sample tenders</span><input id="tender-search" type="search" placeholder="Search title, category or location" autocomplete="off"><kbd>/</kbd></label>
             <div class="filter-group" role="group" aria-label="Filter sample tenders by category">
@@ -205,25 +224,25 @@
           <div class="intro-main">
             <p class="eyebrow">The hard part comes after discovery</p>
             <h2>The clause that changes everything may be in the <em>third file.</em></h2>
-            <p class="intro-body">A main bid can point to an uploaded ATC. A later corrigendum can revise that ATC again. The planned TenderLens workflow brings the document set together, tracks what changed, and compares it with a bidder profile.</p>
+            <p class="intro-body">A tender can spread its rules across several files. The buyer may add extra terms, and an official update may change them later. TenderLens is designed to bring those files together and show what changed.</p>
             <div class="document-journey" aria-label="Tender document sequence">
               <div class="journey-line" aria-hidden="true"><span></span><span></span><span></span></div>
               <article class="journey-step">
                 <span class="journey-index">01</span>
                 <div class="journey-icon journey-icon-bid" aria-hidden="true"><svg viewBox="0 0 30 30"><path d="M7 4.5h10l6 6v15H7zM17 4.5v6h6M11 16h8M11 20h8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-                <div><h3>Main bid</h3><p>Baseline thresholds, EMD, timelines and standard terms.</p></div>
+                <div><h3>Main bid</h3><p>Starting rules, bid deposit, deadlines and standard terms.</p></div>
               </article>
               <article class="journey-step">
                 <span class="journey-index">02</span>
                 <div class="journey-icon journey-icon-atc" aria-hidden="true"><svg viewBox="0 0 30 30"><path d="M6 8.5h18v16H6zM10 5.5h14v16M10 13h10M10 17h8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-                <div><h3>Buyer-added ATC</h3><p>Specific experience, certificates and OEM conditions.</p></div>
+                <div><h3>Extra buyer terms</h3><p>Added experience, certificates or product rules.</p></div>
               </article>
               <article class="journey-step">
                 <span class="journey-index">03</span>
                 <div class="journey-icon journey-icon-corr" aria-hidden="true"><svg viewBox="0 0 30 30"><path d="M7 5h16v19H7zM10 10h10M10 14h10M10 18h5m5 3 2 2 4-5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-                <div><h3>Corrigenda</h3><p>Amendments, overrides and the terms that now apply.</p></div>
+                <div><h3>Official updates</h3><p>Changes that may replace earlier wording.</p></div>
               </article>
-              <div class="journey-result"><span class="result-symbol" aria-hidden="true">↳</span><div><strong>One evidence-backed qualification view</strong><small>With the source kept beside every finding.</small></div></div>
+              <div class="journey-result"><span class="result-symbol" aria-hidden="true">↳</span><div><strong>One report with clear source links</strong><small>See where each sample finding came from.</small></div></div>
             </div>
           </div>
         </div>
@@ -232,24 +251,24 @@
       <section class="precedence-section section-rule" id="precedence">
         <div class="container precedence-grid">
           <div class="precedence-intro" data-reveal>
-            <p class="eyebrow">03 / DOCUMENT PRECEDENCE</p>
+            <p class="eyebrow">03 / DOCUMENT ORDER</p>
             <h2>When terms change, <em>order matters.</em></h2>
-            <p>The project plan models each tender as a versioned document set. Choose a layer to see how it relates to the terms below it.</p>
-            <span class="precedence-caveat">PLANNED REVIEW MODEL · NOT A LEGAL RULING</span>
+            <p>Official updates can change earlier rules. Choose a file to see which wording may apply. The buyer’s original documents remain the final reference.</p>
+            <span class="precedence-caveat">SAMPLE EXPLANATION · CHECK THE OFFICIAL FILES</span>
           </div>
           <div class="precedence-explorer" data-reveal>
             <div class="precedence-stack" role="group" aria-label="Choose a tender document layer">
-              <button class="precedence-layer is-active" type="button" data-layer="latest" aria-pressed="true"><span class="layer-rank">01</span><span class="layer-name"><strong>Latest corrigendum</strong><small>Most recent amendment</small></span><span class="layer-arrow" aria-hidden="true">↗</span></button>
-              <button class="precedence-layer" type="button" data-layer="prior" aria-pressed="false"><span class="layer-rank">02</span><span class="layer-name"><strong>Earlier corrigenda</strong><small>Prior amendments</small></span><span class="layer-arrow" aria-hidden="true">↗</span></button>
-              <button class="precedence-layer" type="button" data-layer="uploaded" aria-pressed="false"><span class="layer-rank">03</span><span class="layer-name"><strong>Uploaded ATC / RFP</strong><small>Buyer-linked document</small></span><span class="layer-arrow" aria-hidden="true">↗</span></button>
-              <button class="precedence-layer" type="button" data-layer="text" aria-pressed="false"><span class="layer-rank">04</span><span class="layer-name"><strong>Text-based buyer ATC</strong><small>Clauses in the bid PDF</small></span><span class="layer-arrow" aria-hidden="true">↗</span></button>
+              <button class="precedence-layer is-active" type="button" data-layer="latest" aria-pressed="true"><span class="layer-rank">01</span><span class="layer-name"><strong>Latest official update</strong><small>Most recent change</small></span><span class="layer-arrow" aria-hidden="true">↗</span></button>
+              <button class="precedence-layer" type="button" data-layer="prior" aria-pressed="false"><span class="layer-rank">02</span><span class="layer-name"><strong>Earlier updates</strong><small>Previous changes</small></span><span class="layer-arrow" aria-hidden="true">↗</span></button>
+              <button class="precedence-layer" type="button" data-layer="uploaded" aria-pressed="false"><span class="layer-rank">03</span><span class="layer-name"><strong>Buyer’s extra file</strong><small>Linked terms or request</small></span><span class="layer-arrow" aria-hidden="true">↗</span></button>
+              <button class="precedence-layer" type="button" data-layer="text" aria-pressed="false"><span class="layer-rank">04</span><span class="layer-name"><strong>Extra terms in the bid</strong><small>Rules inside the main file</small></span><span class="layer-arrow" aria-hidden="true">↗</span></button>
               <button class="precedence-layer" type="button" data-layer="main" aria-pressed="false"><span class="layer-rank">05</span><span class="layer-name"><strong>Main tender</strong><small>Baseline terms</small></span><span class="layer-arrow" aria-hidden="true">↗</span></button>
             </div>
             <article class="precedence-detail" aria-live="polite" aria-atomic="true">
-              <div class="precedence-detail-top"><span id="precedence-rank">RANK 01 / HIGHEST</span><span class="precedence-mark" aria-hidden="true">↗</span></div>
-              <h3 id="precedence-title">Latest corrigendum</h3>
-              <p id="precedence-description">The most recent corrigendum can supersede earlier terms in the tender set. Its publication and clause references should remain attached to the changed requirement.</p>
-              <div class="precedence-rule"><span>REVIEW CUE</span><strong id="precedence-cue">Compare every changed threshold with prior language and retain both sources in the audit trail.</strong></div>
+              <div class="precedence-detail-top"><span id="precedence-rank">FILE 1 OF 5 · NEWEST</span><span class="precedence-mark" aria-hidden="true">↗</span></div>
+              <h3 id="precedence-title">Latest official update</h3>
+              <p id="precedence-description">The newest official notice may change a tender requirement. Check its date and compare the new wording with earlier files.</p>
+              <div class="precedence-rule"><span>WHAT TO DO</span><strong id="precedence-cue">Keep both the new wording and the earlier source in the review notes.</strong></div>
             </article>
           </div>
         </div>
@@ -258,9 +277,9 @@
       <section class="method-section section-rule" id="evidence">
         <div class="container method-grid">
           <div class="method-heading">
-            <p class="eyebrow">04 / THE PROPOSED WORKFLOW</p>
+            <p class="eyebrow">04 / HOW A FULL REVIEW COULD WORK</p>
             <h2>From scattered files to a decision you can <em>inspect.</em></h2>
-            <p>The project plan separates rule-based checks from clause interpretation and routes conflicts or uncertainty to a person for review.</p>
+            <p>Some checks compare numbers. Other rules need a person to read them. If the wording is unclear, a reviewer should decide.</p>
             <a class="text-link method-link" href="#demo">Open the sample report <span aria-hidden="true">↗</span></a>
           </div>
           <div class="method-list">
@@ -273,13 +292,13 @@
             <article class="method-item">
               <span class="method-count">02</span>
               <div class="method-glyph method-glyph-orange" aria-hidden="true"><svg viewBox="0 0 40 40"><circle cx="17" cy="17" r="8.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="m23.5 23.5 8 8M8 32h7m5 0h12M10 7l-3 4m21-4 4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-              <div class="method-content"><h3>Gather the complete tender</h3><p>The plan is to find the main bid, follow accessible links to ATCs, and include later corrigenda, with a manual review path when a portal blocks access.</p><span class="method-tag">DISCOVERY · LINKED FILES · AMENDMENTS</span></div>
+              <div class="method-content"><h3>Gather the complete tender</h3><p>Collect the main notice, extra buyer terms and official updates. If a file cannot be reached, ask a person to review it.</p><span class="method-tag">NOTICE · EXTRA TERMS · UPDATES</span></div>
               <span class="method-arrow" aria-hidden="true">↘</span>
             </article>
             <article class="method-item">
               <span class="method-count">03</span>
               <div class="method-glyph method-glyph-ink" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M8 7.5h24v25H8zM13 14h14M13 20h8m-8 6h5m7-1 2.4 2.4L33 23" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-              <div class="method-content"><h3>Verify, then show the evidence</h3><p>The planned engine checks explicit values with deterministic rules, uses clause analysis for text, and keeps conflicts visible for human review.</p><span class="method-tag">RULES · CLAUSE ANALYSIS · REVIEW</span></div>
+              <div class="method-content"><h3>Check the numbers and show the source</h3><p>The planned system uses fixed calculations for clear numbers. When wording is unclear or rules conflict, it asks a person to check the original files.</p><span class="method-tag">NUMBER CHECKS · SOURCE LINKS · HUMAN REVIEW</span></div>
               <span class="method-arrow" aria-hidden="true">↘</span>
             </article>
           </div>
@@ -291,7 +310,7 @@
           <div class="profile-copy" data-reveal>
             <p class="eyebrow">05 / BIDDER READINESS</p>
             <h2>Put your evidence in <em>one place.</em></h2>
-            <p>Try a local checklist for the kinds of information a future bidder profile may organize. It does not calculate eligibility, and your selections are not sent or saved.</p>
+            <p>Use this checklist to see what documents a bidder profile might hold. It is only a demo; it does not decide whether you qualify.</p>
             <div class="profile-privacy"><span aria-hidden="true">◎</span><span><strong>Private by design in this demo</strong><small>Checkbox state stays in this page and resets when you reload.</small></span></div>
           </div>
           <div class="readiness-card" data-reveal>
@@ -326,7 +345,7 @@
             </article>
             <article class="principle">
               <span class="principle-index">B</span>
-              <div><h3>Newer terms are considered in context</h3><p>Corrigenda are checked against the earlier bid and ATC, with superseded language preserved in the trail.</p></div>
+              <div><h3>Changes stay visible</h3><p>Official updates are compared with earlier wording, so a reviewer can see what changed.</p></div>
               <span class="principle-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13m-5-5 5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
             </article>
             <article class="principle">
@@ -374,12 +393,23 @@
         </div>
       </section>
 
+      <section class="faq-section section-rule" id="faq" aria-labelledby="faq-title">
+        <div class="container faq-layout">
+          <div class="faq-heading"><p class="eyebrow"><span class="eyebrow-mark"></span> 08 / QUICK ANSWERS</p><h2 id="faq-title">A few things to know.</h2><p>New to TenderLens? These answers explain what the sample does today.</p></div>
+          <div class="faq-list">
+            <details><summary>Are the tenders and results real?</summary><p>No. Tender names, buyers, dates, amounts and report findings on this page are made-up examples.</p></details>
+            <details><summary>Can I check if my company qualifies?</summary><p>Not yet. The checklist is only a local demo. This website does not accept company files or run a real eligibility review.</p></details>
+            <details><summary>What happens if I use live search?</summary><p>Live search works only when the optional service is configured. When you submit, it sends your search words and selected portal to that service. Open official notices to confirm every detail.</p></details>
+            <details><summary>Where can I learn how to use the page?</summary><p>Open the <a href="guide.html">easy guide</a> for a short walkthrough, glossary, search setup and privacy details.</p></details>
+          </div>
+        </div>
+      </section>
       <section class="closing-section">
         <div class="container closing-inner">
           <div class="closing-stamp" aria-hidden="true"><span>TL</span><i></i></div>
           <p class="eyebrow">TENDERLENS · TEAM TRAXO</p>
           <h2>Read the full tender.<br><em>Then decide.</em></h2>
-          <p>See how the evidence trail turns a fragmented document set into a more informed Bid / No-Bid conversation.</p>
+            <p>See how a clear source trail can help a team decide whether to prepare a bid.</p>
           <a class="button button-light" href="#demo">Explore the sample report <span aria-hidden="true">↗</span></a>
           <span class="closing-note">DECISION SUPPORT FOR PUBLIC PROCUREMENT</span>
         </div>
@@ -392,8 +422,8 @@
           <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M7 12.5V8h4.5M28.5 8H33v4.5M33 27.5V32h-4.5M11.5 32H7v-4.5" stroke="currentColor" stroke-width="1.7"/><circle cx="20" cy="18.5" r="7.2" stroke="currentColor" stroke-width="1.7"/><path d="m25.2 23.7 6.1 6.1" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/><circle cx="20" cy="18.5" r="2" fill="currentColor"/></svg></span>
           <span class="brand-name">Tender<span>Lens</span></span>
         </a>
-        <p>Evidence-backed tender qualification.<br>Built by Team Traxo for HackIIITD.</p>
-        <div class="footer-links"><a href="https://github.com/ArshitGupta01/TenderLens/blob/main/FINAL_IMPLEMENTATION_PLAN.md" target="_blank" rel="noopener">Project plan ↗</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="#top">Back to top ↑</a></div>
+        <p>Tender reviews with source links.<br>Built by Team Traxo for HackIIITD.</p>
+        <div class="footer-links"><a href="guide.html">Easy guide</a><a href="#faq">Quick answers</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms &amp; conditions</a><a href="https://github.com/ArshitGupta01/TenderLens/blob/main/FINAL_IMPLEMENTATION_PLAN.md" target="_blank" rel="noopener">Project plan ↗</a><a href="#top">Back to top ↑</a></div>
       </div>
       <div class="container footer-bottom"><span>© <span id="current-year">2026</span> TENDERLENS · TEAM TRAXO</span><span>THIS PREVIEW USES SAMPLE DATA ONLY</span></div>
     </footer>
