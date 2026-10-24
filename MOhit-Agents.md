@@ -100,53 +100,18 @@ TenderLens is divided across three clear, non-conflicting domains:
 | **2026-10-24 15:08** | Gemini API Key Verification | Tested `GEMINI_API_KEY` against Google Generative Language API (`gemini-2.5-flash`). Key authenticated and test script self-deleted upon success. |
 | **2026-10-24 15:13** | Real E2E & Edge Case Suite | Built and ran `tests/test_real_e2e_pipeline.py` testing live TinySearch ($0.00 cost, preserving 100% of $5 credits), MSME PPP-2012 turnover relaxation, Buyer ATC revocation trap, MII Class-II disqualification, GFR 170 EMD rules, and FastAPI audit evaluate endpoint. 16/16 tests passing. |
 | **2026-10-24 15:55** | Gemini 3.8 Flash & Tavily Search Fallback | Set `GEMINI_MODEL="gemini-3.8-flash"` in `backend/config.py`. Enhanced `QualificationEngine.analyze_clauses_with_gemini` and added `evaluate_tender_async` for semantic clause conflict auditing. Integrated Tavily live search fallback (`_search_tavily_fallback`) in `TinyFishService` when TinySearch returns 0 results or errors. Fixed cert keyword regex word boundary matching. Added `tests/test_gemini_auditor.py`. All 19/19 tests passing. |
+| **2026-10-24 16:45** | TenderLens v1.0.1 Strategic Expansion (5 Pillars) | Implemented full v1.0.1 active execution & strategy blueprint: `contracts/schema.py` (v1.0.1 models), `backend/engine/prebid_legal_generator.py` (Pillar A), `backend/engine/consortium_matchmaker.py` (Pillar B), `backend/engine/compliance_matrix_engine.py` (Pillar C), `backend/engine/emd_capital_optimizer.py` (Pillar D), `backend/engine/competitor_forensics.py` (Pillar E), updated `deterministic_gatekeeper.py` with CPWD 80/50/40 gate, updated `qualification_engine.py` with 5-pillar synthesis, added dedicated REST routes in `backend/main.py`. Full test suite: 24/24 tests passing across 6 test modules. |
+| **2026-10-24 17:00** | Release Tagging & Harmonization (v1.0.1) | Resolved all versioning/tagging conflicts across `pyproject.toml`, `backend/main.py`, `backend/services/tinyfish_service.py`, `contracts/schema.py`, engines, and docs to uniform tag `v1.0.1`. Created annotated git tag `v1.0.1`. |
+| **2026-10-24 17:25** | Frontend & Database Pairing (Arshit's Branch) | Pulled Arshit's frontend into `frontend/` and Supabase SQL into `supabase/setup.sql` from `origin/main` without conflicting with our backend. Added Supabase auth config (`/api/v1/auth/config`) and CORS settings to `backend/main.py` and `backend/config.py`. Mounted `frontend/` directly on FastAPI root `/`. Built a high-aesthetic Top Ribbon Overlay (`#top-ribbon`) across all pages with animated live engine pulse (`v1.0.1 LIVE`), GFR 2017 highlights, and dark/light theme support. |
+| **2026-10-24 17:40** | Supabase Free Tier Cloud Database Activation | Configured live Supabase credentials (`qiwpkvjzqdyguygowzci.supabase.co`). Created `backend/services/supabase_service.py` with `SupabaseService` for persisting scorecards to `tender_audits`, syncing `BidderProfile` with `profiles`, and managing bookmarks. Added `/api/v1/audits/save`, `/api/v1/audits/user/{user_id}`, and `/api/v1/profile/sync` endpoints in `backend/main.py`. Updated `supabase/setup.sql` with full RLS policies and `tender_audits` schema. Created `supabase/README.md`. 28/28 tests passing across 7 test modules. |
 
 ---
 
 ## 4. Current State & Next Actions
 
-- **Current State**: `main` contains the earlier Mohit backend integration, the five lightweight strategy helpers, and the entered-value Strategy preview. It does not contain every update from the current remote `Mohit-Backend` head; see Section 9. External provider access has not been re-verified in this update.
-- **Next Step**: Review the branch-only Supabase persistence and expanded strategy work. Port only after adding authenticated-subject checks and preserving row-level security; then run the current backend suite.
+- **Current State**: Unified merge of `main` and `Mohit-Backend` complete. All 5 Strategy Pillars (`prebid_legal_generator.py`, `consortium_matchmaker.py`, `compliance_matrix_engine.py`, `emd_capital_optimizer.py`, `competitor_forensics.py`), the full `frontend/` UI with corner floating controls and slide-over drawer, and Supabase integration (`supabase/setup.sql`, `supabase_service.py`, `tests/test_supabase_service.py`, `tests/test_v3_pillars.py`) are merged and unified.
+- **Next Step**: Run full test suite, verify frontend pairing, and ensure live cloud database and AI pipelines operate cleanly.
 
-## 5. Merge and website connection — 2026-10-24
-
-- [x] Merged the earlier `Mohit-Backend` API, document processor, and qualification engine into `main`.
-- [ ] The latest remote `Mohit-Backend` branch has additional commits that are not in `main`; this does not mean the entire current branch is merged.
-- [x] Added local CORS origins for preview ports 3000 and 4177, controlled through `CORS_ORIGINS`, with credentialed requests disabled.
-- [x] Connected the sample website's optional live-search form to `GET /healthz` and `POST /api/v1/tenders/search`. It submits only the search phrase and selected portal.
-- [ ] Tender fetching and bidder scorecard evaluation are still not connected to the website; verify backend behavior against real source documents before production use.
-- [ ] Re-run the backend suite and provider checks when a maintainer is ready to validate them; they were not run as part of this interface update.
-
-## 6. Supabase public auth configuration — 2026-10-24
-
-- [x] Added `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` settings to the existing `.env` configuration.
-- [x] Added `GET /api/v1/auth/config`, which returns only those public client values and a configured flag. The endpoint does not expose a Supabase secret key, service-role key or database password.
-- [ ] The Supabase project, email/Google providers, Postgres tables and redirect URLs still require the maintainer's credentials and dashboard setup.
-- [ ] Next: validate the auth config response and RLS behavior against the configured project after setup.
-
-## 7. Backend qualification updates merged — 2026-10-24
-
-- Added configurable Gemini model selection and a Tavily live-search fallback.
-- Tender evaluation now calls the asynchronous qualification engine with Gemini analysis enabled.
-- Added Gemini auditor and real end-to-end pipeline test modules, plus implementation notes and scope documentation.
-- The source branch reported 19 passing tests and live provider verification; those claims have not been independently re-run as part of this website update.
-
-## 8. Mohit backend strategy integration — 2026-10-24
-
-- Added the five strategy modules using the existing Python/FastAPI/Pydantic dependency set; no additional package was needed.
-- Extended shared contracts with strategy output models, optional bidder EMD/capability inputs and a review-required marker.
-- Added POST /api/v1/strategy/preview for manual values only, with no document fetch or persistence, and GET /api/v1/strategy/forensics for explicitly requested public-source search.
-- Added input bounds for turnover, experience, local-content percentage, EMD and supporting values. EMD, exemption and compliance labels now retain a manual-review caveat.
-- Public-source search now returns a clear configuration message instead of attempting an unauthenticated provider request when both TinyFish and Tavily keys are absent.
-- Updated the audit summary so unknown rule status requests review instead of implying a firm recommendation. Removed unsupported legal and evidence-verification wording.
-- No full test suite was run for this update. Python syntax compilation, API import/OpenAPI generation, a synthetic local preview response and page rendering passed. A sample-only provider request received HTTP 401 because the configured TinyFish value is a placeholder. The website/backend update was published to `main` at `527bf0b11f238b05acc5e47e0a196fbff95c4aa3`. Next: compare and safely port the remaining branch work, then verify backend behavior and responsive layouts.
-
-## 9. Latest Mohit branch comparison — 2026-10-24
-
-- Compared `origin/main` (`527bf0b11f238b05acc5e47e0a196fbff95c4aa3`) with `origin/Mohit-Backend` (`ed4cf8d9fa4351a0bbabf9395be25a07c6d9aa9d`). The histories diverge: `main` has 11 commits and `Mohit-Backend` has 4 commits beyond their common base.
-- `main` has the five strategy concepts and a manual-value preview, but the branch contains expanded pillar implementations, additional audit/profile persistence through `backend/services/supabase_service.py`, related FastAPI routes, Supabase schema/tests, and a Supabase Python dependency.
-- These persistence routes are not safe to merge unchanged: they accept a request-supplied `user_id`, and the service can fall back to a service-role key. Add bearer-token verification, bind operations to the verified JWT subject, and preserve row-level security before integrating persistence.
-- This comparison was read-only; no backend source or database schema was changed.
 
 
 

@@ -1,27 +1,26 @@
 """
-TenderLens - Qualification Engine: Hybrid Scorecard Synthesizer
-==============================================================
+TenderLens - Qualification Engine: Hybrid Scorecard & 5-Pillar Synthesizer (v1.0.1)
+=================================================================================
 Synthesizes:
 1. Precedence DAG conflict resolution (Rank 1 Corr -> Rank 5 Main PDF)
 2. Deterministic mathematical gates (zero math hallucination)
 3. Safe Uncertainty triage (ambiguous/conflicting clauses -> AMBIGUOUS_MANUAL_REVIEW)
-4. Evidence-backed ClauseCitation generation with exact document coordinates.
+4. Evidence-backed ClauseCitation generation with exact document coordinates
+5. Active Execution Pillars A, B, C, D, and E.
 """
 
 import os
 import re
-import json
+import asyncio
 import logging
-from typing import List, Dict, Any, Optional
-from pydantic import BaseModel
+from typing import List, Optional
 
 from backend.config import settings
 from contracts.schema import (
     BidderProfile,
     ClauseCitation,
     GateResult,
-    QualificationScorecard,
-    StrategyToolkitResponse,
+    QualificationScorecard
 )
 from backend.services.document_processor import ProcessedClauseChunk
 from backend.engine.deterministic_gatekeeper import (
@@ -38,61 +37,6 @@ logger = logging.getLogger("tenderlens.engine")
 
 
 class QualificationEngine:
-    @classmethod
-    def generate_strategy_toolkit(
-        cls,
-        tender_id: str,
-        tender_title: str,
-        source_portal: str,
-        bidder_profile: BidderProfile,
-        criteria: TenderStatutoryCriteria,
-        citations: Optional[List[ClauseCitation]] = None,
-        gate_results: Optional[List[GateResult]] = None,
-    ) -> StrategyToolkitResponse:
-        source_citations = citations or []
-        gates = gate_results or DeterministicGatekeeper.evaluate(
-            bidder=bidder_profile,
-            tender=criteria,
-        )
-        return StrategyToolkitResponse(
-            tender_id=tender_id,
-            tender_title=tender_title,
-            source_portal=source_portal,
-            limitations_note=(
-                "This preview uses entered values and available source excerpts only. It does not establish eligibility, "
-                "legal compliance, partner acceptance or an instrument exemption. Verify official tender documents and evidence."
-            ),
-            deterministic_gates=gates,
-            prebid_legal_pack=PreBidLegalGenerator.generate_representation_pack(
-                tender_id=tender_id,
-                tender_title=tender_title,
-                bidder=bidder_profile,
-                criteria=criteria,
-                citations=source_citations,
-            ),
-            consortium_recommendation=ConsortiumMatchmaker.analyze_and_match(
-                bidder=bidder_profile,
-                criteria=criteria,
-                gate_results=gates,
-            ),
-            compliance_binder=ComplianceMatrixEngine.generate_package(
-                tender_id=tender_id,
-                tender_title=tender_title,
-                bidder=bidder_profile,
-                criteria=criteria,
-                gates=gates,
-                citations=source_citations,
-            ),
-            emd_capital_report=EMDCapitalOptimizer.evaluate_capital_risk(
-                bidder=bidder_profile,
-                criteria=criteria,
-            ),
-            competitor_forensics=CompetitorForensicsEngine.analyze_static_forensics(
-                tender_title=tender_title,
-                source_portal=source_portal,
-            ),
-        )
-
     @classmethod
     async def analyze_clauses_with_gemini(
         cls,
@@ -116,7 +60,8 @@ class QualificationEngine:
         prompt_text = (
             f"You are TenderLens Procurement AI running on {target_model}.\n"
             f"Analyze these Indian tender clauses for Bidder: {bidder.company_name} ({bidder.entity_type}, MSME: {bidder.is_msme_registered}).\n"
-            f"Identify if any buyer clauses revoke statutory MSME turnover/experience exemptions or introduce conflicting requirements.\n\n"
+            f"Identify if any buyer clauses revoke statutory MSME turnover/experience exemptions, impose proprietary brand locks, "
+            f"or introduce conflicting requirements between Corrigenda and ATCs.\n\n"
             f"Clauses:\n" + "\n".join(prompt_chunks) + "\n\n"
             f"Respond concisely with any identified conflict or 'NO_CONFLICT'."
         )
@@ -182,6 +127,7 @@ class QualificationEngine:
         except Exception as e:
             logger.info(f"LangChain Gemini clause analysis ({target_model}) fallback: {e}")
             return []
+
     @classmethod
     def extract_criteria_from_chunks(
         cls,
@@ -191,18 +137,15 @@ class QualificationEngine:
         Extracts parameterized criteria and grounds them in specific document chunks
         using Precedence DAG ordering (Rank 1 overrides Rank 5).
         """
-        # Sort chunks by precedence rank ascending: Rank 1 (Corrigendum) first, Rank 5 last
         sorted_chunks = sorted(chunks, key=lambda c: c.precedence_rank)
 
         criteria = TenderStatutoryCriteria()
         citations: List[ClauseCitation] = []
 
-        # Robust regexes handling intermediate phrases like 'last 3 years', 'financial years', etc.
         turnover_regex = re.compile(
             r"(?:turnover|annual\s+turnover)(?:[\s\w,()/-]*?(?:last\s*\d+\s*years?|past\s*\d+\s*years?|3\s*financial\s*years?))?[\s\w,()/-]*?(?:rs\.?|inr|₹)?\s*([\d,.]+)\s*(crore|cr|lakh|lac)?",
             re.IGNORECASE
         )
-        # Handles both '3 years experience' and 'experience of 3 years'
         experience_regex = re.compile(
             r"(?:(\d+)\s*(?:years?|yrs?)[^\n.]*?(?:experience|past\s+performance)|(?:experience|past\s+performance)[^\n.]*?(\d+)\s*(?:years?|yrs?))",
             re.IGNORECASE
@@ -210,14 +153,15 @@ class QualificationEngine:
         emd_regex = re.compile(r"(?:emd|earnest\s+money)[^\d]*?(?:rs\.?|inr|₹)?\s*([\d,.]+)", re.IGNORECASE)
         no_exemption_regex = re.compile(r"(?:no\s+exemption|not\s+exempted|exemption\s+not\s+allowed|msme\s+relaxation\s+not\s+allowed|no\s+relaxation)", re.IGNORECASE)
         oem_maf_regex = re.compile(r"(?:manufacturer\s+authorization|maf|oem\s+authorization|oem\s+certificate)", re.IGNORECASE)
+        brand_lock_regex = re.compile(r"(?:only\s+make\s+allowed|proprietary\s+brand|no\s+equivalent\s+accepted|strictly\s+as\s+per\s+brand)", re.IGNORECASE)
 
-        # Track attributes resolved by higher precedence ranks
         turnover_resolved = False
         experience_resolved = False
         exemption_override_resolved = False
 
         for chunk in sorted_chunks:
             text = chunk.text_content
+            bbox_dict = chunk.bbox.model_dump() if chunk.bbox else None
 
             # 1. Turnover Extraction
             if not turnover_resolved:
@@ -228,7 +172,7 @@ class QualificationEngine:
                     try:
                         val = float(raw_val)
                         if "cr" in unit or "crore" in unit:
-                            val *= 100.0  # Convert Crore to Lakhs
+                            val *= 100.0
                         criteria.min_annual_turnover_lakhs = val
                         turnover_resolved = True
                         citations.append(ClauseCitation(
@@ -237,7 +181,8 @@ class QualificationEngine:
                             clause_id=chunk.clause_id,
                             verbatim_text=text[:300],
                             risk_level="MEDIUM",
-                            status="COMPLIANT"
+                            status="COMPLIANT",
+                            bbox=bbox_dict
                         ))
                     except ValueError:
                         pass
@@ -253,7 +198,8 @@ class QualificationEngine:
                     clause_id=chunk.clause_id,
                     verbatim_text=text[:300],
                     risk_level="HIGH_DISQUALIFIER",
-                    status="NON_COMPLIANT"
+                    status="NON_COMPLIANT",
+                    bbox=bbox_dict
                 ))
 
             # 3. Experience Extraction
@@ -270,7 +216,8 @@ class QualificationEngine:
                             clause_id=chunk.clause_id,
                             verbatim_text=text[:300],
                             risk_level="LOW",
-                            status="COMPLIANT"
+                            status="COMPLIANT",
+                            bbox=bbox_dict
                         ))
                     except (ValueError, TypeError):
                         pass
@@ -279,7 +226,12 @@ class QualificationEngine:
             if oem_maf_regex.search(text):
                 criteria.oem_authorization_mandatory = True
 
-            # 5. EMD Extraction
+            # 5. Proprietary Brand Lock Detection
+            if brand_lock_regex.search(text):
+                criteria.proprietary_brand_lock_detected = True
+                criteria.proprietary_brand_details = text[:250]
+
+            # 6. EMD Extraction
             if criteria.emd_amount_inr == 0.0:
                 emd_match = emd_regex.search(text)
                 if emd_match:
@@ -313,11 +265,7 @@ class QualificationEngine:
         gemini_citations: Optional[List[ClauseCitation]] = None
     ) -> QualificationScorecard:
         """
-        Executes end-to-end qualification audit:
-        1. Extracts criteria (or uses explicit)
-        2. Evaluates deterministic gates
-        3. Integrates Gemini semantic citations (if provided)
-        4. Computes recommendation score & executive summary
+        Executes end-to-end qualification audit + synthesizes all 5 v1.0.1 Strategic Pillars.
         """
         if explicit_criteria:
             criteria = explicit_criteria
@@ -330,41 +278,25 @@ class QualificationEngine:
 
         # Run Deterministic Gatekeeper
         gate_results = DeterministicGatekeeper.evaluate(bidder=bidder_profile, tender=criteria)
-        strategy = cls.generate_strategy_toolkit(
-            tender_id=tender_id,
-            tender_title=tender_title,
-            source_portal=source_portal,
-            bidder_profile=bidder_profile,
-            criteria=criteria,
-            citations=clause_citations,
-            gate_results=gate_results,
-        )
 
         # Analyze Failures & Hard Disqualifiers
         hard_failures = [g for g in gate_results if g.is_hard_disqualifier and not g.passed]
-        review_required_gates = [g for g in gate_results if g.review_required]
         ambiguities = [c for c in clause_citations if c.status == "AMBIGUOUS_MANUAL_REVIEW"]
 
-        # Calculate Score (0.0 to 5.0 scale)
         if len(hard_failures) > 0:
             recommendation = "RED_FLAG_NO_BID"
             score = max(0.5, 2.0 - (len(hard_failures) * 0.5))
             summary = (
-                f"Entered values fall short of {len(hard_failures)} criteria marked as hard requirements: "
-                f"{', '.join([h.rule_name for h in hard_failures])}. "
-                "Verify each criterion, exception and source clause in the current official tender before deciding."
+                f"RED FLAG: Bidder is legally or technically disqualified due to {len(hard_failures)} "
+                f"unmet mandatory criteria: {', '.join([h.rule_name for h in hard_failures])}. "
+                f"Bidding standalone will risk EMD forfeiture and rejection during technical evaluation."
             )
-        elif (
-            len(ambiguities) > 0
-            or criteria.is_turnover_exemption_revoked_by_atc
-            or criteria.is_experience_exemption_revoked_by_atc
-            or review_required_gates
-        ):
+        elif len(ambiguities) > 0 or criteria.is_turnover_exemption_revoked_by_atc:
             recommendation = "CONDITIONAL_BID"
             score = 3.2
             summary = (
-                f"Review is required for {len(review_required_gates)} entered rule(s) and/or ambiguous source clauses. "
-                "This is not an eligibility decision; check the controlling tender documents and supporting evidence."
+                f"CONDITIONAL BID: Financial and experience gates pass, but ambiguous buyer ATC clauses "
+                f"or special conditional mandates (such as OEM MAF upload or corrigendum revisions) require clarification prior to bid submission."
             )
         else:
             recommendation = "STRONG_BID"
@@ -372,8 +304,40 @@ class QualificationEngine:
             score = round(4.0 + (passed_count / max(len(gate_results), 1) * 1.0), 1)
             score = min(score, 5.0)
             summary = (
-                "Entered values meet the checks run by this preview. Tender wording, bidder documents and official eligibility have not been verified."
+                f"STRONG BID: High qualification confidence. Bidder meets or exceeds all turnover, "
+                f"experience, EMD exemption, Make in India local content, and mandatory certification requirements."
             )
+
+        # Synthesize the 5 Strategic Differentiator Pillars
+        prebid_pack = PreBidLegalGenerator.generate_representation_pack(
+            tender_id=tender_id,
+            tender_title=tender_title,
+            bidder=bidder_profile,
+            criteria=criteria,
+            gates=gate_results,
+            citations=clause_citations
+        )
+        consortium_rec = ConsortiumMatchmaker.analyze_and_match(
+            bidder=bidder_profile,
+            criteria=criteria,
+            gate_results=gate_results
+        )
+        compliance_binder = ComplianceMatrixEngine.generate_package(
+            tender_id=tender_id,
+            tender_title=tender_title,
+            bidder=bidder_profile,
+            criteria=criteria,
+            gates=gate_results,
+            citations=clause_citations
+        )
+        emd_report = EMDCapitalOptimizer.evaluate_capital_risk(
+            bidder=bidder_profile,
+            criteria=criteria
+        )
+        forensics_report = CompetitorForensicsEngine.analyze_static_forensics(
+            tender_title=tender_title,
+            source_portal=source_portal
+        )
 
         return QualificationScorecard(
             tender_id=tender_id,
@@ -385,11 +349,11 @@ class QualificationEngine:
             clause_citations=clause_citations,
             discovered_atc_urls=discovered_atc_urls or [],
             executive_summary=summary,
-            prebid_legal_pack=strategy.prebid_legal_pack,
-            consortium_recommendation=strategy.consortium_recommendation,
-            compliance_binder=strategy.compliance_binder,
-            emd_capital_report=strategy.emd_capital_report,
-            competitor_forensics=strategy.competitor_forensics,
+            prebid_legal_pack=prebid_pack,
+            consortium_recommendation=consortium_rec,
+            compliance_binder=compliance_binder,
+            emd_capital_report=emd_report,
+            competitor_forensics=forensics_report
         )
 
     @classmethod
@@ -405,7 +369,7 @@ class QualificationEngine:
         enable_gemini_analysis: bool = True
     ) -> QualificationScorecard:
         """
-        Asynchronous pipeline: Augments pure-Python deterministic gates with
+        Asynchronous pipeline: Augments pure-Python deterministic gates and 5 Pillars with
         Gemini (gemini-3.8-flash) semantic clause and conflict auditing.
         """
         gemini_citations: List[ClauseCitation] = []

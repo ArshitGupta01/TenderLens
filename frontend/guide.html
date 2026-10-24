@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f4f2e9">
+    <meta name="description" content="A plain-language guide to the TenderLens sample website and optional live tender search.">
+    <meta name="tenderlens-api" content="">
+    <title>Easy guide — TenderLens</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="vendor/lenis.css">
+    <script src="theme.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0" defer></script>
+    <script src="auth.js" defer></script>
+    <script src="vendor/lenis.min.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body class="guide-page">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <!-- Floating Corner Controls -->
+    <button class="floating-menu-btn" id="floating-menu-toggle" type="button" aria-expanded="false" aria-controls="floating-nav-drawer" aria-label="Open navigation menu">
+      <span class="floating-menu-icon" aria-hidden="true"><span></span><span></span><span></span></span>
+      <span class="floating-menu-text">Menu</span>
+    </button>
+
+    <a class="floating-cta-btn" id="floating-account-cta" data-auth-signup href="signup.html">
+      <span class="floating-cta-text">Create account</span>
+      <span aria-hidden="true">↗</span>
+    </a>
+
+    <!-- Slide-over Navigation Drawer -->
+    <div class="floating-nav-drawer" id="floating-nav-drawer" aria-hidden="true">
+      <div class="drawer-backdrop" id="drawer-backdrop"></div>
+      <div class="drawer-panel" role="dialog" aria-modal="true" aria-label="Navigation Menu">
+        <div class="drawer-header">
+          <a class="brand" href="index.html" aria-label="TenderLens home">
+            <span class="brand-mark" aria-hidden="true">
+              <svg viewBox="0 0 40 40" fill="none">
+                <path d="M7 12.5V8h4.5M28.5 8H33v4.5M33 27.5V32h-4.5M11.5 32H7v-4.5" stroke="currentColor" stroke-width="1.7"/>
+                <circle cx="20" cy="18.5" r="7.2" stroke="currentColor" stroke-width="1.7"/>
+                <path d="m25.2 23.7 6.1 6.1" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+                <circle cx="20" cy="18.5" r="2" fill="currentColor"/>
+              </svg>
+            </span>
+            <span class="brand-name">Tender<span>Lens</span></span>
+          </a>
+          <button class="drawer-close-btn" id="drawer-close-btn" type="button" aria-label="Close navigation menu">✕</button>
+        </div>
+
+        <div class="drawer-actions-row">
+          <a class="header-account-link" data-auth-signin href="signin.html">Sign in</a>
+          <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme" aria-pressed="false" title="Switch to dark theme">
+            <span class="theme-toggle-icon" aria-hidden="true">☾</span>
+            <span id="theme-toggle-label">Dark mode</span>
+          </button>
+        </div>
+
+        <nav class="drawer-nav" aria-label="Main navigation">
+          <a class="drawer-nav-item" href="index.html">Home <span aria-hidden="true">→</span></a>
+          <a class="drawer-nav-item" href="guide.html">Easy guide <span aria-hidden="true">→</span></a>
+          <a class="drawer-nav-item" href="index.html#opportunities">Find tenders <span aria-hidden="true">→</span></a>
+          <a class="drawer-nav-item" href="privacy.html">Privacy <span aria-hidden="true">→</span></a>
+          <a class="drawer-nav-item" href="terms.html">Terms <span aria-hidden="true">→</span></a>
+          <a class="drawer-nav-item drawer-nav-highlight" href="index.html#demo">Launch Evaluation Desk <span aria-hidden="true">↗</span></a>
+        </nav>
+      </div>
+    </div>
+
+
+    <main class="guide-main" id="main">
+      <section class="guide-hero">
+        <div class="container guide-hero-grid">
+          <div>
+            <p class="eyebrow"><span class="eyebrow-mark"></span> THE SHORT, PLAIN-LANGUAGE GUIDE</p>
+            <h1>Use TenderLens in <em>four simple steps.</em></h1>
+            <p class="guide-lede">You can explore the sample without an account. The examples are made up. Live search is available only when the optional service is running.</p>
+            <a class="button button-dark" href="index.html#demo">Open the sample report <span aria-hidden="true">↗</span></a>
+          </div>
+          <aside class="guide-note"><span class="guide-note-icon" aria-hidden="true">i</span><p><strong>First time here?</strong><br>Start with the sample. It shows how a tender rule can be checked and where the source appears.</p></aside>
+        </div>
+      </section>
+
+      <section class="guide-section" aria-labelledby="steps-title">
+        <div class="container">
+          <p class="eyebrow">01 / GET STARTED</p>
+          <h2 id="steps-title">Four things to try</h2>
+          <div class="guide-step-grid">
+            <article class="guide-step-card"><span>1</span><h3>Open a sample report</h3><p>Choose a requirement to see its sample status and the document that it came from.</p><a href="index.html#demo">Go to the report <span aria-hidden="true">↗</span></a></article>
+            <article class="guide-step-card"><span>2</span><h3>Explore tender examples</h3><p>Search the made-up examples, filter by type, or open a card for a short review checklist.</p><a href="index.html#opportunities">Go to sample tenders <span aria-hidden="true">↗</span></a></article>
+            <article class="guide-step-card"><span>3</span><h3>Check the document order</h3><p>Pick a file in the order panel to see how a later update might change an earlier rule.</p><a href="index.html#precedence">Go to document order <span aria-hidden="true">↗</span></a></article>
+            <article class="guide-step-card"><span>4</span><h3>Save your bidder profile</h3><p>Save a local draft or sign in to sync basic organization details across devices. This does not check eligibility.</p><a href="index.html#profile">Go to bidder profile <span aria-hidden="true">↗</span></a></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="guide-section guide-section-muted" aria-labelledby="status-title">
+        <div class="container guide-two-column">
+          <div>
+            <p class="eyebrow">02 / READ THE RESULTS</p>
+            <h2 id="status-title">What do the labels mean?</h2>
+          </div>
+          <div class="guide-status-list">
+            <article><span class="guide-status status-met">MEETS</span><p>The sample profile has the evidence needed for this example rule.</p></article>
+            <article><span class="guide-status status-missing">MISSING</span><p>The sample profile does not show the requested evidence.</p></article>
+            <article><span class="guide-status status-review">REVIEW</span><p>The wording or evidence needs a person to check the original file.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="guide-section" aria-labelledby="words-title">
+        <div class="container guide-two-column">
+          <div>
+            <p class="eyebrow">03 / USEFUL WORDS</p>
+            <h2 id="words-title">A short glossary</h2>
+            <p class="guide-copy">Tender documents use a lot of abbreviations. Here are the ones used on this site.</p>
+          </div>
+          <dl class="guide-glossary">
+            <div><dt>Tender</dt><dd>A buyer’s request for companies to offer goods, work or services.</dd></div>
+            <div><dt>ATC</dt><dd>“Additional Terms and Conditions”: extra rules added by the buyer.</dd></div>
+            <div><dt>Corrigendum</dt><dd>An official notice that changes or clarifies an earlier tender.</dd></div>
+            <div><dt>Clause</dt><dd>One numbered rule or paragraph inside a tender file.</dd></div>
+            <div><dt>Evidence</dt><dd>A document or record that helps show whether a requirement is met.</dd></div>
+            <div><dt>Bidder profile</dt><dd>Basic details about the business preparing a bid. Save a local draft or sync it to your signed-in account.</dd></div>
+          </dl>
+        </div>
+      </section>
+
+      <section class="guide-section guide-section-muted" id="live-search" aria-labelledby="live-title">
+        <div class="container guide-two-column">
+          <div>
+            <p class="eyebrow">04 / OPTIONAL LIVE SEARCH</p>
+            <h2 id="live-title">Turn on current tender search</h2>
+            <p class="guide-copy">This needs the TenderLens backend and a TinyFish API key. The key stays on the server; never put it in the website code.</p>
+          </div>
+          <div class="guide-setup">
+            <ol>
+              <li>Install <a href="https://docs.astral.sh/uv/getting-started/installation/" target="_blank" rel="noopener noreferrer">uv</a> and sync the project dependencies.</li>
+              <li>Copy <code>.env.example</code> to <code>.env</code>, then add your TinyFish key to <code>TINYFISH_API_KEY</code>.</li>
+              <li>Start the API with <code>uv run uvicorn backend.main:app --reload</code>.</li>
+              <li>In another terminal, run <code>python -m http.server 4177</code> and open <code>http://localhost:4177</code>.</li>
+              <li>Open “Search current tender notices” and submit a phrase. Only that phrase and the selected portal are sent.</li>
+            </ol>
+            <p class="guide-copy"><strong>Other backend features:</strong> <code>GEMINI_API_KEY</code> turns on clause/conflict analysis, while <code>TAVILY_API_KEY</code> enables the backup web search. Both are optional for the website and account pages; the model setting defaults to <code>gemini-3.8-flash</code>.</p>
+            <p class="guide-warning"><strong>What is connected?</strong> Live search uses the backend. Tender fetching and scorecard routes are available to developers, but this page does not yet upload files or send a bidder profile for an audit.</p>
+            <a class="guide-api-link" href="http://127.0.0.1:8000/docs" target="_blank" rel="noopener noreferrer">Open the local API reference <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="guide-section" id="account-setup" aria-labelledby="account-setup-title">
+        <div class="container guide-two-column">
+          <div>
+            <p class="eyebrow">05 / ACCOUNTS AND SAVED TENDERS</p>
+            <h2 id="account-setup-title">Set up sign-in once</h2>
+            <p class="guide-copy">TenderLens uses Supabase Auth and Supabase Postgres for accounts. FastAPI provides the public project settings and continues to run live tender search. User rows are protected with database policies.</p>
+            <div class="guide-final-links"><a class="button button-dark" href="signup.html">Create an account <span aria-hidden="true">↗</span></a><a href="signin.html">Already have an account? Sign in</a></div>
+          </div>
+          <div class="guide-setup account-setup-card">
+            <ol>
+              <li>Create a Supabase project. Copy its Project URL and <strong>publishable key</strong> from the Connect dialog into <code>SUPABASE_URL</code> and <code>SUPABASE_PUBLISHABLE_KEY</code> in your private <code>.env</code>. The publishable key is designed to be exposed to the browser; never use a secret or service-role key here.</li>
+              <li>Run <code>supabase/setup.sql</code> once in Supabase Dashboard → SQL Editor. It creates the bidder-profile and saved-tender tables and locks rows to their account with row-level security.</li>
+              <li>In Supabase Authentication, enable Email and Google. For Google, create a Google OAuth client, copy its client ID and secret into the Supabase Google provider settings, and add the callback URL shown by Supabase to Google Cloud.</li>
+              <li>Add <code>http://127.0.0.1:4177/**</code> and <code>http://localhost:4177/**</code> under Supabase Authentication → URL Configuration → Redirect URLs. Set the site URL to the address you use locally.</li>
+              <li>For email confirmation and password reset in production, configure a trusted SMTP provider in Supabase. The built-in test mailer is intended for limited development use.</li>
+              <li>Restart FastAPI with <code>uv run uvicorn backend.main:app --reload</code> and serve the pages at <code>http://127.0.0.1:4177</code>. Sign in, update your profile, then test saving a link from a live search result.</li>
+            </ol>
+            <p class="guide-warning"><strong>Keep secrets out of chat and GitHub.</strong> Google OAuth client secrets and SMTP credentials belong in the Supabase Dashboard. TenderLens only needs the Supabase URL and browser-safe publishable key in the private local environment file. Do not send us keys in chat.</p>
+            <p class="guide-copy"><strong>Not needed for this connection:</strong> a direct database password or Supabase secret key. The browser uses Supabase Auth and Postgres Data API with row-level security; FastAPI does not bypass those policies.</p>
+            <a class="guide-api-link" href="https://supabase.com/docs/guides/auth/social-sign-in/auth-google" target="_blank" rel="noopener noreferrer">Supabase Google setup guide <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="guide-section">
+        <div class="container guide-final-card">
+          <div><p class="eyebrow">PLEASE READ BEFORE BIDDING</p><h2>Always check the original tender.</h2><p>TenderLens is a prototype and cannot promise that a bid will qualify. Ask the buyer when a rule is unclear.</p></div>
+          <div class="guide-final-links"><a class="button button-dark" href="terms.html">Read terms &amp; conditions <span aria-hidden="true">↗</span></a><a href="privacy.html">Read the privacy notice</a></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer"><div class="container footer-main"><a class="brand footer-brand" href="index.html"><span class="brand-mark" aria-hidden="true">TL</span><span class="brand-name">Tender<span>Lens</span></span></a><p>Clearer tender reviews, with the source close by.<br>Built by Team Traxo for HackIIITD.</p><div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms &amp; conditions</a></div></div><div class="container footer-bottom"><span>© <span id="current-year">2026</span> TENDERLENS · TEAM TRAXO</span><span>SAMPLE DATA ONLY</span></div></footer>
+  </body>
+</html>

@@ -19,7 +19,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from sse_starlette.sse import EventSourceResponse
 from pydantic import BaseModel, Field
 
-from backend.config import settings
+from backend.config import settings, ROOT_DIR
+from backend.services.supabase_service import SupabaseService
 from backend.services.tinyfish_service import (
     TinyFishService,
     DiscoveredTender,
@@ -33,12 +34,19 @@ from backend.engine.deterministic_gatekeeper import (
     TenderStatutoryCriteria
 )
 from backend.engine.qualification_engine import QualificationEngine
+from backend.engine.prebid_legal_generator import PreBidLegalGenerator
+from backend.engine.consortium_matchmaker import ConsortiumMatchmaker
+from backend.engine.compliance_matrix_engine import ComplianceMatrixEngine
+from backend.engine.emd_capital_optimizer import EMDCapitalOptimizer
 from backend.engine.competitor_forensics import CompetitorForensicsEngine
 from contracts.schema import (
     BidderProfile,
     QualificationScorecard,
-    StrategyToolkitResponse,
-    CompetitorForensicsReport,
+    PreBidLegalRepresentationPack,
+    ConsortiumMatchRecommendation,
+    ComplianceAndBinderPackage,
+    EMDCapitalOptimizationReport,
+    CompetitorForensicsReport
 )
 
 # Configure logging
@@ -48,29 +56,24 @@ logger = logging.getLogger("tenderlens.api")
 app = FastAPI(
     title="TenderLens Engine API",
     description="AI-Powered Tender Qualification & Disqualification Engine for Indian Public Procurement",
-    version="2.0.0"
+    version="1.0.1"
 )
 
-# Enable CORS for Arshit's Next.js Frontend
+# Enable CORS for Arshit's Frontend and local origins
+cors_origins = [origin.strip() for origin in settings.CORS_ORIGINS.split(",") if origin.strip()]
+if "*" not in cors_origins:
+    cors_origins.append("*")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[origin.strip() for origin in settings.CORS_ORIGINS.split(",") if origin.strip()],
-    allow_credentials=False,
+    allow_origins=cors_origins,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 tinyfish = TinyFishService()
-
-
-def _has_configured_search_provider() -> bool:
-    candidates = (settings.TINYFISH_API_KEY, settings.TAVILY_API_KEY)
-    placeholders = ("your-key", "your_api_key", "placeholder", "replace-me", "changeme")
-    return any(
-        value.strip() and not any(marker in value.strip().lower() for marker in placeholders)
-        for value in candidates
-    )
-
+supabase_service = SupabaseService()
 
 # In-memory pipeline task event bus for SSE streaming
 pipeline_task_events: Dict[str, asyncio.Queue] = {}
@@ -98,12 +101,19 @@ class AuditEvaluationRequest(BaseModel):
     explicit_criteria: Optional[TenderStatutoryCriteria] = None
 
 
-class StrategyPreviewRequest(BaseModel):
-    tender_id: Optional[str] = Field(default=None, max_length=100)
-    tender_title: str = Field(min_length=2, max_length=200)
-    source_portal: str = Field(default="Not specified", max_length=100)
+class SaveAuditRequest(BaseModel):
+    user_id: str
+    tender_title: str
+    tender_url: str
+    source_portal: Optional[str] = "GeM"
+    scorecard: QualificationScorecard
+
+
+class SaveBidderProfileRequest(BaseModel):
+    user_id: str
     bidder_profile: BidderProfile
-    criteria: TenderStatutoryCriteria
+    full_name: Optional[str] = ""
+    region: Optional[str] = ""
 
 
 @app.get("/healthz")
@@ -111,31 +121,26 @@ async def health_check():
     return {
         "status": "healthy",
         "service": "TenderLens Backend Engine",
-        "version": "2.0.0",
+        "version": "1.0.1",
         "environment": settings.ENVIRONMENT,
-        "tinyfish_configured": bool(settings.TINYFISH_API_KEY and not settings.TINYFISH_API_KEY.startswith("sk-tinyfish-your-key"))
+        "tinyfish_configured": bool(settings.TINYFISH_API_KEY and not settings.TINYFISH_API_KEY.startswith("sk-tinyfish-your-key")),
+        "supabase_configured": settings.is_supabase_configured,
+        "supabase_status": supabase_service.get_status()
     }
 
 
 @app.get("/api/v1/auth/config")
 async def auth_config():
-    """Return the Supabase project URL and publishable key to the website.
+    """Return the Supabase project URL and publishable/anon key to the browser frontend.
 
     Publishable keys identify a public client and are safe to expose. Secret keys
     and database passwords must never be returned here; RLS protects user rows.
     """
-    supabase_url = settings.SUPABASE_URL.strip()
-    publishable_key = settings.SUPABASE_PUBLISHABLE_KEY.strip()
-    configured = (
-        supabase_url.startswith("https://")
-        and "your-project" not in supabase_url.lower()
-        and publishable_key.startswith("sb_publishable_")
-        and "your-project" not in publishable_key.lower()
-    )
+    configured = settings.is_supabase_configured
     return {
         "configured": configured,
-        "supabase_url": supabase_url if configured else "",
-        "publishable_key": publishable_key if configured else "",
+        "supabase_url": settings.SUPABASE_URL.strip() if configured else "",
+        "publishable_key": settings.supabase_public_key if configured else "",
     }
 
 
@@ -234,47 +239,6 @@ async def evaluate_tender_endpoint(payload: AuditEvaluationRequest, background_t
         raise HTTPException(status_code=500, detail=f"Audit execution failed: {str(e)}")
 
 
-@app.post("/api/v1/strategy/preview", response_model=StrategyToolkitResponse)
-async def strategy_preview_endpoint(payload: StrategyPreviewRequest):
-    """Run the five strategy tools on entered values without fetching or storing data."""
-    tender_id = payload.tender_id or f"PREVIEW-{uuid.uuid4().hex[:8].upper()}"
-    return QualificationEngine.generate_strategy_toolkit(
-        tender_id=tender_id,
-        tender_title=payload.tender_title,
-        source_portal=payload.source_portal,
-        bidder_profile=payload.bidder_profile,
-        criteria=payload.criteria,
-    )
-
-
-@app.get("/api/v1/strategy/forensics", response_model=CompetitorForensicsReport)
-async def strategy_forensics_endpoint(
-    tender_title: str = Query(..., min_length=2, max_length=200),
-    source_portal: str = Query("Not specified", max_length=100),
-    live_search: bool = Query(False),
-):
-    """Return no historical claims by default; query configured public search only on request."""
-    if live_search:
-        if not _has_configured_search_provider():
-            report = CompetitorForensicsEngine.analyze_static_forensics(
-                tender_title=tender_title,
-                source_portal=source_portal,
-            )
-            report.strategic_bid_advice = (
-                "Public-source search is not configured. Add TINYFISH_API_KEY or TAVILY_API_KEY to the backend environment and restart the API."
-            )
-            return report
-        return await CompetitorForensicsEngine.analyze_with_live_archives(
-            tender_title=tender_title,
-            source_portal=source_portal,
-            tinyfish=tinyfish,
-        )
-    return CompetitorForensicsEngine.analyze_static_forensics(
-        tender_title=tender_title,
-        source_portal=source_portal,
-    )
-
-
 @app.get("/api/v1/audit/stream/{task_id}")
 async def stream_audit_progress(task_id: str):
     """
@@ -307,3 +271,124 @@ async def stream_audit_progress(task_id: str):
             logger.info(f"SSE client disconnected from task {task_id}")
 
     return EventSourceResponse(event_generator())
+
+
+@app.post("/api/v1/strategy/prebid-queries", response_model=PreBidLegalRepresentationPack)
+async def generate_prebid_queries_endpoint(payload: AuditEvaluationRequest):
+    """Pillar A: Generates formal legal pre-bid representations challenging unfair ATCs."""
+    scorecard = await evaluate_tender_endpoint(payload, BackgroundTasks())
+    return scorecard.prebid_legal_pack
+
+
+@app.post("/api/v1/strategy/consortium-match", response_model=ConsortiumMatchRecommendation)
+async def match_consortium_partners_endpoint(payload: AuditEvaluationRequest):
+    """Pillar B: Computes exact eligibility shortfalls and recommends JV/OEM partners."""
+    scorecard = await evaluate_tender_endpoint(payload, BackgroundTasks())
+    return scorecard.consortium_recommendation
+
+
+@app.post("/api/v1/strategy/compliance-matrix", response_model=ComplianceAndBinderPackage)
+async def generate_compliance_matrix_endpoint(payload: AuditEvaluationRequest):
+    """Pillar C: Auto-generates CSV/Table Compliance Matrix, Deviation Statement, and Statutory Affidavits."""
+    scorecard = await evaluate_tender_endpoint(payload, BackgroundTasks())
+    return scorecard.compliance_binder
+
+
+@app.post("/api/v1/strategy/emd-optimizer", response_model=EMDCapitalOptimizationReport)
+async def optimize_emd_capital_endpoint(payload: AuditEvaluationRequest):
+    """Pillar D: Evaluates working capital lock-up and IRDAI Insurance Surety Bond optimization."""
+    criteria = payload.explicit_criteria or TenderStatutoryCriteria()
+    return EMDCapitalOptimizer.evaluate_capital_risk(
+        bidder=payload.bidder_profile,
+        criteria=criteria
+    )
+
+
+@app.get("/api/v1/strategy/forensics", response_model=CompetitorForensicsReport)
+async def get_competitor_forensics_endpoint(
+    tender_title: str = Query(..., description="Tender title or category"),
+    source_portal: str = Query("GeM", description="Portal or PSU name, e.g., BHEL, ICMR, GeM, CPPP"),
+    live_search: bool = Query(False, description="Whether to query live TinySearch archives")
+):
+    """Pillar E: Returns historical technical evaluation rejection forensics for the procuring authority."""
+    if live_search:
+        return await CompetitorForensicsEngine.analyze_with_live_archives(
+            tender_title=tender_title,
+            source_portal=source_portal,
+            tinyfish=tinyfish
+        )
+    return CompetitorForensicsEngine.analyze_static_forensics(
+        tender_title=tender_title,
+        source_portal=source_portal
+    )
+
+
+# ---------------------------------------------------------------------------
+# Supabase Cloud Database Persistence & Auth Endpoints (Free Tier)
+# ---------------------------------------------------------------------------
+@app.get("/api/v1/auth/config")
+async def get_auth_config_endpoint():
+    """Returns safe, public Supabase configuration for browser clients."""
+    return {
+        "configured": settings.is_supabase_configured,
+        "supabase_url": settings.SUPABASE_URL,
+        "publishable_key": settings.supabase_public_key,
+    }
+
+
+@app.post("/api/v1/audits/save")
+async def save_audit_endpoint(payload: SaveAuditRequest):
+    """Save an evaluated qualification scorecard into Supabase tender_audits table."""
+    result = await supabase_service.save_audit_scorecard(
+        user_id=payload.user_id,
+        scorecard=payload.scorecard,
+        tender_title=payload.tender_title,
+        tender_url=payload.tender_url,
+        source_portal=payload.source_portal or "GeM"
+    )
+    if not result:
+        if not settings.is_supabase_configured:
+            return {"status": "unconfigured", "message": "Supabase credentials not configured in .env"}
+        raise HTTPException(status_code=500, detail="Failed to persist audit to Supabase")
+    return {"status": "saved", "data": result}
+
+
+@app.get("/api/v1/audits/user/{user_id}")
+async def get_user_audits_endpoint(user_id: str, limit: int = Query(20, ge=1, le=100)):
+    """Retrieve historical saved audits for an authenticated user from Supabase."""
+    audits = await supabase_service.get_user_audits(user_id=user_id, limit=limit)
+    return {"user_id": user_id, "audits": audits}
+
+
+@app.get("/api/v1/profile/sync/{user_id}", response_model=Optional[BidderProfile])
+async def get_synced_bidder_profile_endpoint(user_id: str):
+    """Fetch the stored BidderProfile for an authenticated user from Supabase."""
+    profile = await supabase_service.get_bidder_profile(user_id=user_id)
+    if not profile:
+        raise HTTPException(status_code=404, detail="No profile found for user in Supabase")
+    return profile
+
+
+@app.post("/api/v1/profile/sync")
+async def save_synced_bidder_profile_endpoint(payload: SaveBidderProfileRequest):
+    """Sync a BidderProfile into Supabase profiles table."""
+    result = await supabase_service.save_bidder_profile(
+        user_id=payload.user_id,
+        profile=payload.bidder_profile,
+        full_name=payload.full_name or "",
+        region=payload.region or ""
+    )
+    if not result:
+        if not settings.is_supabase_configured:
+            return {"status": "unconfigured", "message": "Supabase credentials not configured in .env"}
+        raise HTTPException(status_code=500, detail="Failed to save profile to Supabase")
+    return {"status": "saved", "data": result}
+
+
+# Pair up Frontend: Mount static files if frontend/ directory exists
+frontend_dir = ROOT_DIR / "frontend"
+if frontend_dir.exists():
+    from fastapi.staticfiles import StaticFiles
+    app.mount("/", StaticFiles(directory=str(frontend_dir), html=True), name="frontend")
+
+

@@ -21,11 +21,11 @@ Dumping 200 pages of a tender PDF and a company profile into a standard LLM (Cha
 
 ---
 
-## 2. Systemic Procurement Bottlenecks & The 5 Core Pillars of TenderLens v3.0
+## 2. Systemic Procurement Bottlenecks & The 5 Core Pillars of TenderLens v1.0.1
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                        TENDERLENS v3.0: ACTIVE EXECUTION & STRATEGY ENGINE                         │
+│                       TENDERLENS v1.0.1: ACTIVE EXECUTION & STRATEGY ENGINE                        │
 ├───────────────────┬───────────────────┬────────────────────┬───────────────────┬───────────────────┤
 │ PILLAR A          │ PILLAR B          │ PILLAR C           │ PILLAR D          │ PILLAR E          │
 │ Offensive Pre-Bid │ Dynamic Consortium│ Automated          │ EMD Capital Risk  │ Competitor        │
@@ -40,7 +40,7 @@ Dumping 200 pages of a tender PDF and a company profile into a standard LLM (Cha
 └───────────────────┴───────────────────┴────────────────────┴───────────────────┴───────────────────┘
 ```
 
-| Systemic Procurement Bottleneck | TenderLens v3.0 Pillar | Statutory / Technical Mechanism |
+| Systemic Procurement Bottleneck | TenderLens v1.0.1 Pillar | Statutory / Technical Mechanism |
 | :--- | :--- | :--- |
 | **Manual Pre-Bid Clarification Bottleneck**: Tight 48–72h window to challenge biased brand locks or illegal MSME exemption revocations. | **Pillar A: Pre-Bid Query & Legal Pushback Generator** (`backend/engine/prebid_legal_generator.py`) | Deterministic trigger + `gemini-3.8-flash` legal drafting citing **GFR 2017 Rule 144/173**, **MoF OM No. F.20/2/2014-PPD**, **DPIIT MII Order 2017**, and **GeM GTC Clause 4**. |
 | **Rigid Subcontracting & Consortium Blindness**: MSMEs miss contracts due to a 20% turnover gap or missing OEM authorization. | **Pillar B: Dynamic Consortium & Partner Matching Engine** (`backend/engine/consortium_matchmaker.py`) | Calculates exact ₹ Lakh turnover / year experience shortfall and matches complementary **OEMs, EPCs, or MSEs** from registry/TinySearch to simulate a combined **JV Scorecard**. |
@@ -53,7 +53,7 @@ Dumping 200 pages of a tender PDF and a company profile into a standard LLM (Cha
 ## 3. Antigravity Execution Plan (Step-by-Step File Operations)
 
 > **Instructions for Antigravity Agent**:
-> 1. **Modify** `contracts/schema.py` — Append v3.0 Pydantic models and add optional fields with `default_factory` to `BidderProfile` and `QualificationScorecard`.
+> 1. **Modify** `contracts/schema.py` — Append v1.0.1 Pydantic models and add optional fields with `default_factory` to `BidderProfile` and `QualificationScorecard`.
 > 2. **Modify** `backend/engine/deterministic_gatekeeper.py` — Add CPWD 80/50/40 Similar Work validation while preserving existing 6 gates verbatim.
 > 3. **Create** `backend/engine/prebid_legal_generator.py` (Pillar A)
 > 4. **Create** `backend/engine/consortium_matchmaker.py` (Pillar B)
@@ -61,8 +61,8 @@ Dumping 200 pages of a tender PDF and a company profile into a standard LLM (Cha
 > 6. **Create** `backend/engine/emd_capital_optimizer.py` (Pillar D)
 > 7. **Create** `backend/engine/competitor_forensics.py` (Pillar E)
 > 8. **Modify** `backend/engine/qualification_engine.py` — Wire Pillars A, B, C, D, and E into `evaluate_tender` and `evaluate_tender_async`.
-> 9. **Modify** `backend/main.py` — Expose new v3.0 REST endpoints for standalone or bundled execution.
-> 10. **Create** `tests/test_v3_pillars.py` — Run `uv run pytest` to verify all existing 19 tests + new v3.0 tests pass 100%.
+> 9. **Modify** `backend/main.py` — Expose new v1.0.1 REST endpoints for standalone or bundled execution.
+> 10. **Create** `tests/test_v3_pillars.py` — Run `uv run pytest` to verify all existing 19 tests + new v1.0.1 tests pass 100%.
 
 ---
 
@@ -74,13 +74,13 @@ Replace `contracts/schema.py` with the following expanded contract. Every existi
 
 ```python
 """
-TenderLens Shared Contract Schema (Pydantic & JSON) — v3.0
+TenderLens Shared Contract Schema (Pydantic & JSON) — v1.0.1
 ==========================================================
 This file defines the shared contract between Research/Evaluation (Argon)
 and Backend/Frontend Engineering (Mohit & Arshit).
 
-Rule: All v3.0 additions use safe default factories to remain 100% backwards
-compatible with v2.0 tests and callers.
+Rule: All v1.0.1 additions use safe default factories to remain 100% backwards
+compatible with baseline tests and callers.
 """
 
 from typing import List, Optional, Dict, Any
@@ -116,7 +116,7 @@ class BidderProfile(BaseModel):
     local_content_percentage: float = 20.0  # Make in India compliance
     held_certifications: List[str] = Field(default_factory=list)  # e.g., ["ISO-9001", "BIS"]
 
-    # --- v3.0 Optional Extensions (Backwards-Compatible Defaults) ---
+    # --- v1.0.1 Optional Extensions (Backwards-Compatible Defaults) ---
     past_similar_project_values_lakhs: List[float] = Field(
         default_factory=list,
         description="Completed similar project values (in ₹ Lakhs) over last 7 years for CPWD 80/50/40 check"
@@ -275,7 +275,7 @@ class CompetitorForensicsReport(BaseModel):
 
 
 # ---------------------------------------------------------------------------
-# Master Output Scorecard (v2.0 Core + v3.0 Strategic Pillars)
+# Master Output Scorecard (Core + v1.0.1 Strategic Pillars)
 # ---------------------------------------------------------------------------
 class QualificationScorecard(BaseModel):
     """The master output report displayed on frontend and evaluated in benchmarks."""
@@ -289,7 +289,7 @@ class QualificationScorecard(BaseModel):
     discovered_atc_urls: List[str] = Field(default_factory=list)
     executive_summary: str
 
-    # --- v3.0 Active Execution & Strategy Pillars (Optional for backwards compatibility) ---
+    # --- v1.0.1 Active Execution & Strategy Pillars (Optional for backwards compatibility) ---
     prebid_legal_pack: Optional[PreBidLegalRepresentationPack] = None
     consortium_recommendation: Optional[ConsortiumMatchRecommendation] = None
     compliance_binder: Optional[ComplianceAndBinderPackage] = None
@@ -309,7 +309,7 @@ Update `backend/engine/deterministic_gatekeeper.py` so that:
 
 ```python
 """
-TenderLens - Qualification Engine: Deterministic Gatekeeper (v3.0)
+TenderLens - Qualification Engine: Deterministic Gatekeeper (v1.0.1)
 ==================================================================
 Executes pure-Python mathematical and statutory checks with zero hallucination:
 1. 3-Year Average Turnover + MSE PPP-2012 / GFR 173(i) exemption (with JV aggregation)
@@ -1591,7 +1591,7 @@ Update `backend/engine/qualification_engine.py` so `extract_criteria_from_chunks
 
 ```python
 """
-TenderLens - Qualification Engine: Hybrid Scorecard & 5-Pillar Synthesizer (v3.0)
+TenderLens - Qualification Engine: Hybrid Scorecard & 5-Pillar Synthesizer (v1.0.1)
 =================================================================================
 Synthesizes:
 1. Precedence DAG conflict resolution (Rank 1 Corr -> Rank 5 Main PDF)
@@ -1857,7 +1857,7 @@ class QualificationEngine:
         gemini_citations: Optional[List[ClauseCitation]] = None
     ) -> QualificationScorecard:
         """
-        Executes end-to-end qualification audit + synthesizes all 5 v3.0 Strategic Pillars.
+        Executes end-to-end qualification audit + synthesizes all 5 v1.0.1 Strategic Pillars.
         """
         if explicit_criteria:
             criteria = explicit_criteria
@@ -1988,7 +1988,7 @@ class QualificationEngine:
 
 ---
 
-### 4.9 Update `backend/main.py` (Add Dedicated v3.0 Pillar Endpoints + Enhanced SSE Stages)
+### 4.9 Update `backend/main.py` (Add Dedicated v1.0.1 Pillar Endpoints + Enhanced SSE Stages)
 
 Add the following endpoints to `backend/main.py` while keeping all existing routes (`/healthz`, `/api/v1/tenders/search`, `/api/v1/tenders/fetch`, `/api/v1/audit/evaluate`, `/api/v1/audit/stream/{task_id}`) completely intact:
 
@@ -2066,7 +2066,7 @@ Create `tests/test_v3_pillars.py` and run `uv run pytest` to verify every new pi
 
 ```python
 """
-TenderLens v3.0 — Comprehensive Unit & Integration Tests for Pillars A–E
+TenderLens v1.0.1 — Comprehensive Unit & Integration Tests for Pillars A–E
 """
 
 import pytest
@@ -2239,5 +2239,5 @@ After applying the file creations and updates above, execute the following comma
 uv run pytest -v
 ```
 
-* **Expected Outcome**: All 19 existing tests + 5 new v3.0 Pillar tests (`24/24 passed`) pass with zero warnings or regressions.
+* **Expected Outcome**: All 19 existing tests + 5 new v1.0.1 Pillar tests (`24/24 passed`) pass with zero warnings or regressions.
 * **API Verification**: Start FastAPI (`uv run uvicorn backend.main:app --reload --port 8000`) and inspect `/docs` to confirm the new `/api/v1/strategy/*` endpoints are live alongside the enriched `/api/v1/audit/evaluate` response.

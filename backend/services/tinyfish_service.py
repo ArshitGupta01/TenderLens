@@ -48,7 +48,7 @@ class TinyFishService:
         self.headers = {
             "X-API-Key": self.api_key,
             "Content-Type": "application/json",
-            "User-Agent": "TenderLens-Orchestrator/2.0"
+            "User-Agent": "TenderLens-Orchestrator/1.0.1"
         }
 
     async def search_tenders(
@@ -84,7 +84,7 @@ class TinyFishService:
             try:
                 response = await client.get(
                     SEARCH_ENDPOINT,
-                    headers={"X-API-Key": self.api_key, "User-Agent": "TenderLens-Orchestrator/2.0"},
+                    headers={"X-API-Key": self.api_key, "User-Agent": "TenderLens-Orchestrator/1.0.1"},
                     params=params
                 )
                 if response.status_code == 401:
