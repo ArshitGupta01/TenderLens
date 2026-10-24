@@ -27,7 +27,7 @@ const evidence = {
   main: {
     source: 'MAIN BID DOCUMENT / 42 PAGES',
     title: 'Baseline requirements for the opportunity.',
-    description: 'The main bid provides the initial thresholds, EMD and timelines. TenderLens checks it alongside linked terms and later amendments.'
+    description: 'The main bid provides baseline thresholds, EMD and timelines. The proposed workflow would compare it with linked terms and later amendments.'
   }
 };
 
@@ -120,7 +120,7 @@ const audienceProfiles = {
     index: 'PROFILE / 04',
     type: 'BID CONSULTANTS',
     title: 'Make each client review traceable.',
-    description: 'Compare opportunities against a bidder profile and keep the clause references beside the recommendation.',
+    description: 'The planned workflow compares opportunities against a bidder profile and keeps clause references beside the recommendation.',
     focus: 'Client profiles · evidence · review trail'
   }
 };

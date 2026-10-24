@@ -8,8 +8,8 @@
 
 This document establishes the **Final Production Implementation Plan** for TenderLens, synthesized directly from:
 1. **The Hackathon Presentation & Roles** (`TenderLens_Hackathon_Presentation.pptx`): Discover · Verify · Decide.
-2. **Argon's Research & Strategic Analysis** ([`argon.md`](file:///d:/softwares/Tenderlens/TenderLens/argon.md) & [`research/argon_report.md`](file:///d:/softwares/Tenderlens/TenderLens/research/argon_report.md)): Indian procurement precedence hierarchy (DAG), the 5 material qualification traps, and TinyFish production configurations.
-3. **The Shared Contract Specification** ([`contracts/schema.py`](file:///d:/softwares/Tenderlens/TenderLens/contracts/schema.py)): Locked data models connecting Research, Backend, and Frontend.
+2. **Argon's Research & Strategic Analysis** ([`argon.md`](argon.md) & [`research/argon_report.md`](research/argon_report.md)): Indian procurement precedence hierarchy (DAG), the 5 material qualification traps, and TinyFish production configurations.
+3. **The Shared Contract Specification** ([`contracts/schema.py`](contracts/schema.py)): Locked data models connecting Research, Backend, and Frontend.
 
 ---
 
@@ -34,7 +34,7 @@ To eliminate merge conflicts and maintain velocity, each team member owns an iso
 └──────────────────────────────┴─────────────────────────────┴─────────────────────────────┘
 ```
 
-> **The Boundary Principle**: Mohit & Antigravity build strictly in `backend/` and `scripts/`. Arshit consumes the FastAPI endpoints and renders the UI according to [`arshit-agents.md`](file:///d:/softwares/Tenderlens/TenderLens/arshit-agents.md). Argon works strictly in `research/`.
+> **The Boundary Principle**: Mohit & Antigravity build strictly in `backend/` and `scripts/`. Arshit consumes the FastAPI endpoints and renders the UI according to [`arshit-agents.md`](arshit-agents.md). Argon works strictly in `research/`.
 
 ---
 
@@ -139,7 +139,7 @@ Pure Python logic enforcing statutory procurement rules (zero math hallucination
 
 ### Module 4: Semantic Clause Engine (`backend/engine/qualification_engine.py`)
 - LLM structured extraction grounded in Precedence-tagged chunks.
-- Computes final `QualificationScorecard` JSON conforming to [`contracts/schema.py`](file:///d:/softwares/Tenderlens/TenderLens/contracts/schema.py):
+- Computes final `QualificationScorecard` JSON conforming to [`contracts/schema.py`](contracts/schema.py):
   - `STRONG_BID` (4.0 – 5.0)
   - `CONDITIONAL_BID` (2.5 – 3.9)
   - `RED_FLAG_NO_BID` (0.0 – 2.4)

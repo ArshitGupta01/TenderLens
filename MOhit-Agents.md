@@ -30,7 +30,7 @@ TenderLens is divided across three clear, non-conflicting domains:
 └────────────────────────────┴─────────────────────────────┴───────────────────────┘
 ```
 
-> **Rule**: We only write and modify backend code, intelligence layers, and engine verification logic. We do not touch frontend UI or database schemas directly; instead, we expose clean FastAPI endpoints matching [`contracts/schema.py`](file:///d:/softwares/Tenderlens/TenderLens/contracts/schema.py).
+> **Rule**: We only write and modify backend code, intelligence layers, and engine verification logic. We do not touch frontend UI or database schemas directly; instead, we expose clean FastAPI endpoints matching [`contracts/schema.py`](contracts/schema.py).
 
 ---
 
@@ -39,7 +39,7 @@ TenderLens is divided across three clear, non-conflicting domains:
 ### Milestone 1: Environment & Project Scaffolding
 - [x] Initialized UV package environment (`uv init --app --vcs none .`)
 - [x] Python pinned to `>=3.11` (Python 3.12 active via `.python-version`)
-- [x] Shared data contracts created in [`contracts/schema.py`](file:///d:/softwares/Tenderlens/TenderLens/contracts/schema.py)
+- [x] Shared data contracts created in [`contracts/schema.py`](contracts/schema.py)
 - [x] Secret & artifact hygiene: comprehensive `.gitignore` and `.env.example`
 - [x] Agent tracking systems established: `MOhit-Agents.md` and `arshit-agents.md`
 

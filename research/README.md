@@ -9,7 +9,7 @@ Welcome Argon! This directory is your dedicated workspace. All research, benchma
 - `samples/`: Sample tender text snippets, tricky ATCs, and corrigenda.
 
 ## Shared Data Contract
-To ensure your benchmark results and prompt outputs plug directly into the backend engine and frontend scorecard without merge conflicts, please follow the schema defined in [`contracts/schema.py`](file:///d:/softwares/Tenderlens/TenderLens/contracts/schema.py):
+To ensure your benchmark results and prompt outputs plug directly into the backend engine and frontend scorecard without merge conflicts, please follow the schema defined in [`contracts/schema.py`](../contracts/schema.py):
 - `BidderProfile`
 - `ClauseCitation`
 - `GateResult`

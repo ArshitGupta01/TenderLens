@@ -27,7 +27,7 @@ Arshit is responsible for bringing TenderLens to life on the user interface and 
 └─────────────────────────────────────────┴────────────────────────────────────────┘
 ```
 
-> **Integration Interface**: Arshit's frontend connects directly to Mohit's FastAPI backend endpoints. All data payloads adhere strictly to the shared models in [`contracts/schema.py`](file:///d:/softwares/Tenderlens/TenderLens/contracts/schema.py).
+> **Integration Interface**: Arshit's planned application frontend connects to Mohit's FastAPI backend endpoints. All data payloads adhere strictly to the shared models in [`contracts/schema.py`](contracts/schema.py).
 
 ---
 
@@ -57,7 +57,7 @@ Arshit can build the frontend immediately by stubbing or calling these standardi
     "bidder_profile": { ... conforming to BidderProfile in contracts/schema.py ... }
   }
   ```
-- **Response**: Full `QualificationScorecard` JSON matching [`contracts/schema.py`](file:///d:/softwares/Tenderlens/TenderLens/contracts/schema.py) (`score`, `recommendation`, `deterministic_gates`, `clause_citations`).
+- **Response**: Full `QualificationScorecard` JSON matching [`contracts/schema.py`](contracts/schema.py) (`score`, `recommendation`, `deterministic_gates`, `clause_citations`).
 
 ### 3. `GET /api/v1/audit/stream/{task_id}`
 - **Purpose**: Server-Sent Events (SSE) stream for live progress animation (Discovering -> Ingesting ATCs -> Math Gates -> LLM Audit -> Final Scorecard).
@@ -93,6 +93,11 @@ Recommended relational tables for Arshit's implementation:
 ---
 
 ## 4. Arshit's Progress Log & Milestones
+
+### Presentation prototype update — 2026-10-24
+- [x] Added a responsive static website in the repository root with an illustrative qualification report, evidence details, and audience profiles.
+- [x] Made prototype limitations clear: live search, uploads, automated audits, accounts, and saved reports are not connected.
+- [ ] Next application milestone remains a Next.js frontend wired to the planned backend APIs; the static prototype is not that application.
 
 - [ ] Initialize Next.js project in `frontend/` (TypeScript, Tailwind CSS, Lucide icons)
 - [ ] Build Bidder Profile configuration screen (Turnover, MSME status, Certifications)
