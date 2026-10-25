@@ -4002,3 +4002,85 @@ body.is-recovery-mode [data-recovery-footer] {
 .rag-pulse-update {
   animation: ragPulseGlow 1.2s ease-out;
 }
+
+/* Sleek Precedence DAG Status Pill */
+#rag-status {
+  margin-top: 14px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(16, 185, 129, 0.25) !important;
+  background: rgba(16, 185, 129, 0.08) !important;
+  color: #34d399 !important;
+  padding: 10px 14px !important;
+  text-align: center !important;
+  transition: opacity 0.4s ease, transform 0.4s ease !important;
+}
+#rag-status:empty {
+  display: none !important;
+}
+
+
+/* Sleek Statutory Undertakings & Declarations Studio */
+.strategy-affidavits-box {
+  margin-top: 24px !important;
+  padding: 22px !important;
+  border-radius: 10px !important;
+  border: 1px solid var(--line) !important;
+  background: var(--surface) !important;
+}
+
+.strategy-affidavit-tabs {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  margin: 16px 0 16px !important;
+}
+
+.strategy-affidavit-tab {
+  padding: 8px 14px !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 6px !important;
+  background: var(--paper-deep) !important;
+  color: var(--ink-soft) !important;
+  font-family: var(--sans) !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.strategy-affidavit-tab:hover {
+  border-color: var(--green) !important;
+  color: var(--ink) !important;
+}
+
+.strategy-affidavit-tab.is-active {
+  border-color: var(--green) !important;
+  background: var(--green-pale) !important;
+  color: var(--green) !important;
+  font-weight: 600 !important;
+  box-shadow: 0 0 0 1px var(--green) !important;
+}
+
+.strategy-affidavit-pre {
+  max-height: 400px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding: 18px 20px !important;
+  border-radius: 8px !important;
+  border: 1px solid var(--line) !important;
+  background: var(--paper-deep) !important;
+  color: var(--ink-soft) !important;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  font-family: var(--mono) !important;
+  font-size: 12.5px !important;
+  line-height: 1.65 !important;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+}
+
+.strategy-output-card-wide {
+  grid-column: 1 / -1 !important;
+}

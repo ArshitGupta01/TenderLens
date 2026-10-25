@@ -12,6 +12,141 @@
   let latestPrebidMarkdown = '';
   let latestAffidavits = [];
   let selectedAffidavitIndex = 0;
+
+  // --- CLIENT-SIDE & ENDPOINT PDF GENERATION ENGINE ---
+  function generateClientSidePdf(title, content) {
+    const lines = [];
+    lines.push('TENDERLENS STATUTORY BID PACK | GOVERNMENT OF INDIA PROCUREMENT');
+    lines.push('======================================================================');
+    lines.push(title.toUpperCase());
+    lines.push('======================================================================');
+    lines.push('');
+
+    for (const raw of content.split('\n')) {
+      let clean = raw.replace(/[#*`_]/g, '').trim();
+      if (!clean) { lines.push(''); continue; }
+      while (clean.length > 76) {
+        let idx = clean.lastIndexOf(' ', 76);
+        if (idx === -1) idx = 76;
+        lines.push(clean.slice(0, idx));
+        clean = clean.slice(idx).trim();
+      }
+      if (clean) lines.push(clean);
+    }
+
+    const pages = [];
+    const linesPerPage = 44;
+    for (let i = 0; i < lines.length; i += linesPerPage) {
+      pages.push(lines.slice(i, i + linesPerPage));
+    }
+    if (!pages.length) pages.push(['(Empty document)']);
+
+    const catalogObjNum = 1;
+    const pagesObjNum = 2;
+    const pageObjNums = [];
+    const contentObjNums = [];
+    let curObj = 3;
+
+    for (let i = 0; i < pages.length; i++) {
+      pageObjNums.push(curObj++);
+      contentObjNums.push(curObj++);
+    }
+    const fontObjNum = curObj++;
+    const objects = [];
+
+    // Catalog
+    objects.push({ num: catalogObjNum, str: '<< /Type /Catalog /Pages ' + pagesObjNum + ' 0 R >>' });
+
+    // Pages
+    const kids = pageObjNums.map(n => n + ' 0 R').join(' ');
+    objects.push({ num: pagesObjNum, str: '<< /Type /Pages /Kids [' + kids + '] /Count ' + pages.length + ' >>' });
+
+    // Page + Contents
+    for (let i = 0; i < pages.length; i++) {
+      const pageLines = pages[i];
+      let stream = 'BT\n/F1 10 Tf\n50 780 Td\n15 TL\n';
+      for (const l of pageLines) {
+        const escaped = l.replace(/\\/g, '\\\\').replace(/\(/g, '\\(').replace(/\)/g, '\\)');
+        stream += '(' + escaped + ') \'\n';
+      }
+      stream += 'ET\n';
+
+      objects.push({
+        num: pageObjNums[i],
+        str: '<< /Type /Page /Parent ' + pagesObjNum + ' 0 R /MediaBox [0 0 595 842] /Contents ' + contentObjNums[i] + ' 0 R /Resources << /Font << /F1 ' + fontObjNum + ' 0 R >> >> >>'
+      });
+
+      // Binary stream length
+      const streamLen = new TextEncoder().encode(stream).length;
+      objects.push({
+        num: contentObjNums[i],
+        str: '<< /Length ' + streamLen + ' >>\nstream\n' + stream + 'endstream'
+      });
+    }
+
+    // Font
+    objects.push({
+      num: fontObjNum,
+      str: '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>'
+    });
+
+    let pdf = '%PDF-1.4\n';
+    const offsets = [];
+    for (const obj of objects) {
+      offsets.push(new TextEncoder().encode(pdf).length);
+      pdf += obj.num + ' 0 obj\n' + obj.str + '\nendobj\n';
+    }
+
+    const startXref = new TextEncoder().encode(pdf).length;
+    pdf += 'xref\n0 ' + (objects.length + 1) + '\n';
+    pdf += '0000000000 65535 f \n';
+    for (const off of offsets) {
+      pdf += ('0000000000' + off).slice(-10) + ' 00000 n \n';
+    }
+    pdf += 'trailer\n<< /Size ' + (objects.length + 1) + ' /Root ' + catalogObjNum + ' 0 R >>\nstartxref\n' + startXref + '\n%%EOF\n';
+
+    return new Blob([pdf], { type: 'application/pdf' });
+  }
+
+  async function downloadAsPdf(title, markdownContent, filename) {
+    const safeName = (filename || 'tenderlens-bid').replace(/\s+/g, '_');
+    // Try backend PDF endpoint first
+    try {
+      if (apiBase) {
+        const res = await fetch(`${apiBase}/api/v1/strategy/export-pdf`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: title || 'TenderLens Statutory Declaration',
+            content_markdown: markdownContent || '',
+            filename: safeName
+          })
+        });
+        if (res.ok) {
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `${safeName}.pdf`;
+          link.click();
+          URL.revokeObjectURL(url);
+          return;
+        }
+      }
+    } catch (err) {
+      console.warn('Backend PDF endpoint unavailable, generating client-side PDF:', err);
+    }
+
+    // Client-side fallback: generates valid PDF blob directly
+    const blob = generateClientSidePdf(title, markdownContent);
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${safeName}.pdf`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
   let submittedTitle = '';
   let submittedPortal = '';
 
@@ -886,12 +1021,7 @@
 
   document.querySelector('[data-download-prebid]')?.addEventListener('click', () => {
     if (!latestPrebidMarkdown) return;
-    const url = URL.createObjectURL(new Blob([latestPrebidMarkdown], { type: 'text/markdown;charset=utf-8' }));
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'prebid-representation-pack.md';
-    link.click();
-    URL.revokeObjectURL(url);
+    downloadAsPdf('Pre-Bid Legal & Statutory Representation Pack', latestPrebidMarkdown, 'prebid-representation-pack');
   });
 
   document.querySelector('[data-copy-affidavit]')?.addEventListener('click', async (event) => {
@@ -910,12 +1040,32 @@
   document.querySelector('[data-download-affidavit]')?.addEventListener('click', () => {
     const item = latestAffidavits[selectedAffidavitIndex];
     if (!item) return;
-    const url = URL.createObjectURL(new Blob([item.content_markdown], { type: 'text/markdown;charset=utf-8' }));
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `${item.doc_code.toLowerCase()}.md`;
-    link.click();
-    URL.revokeObjectURL(url);
+    downloadAsPdf(item.doc_title || item.doc_code, item.content_markdown, `${item.doc_code.toLowerCase()}`);
+  });
+
+  document.querySelector('[data-download-full-pack]')?.addEventListener('click', () => {
+    if (!latestAffidavits || !latestAffidavits.length) return;
+    let fullPack = '# TENDERLENS COMPLETE FINAL BID & STATUTORY UNDERTAKING PACK\n\n';
+    fullPack += `Tender: ${submittedTitle || 'General Tender'} | Portal: ${submittedPortal || 'GeM'}\n`;
+    fullPack += `Generated: ${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}\n\n`;
+    
+    if (latestPrebidMarkdown) {
+      fullPack += '====================================================\n';
+      fullPack += 'PART 1: PRE-BID LEGAL REPRESENTATION PACK\n';
+      fullPack += '====================================================\n\n';
+      fullPack += latestPrebidMarkdown + '\n\n';
+    }
+
+    fullPack += '====================================================\n';
+    fullPack += 'PART 2: STATUTORY UNDERTAKINGS & DECLARATIONS\n';
+    fullPack += '====================================================\n\n';
+    
+    latestAffidavits.forEach((aff, i) => {
+      fullPack += `### SECTION 2.${i + 1}: ${aff.doc_title || aff.doc_code}\n\n`;
+      fullPack += aff.content_markdown + '\n\n';
+    });
+
+    downloadAsPdf('TenderLens Complete Final Bid Pack', fullPack, 'tenderlens-complete-final-bid-pack');
   });
 
   document.querySelector('[data-forensics-search]')?.addEventListener('click', async (event) => {
@@ -1033,12 +1183,12 @@
     });
   }
 
-  async function runPrecedenceRag() {
+  async function runPrecedenceRag(isInitial = false) {
     if (!ragForm) return;
     const queryInput = document.getElementById('rag-query-input');
     const submitBtn = document.getElementById('rag-submit-btn');
     if (submitBtn) submitBtn.disabled = true;
-    setStatus(ragStatus, 'Building Precedence DAG and resolving multi-document conflicts…', 'loading');
+    if (!isInitial) { setStatus(ragStatus, 'Building Precedence DAG and resolving multi-document conflicts…', 'loading'); }
 
     // Manage session in browser localStorage without backend database persistence
     try {
@@ -1175,7 +1325,16 @@
       setTimeout(() => outPanel.classList.remove('rag-pulse-update'), 1200);
     }
 
-    setStatus(ragStatus, 'Precedence DAG resolved.', 'success');
+    if (!isInitial) {
+      setStatus(ragStatus, 'Precedence DAG resolved.', 'success');
+      setTimeout(() => {
+        if (ragStatus && ragStatus.textContent === 'Precedence DAG resolved.') {
+          setStatus(ragStatus, '');
+        }
+      }, 2500);
+    } else {
+      setStatus(ragStatus, '');
+    }
     if (submitBtn) submitBtn.disabled = false;
   }
 
@@ -1207,7 +1366,7 @@
       });
     }
     // Auto-resolve initial scenario so workbench is immediately populated on load
-    runPrecedenceRag();
+    runPrecedenceRag(true);
   }
 
 

@@ -65,3 +65,14 @@ tenderlens back/
 tenderlens_back*/
 *.bundle
 supabase/.temp/
+
+# Scratch & Local temporary files
+scratch/
+.pytest_cache/
+round1_qa.txt
+TENDERLENS_PPT_VS_CURRENT_SOLUTION_COMPARISON.txt
+agent.md
+argon.md
+scope.md
+updates_scope.md
+UPDATES_IMPLEMENTATION_GUIDE.md

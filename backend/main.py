@@ -14,7 +14,7 @@ import json
 import asyncio
 import logging
 from typing import List, Dict, Any, Optional
-from fastapi import FastAPI, HTTPException, BackgroundTasks, Query
+from fastapi import FastAPI, HTTPException, BackgroundTasks, Query, Response
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sse_starlette.sse import EventSourceResponse
@@ -537,6 +537,72 @@ class FairPlayShieldAuditRequest(BaseModel):
     tender_title: str
     bidder_profile: BidderProfile
     criteria: TenderStatutoryCriteria
+
+
+
+class PDFExportRequest(BaseModel):
+    title: str = "TenderLens Statutory Declaration"
+    content_markdown: str = ""
+    filename: Optional[str] = "tenderlens-bid"
+    doc_code: Optional[str] = None
+
+
+@app.post("/api/v1/strategy/export-pdf")
+async def export_pdf_endpoint(payload: PDFExportRequest):
+    """
+    Renders high-fidelity statutory declaration or bid pack PDF using PyMuPDF.
+    """
+    import fitz
+    doc = fitz.open()
+    page = doc.new_page()
+
+    # Header
+    page.insert_text((50, 42), "TENDERLENS STATUTORY BID PACK | GOVERNMENT OF INDIA PROCUREMENT", fontsize=8, color=(0.3, 0.45, 0.4))
+    page.draw_line((50, 48), (545, 48), color=(0.1, 0.6, 0.4), width=1.2)
+
+    # Title
+    page.insert_text((50, 72), payload.title[:80], fontsize=13, fontname="helv", color=(0.05, 0.15, 0.1))
+
+    y = 95
+    for raw_line in payload.content_markdown.split("\n"):
+        line = raw_line.rstrip()
+        if y > 760:
+            page.insert_text((50, 812), "Generated deterministically by TenderLens | Conforms to GFR 2017 & Public Procurement Orders", fontsize=7, color=(0.5, 0.5, 0.5))
+            page = doc.new_page()
+            page.insert_text((50, 42), f"TENDERLENS STATUTORY BID PACK | {payload.title[:50]}", fontsize=8, color=(0.3, 0.45, 0.4))
+            page.draw_line((50, 48), (545, 48), color=(0.1, 0.6, 0.4), width=1.2)
+            y = 70
+
+        if line.startswith("#"):
+            clean = line.lstrip("#").strip()
+            page.insert_text((50, y), clean[:90], fontsize=11, fontname="helv", color=(0.08, 0.45, 0.3))
+            y += 18
+        elif not line.strip():
+            y += 8
+        else:
+            words = line.split(" ")
+            cur = ""
+            for w in words:
+                test = cur + " " + w if cur else w
+                if len(test) > 85:
+                    page.insert_text((50, y), cur, fontsize=9.5, fontname="helv", color=(0.12, 0.12, 0.12))
+                    y += 14
+                    cur = w
+                else:
+                    cur = test
+            if cur:
+                page.insert_text((50, y), cur, fontsize=9.5, fontname="helv", color=(0.12, 0.12, 0.12))
+                y += 14
+
+    page.insert_text((50, 812), "Generated deterministically by TenderLens | Conforms to GFR 2017 & Public Procurement Orders", fontsize=7, color=(0.5, 0.5, 0.5))
+
+    pdf_bytes = doc.tobytes()
+    safe_name = (payload.filename or "bid-pack").replace(" ", "_")
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="{safe_name}.pdf"'}
+    )
 
 
 @app.post("/api/v1/strategy/preview", response_model=StrategyToolkitResponse)

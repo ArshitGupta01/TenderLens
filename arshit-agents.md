@@ -453,5 +453,21 @@ ound1_qa.txt).
   - Implemented `autoPopulateFullForm()` in `strategy.js` and `frontend/strategy.js` that automatically fills every single input across all 4 sections (Tender Details, Bidder Details, Tender Requirements, and EMD Optimizer) upon page load.
   - Pulls bidder details from authenticated Supabase profile (or local cache/Indian MSME defaults) and tender criteria from active pre-fetched tender PDF (Turnover ₹333L, Exp 0 yrs, EMD ₹0, Local content 20%, statutory relief checked).
   - Updated 1-click scenario preset bar with dedicated `⚡ Active Tender & Profile (GeM Solar PV)` button and wired all presets to dynamically set `.preset-btn-active` and auto-submit preview (`form.requestSubmit()`).
+- [x] Precedence DAG Status Pill Polish & Auto-Dismiss:
+  - Polished #rag-status styling in styles.css and frontend/styles.css with emerald border, soft background, 14px top margin, and :empty { display: none !important; }.
+  - Configured runPrecedenceRag(isInitial) so status is clean and hidden on initial page load, and when clicked by the user, smoothly auto-dismisses after 2.5 seconds.
+- [x] Cleaned Redundant Tracked Files & Tagged Release incremental:
+  - Untracked obsolete temporary Markdown and notes files (agent.md, argon.md, scope.md, updates_scope.md, UPDATES_IMPLEMENTATION_GUIDE.md, round1_qa.txt, TENDERLENS_PPT_VS_CURRENT_SOLUTION_COMPARISON.txt) from git index via git rm --cached while preserving them on disk.
+  - Updated .gitignore to prevent re-tracking of temporary files and scratch scripts.
+  - Created git release tag incremental and prepared final push to origin/main.
+- [x] Converted Final Bid & Statutory Affidavits Downloads from .md to .pdf:
+  - Replaced legacy .md export buttons with high-fidelity .pdf export buttons across strategy studio: Download .pdf ↓ for individual statutory undertakings, Download .pdf ↓ for the Pre-Bid Legal Pack, and added primary Download Final Bid Pack (.pdf) ↓ button.
+  - Implemented backend PDF generation endpoint POST /api/v1/strategy/export-pdf in backend/main.py utilizing PyMuPDF (fitz) with official Government of India procurement headers, statutory citations, word-wrapped declaration bodies, and GFR 2017 compliance footers.
+  - Implemented standalone client-side JavaScript PDF generator fallback (generateClientSidePdf) in strategy.js and frontend/strategy.js ensuring 100% reliable .pdf downloads whether connected to FastAPI or running statically.
+- [x] Polished Statutory Undertakings Studio & Layout Balance:
+  - Styled .strategy-affidavits-box container with subtle border and elevated surface padding.
+  - Replaced raw browser buttons with interactive rounded tab pills (.strategy-affidavit-tab) with active emerald glowing highlight (.is-active) and tab switching.
+  - Fixed pre element line-wrap blowout: styled .strategy-affidavit-pre with white-space: pre-wrap !important, word-break: break-word, max-height: 400px, and soft inset background, completely preventing unwrapped text overflow.
+  - Fixed Pillar 08 (Mandatory 25% MSE Quota Gateway) layout to reliably span full width (grid-column: 1 / -1) with zero awkward gaps.
 - [ ] Next milestone: Final stage dry-run and hackathon live presentation defense.
 
