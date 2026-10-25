@@ -448,5 +448,10 @@ ound1_qa.txt).
   - Added active button highlighting for Scenario A and Scenario B.
   - Pre-resolved Scenario A on page load so governing vs. superseded cards are visible from the start.
 - [x] Verified complete flow with Playwright end-to-end tests across port 8000 (FastAPI) and port 4177 (static server).
+- [x] Initial Load Full Form Auto-populate:
+  - Resolved contradiction where preset buttons appeared active while form fields below were empty.
+  - Implemented `autoPopulateFullForm()` in `strategy.js` and `frontend/strategy.js` that automatically fills every single input across all 4 sections (Tender Details, Bidder Details, Tender Requirements, and EMD Optimizer) upon page load.
+  - Pulls bidder details from authenticated Supabase profile (or local cache/Indian MSME defaults) and tender criteria from active pre-fetched tender PDF (Turnover ₹333L, Exp 0 yrs, EMD ₹0, Local content 20%, statutory relief checked).
+  - Updated 1-click scenario preset bar with dedicated `⚡ Active Tender & Profile (GeM Solar PV)` button and wired all presets to dynamically set `.preset-btn-active` and auto-submit preview (`form.requestSubmit()`).
 - [ ] Next milestone: Final stage dry-run and hackathon live presentation defense.
 

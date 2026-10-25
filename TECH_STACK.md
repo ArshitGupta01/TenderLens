@@ -1,29 +1,35 @@
 # TenderLens — Tech Stack & Working Map
 
-> Concise project memory reference · Reviewed 2026-10-24
+> Concise project memory reference · Current final stack · Reviewed 2026-10-25
 
 ## One-line summary
 
 TenderLens is a **static multi-page procurement UI** backed by a **Python
-FastAPI tender-intelligence API**, combining deterministic eligibility checks,
-document precedence, optional LLM review, and Supabase account persistence.
+FastAPI 2.0.2 tender-intelligence platform**, combining deterministic
+eligibility checks, document precedence, asynchronous jobs, optional LLM
+review, caching, object storage, and Supabase account persistence.
 
 ## Stack at a glance
 
 | Layer | Technology |
 |---|---|
-| UI | Semantic HTML, Vanilla ES6+ JavaScript, responsive CSS |
-| Visual components | React 19 + TypeScript, inline SVG, esbuild |
-| Styling/utilities | CSS custom properties, Tailwind config, `clsx`, `tailwind-merge` |
-| Backend | Python 3.11+, FastAPI, Uvicorn, Pydantic v2 |
-| Async/API | `httpx`, SSE via `sse-starlette` |
-| Documents | PyMuPDF (`pymupdf`) |
-| Web intelligence | TinyFish Search/Fetch/Agent; Tavily fallback |
-| AI review | Google Gemini SDK with LangChain fallback |
-| Auth/database | Supabase Auth + PostgreSQL + PostgREST + RLS |
-| Hosting | Vercel static deployment; FastAPI local/API deployment |
+| Layer | Current technology |
+|---|---|
+| Web UI | Semantic HTML5, Vanilla ES6+ JavaScript, responsive CSS |
+| Visual UI | React 19 + TypeScript + inline SVG, bundled with esbuild |
+| CSS/tooling | CSS custom properties, Tailwind config, `clsx`, `tailwind-merge` |
+| API | Python `>=3.11`, FastAPI 0.162+, Uvicorn, Pydantic v2 |
+| Async jobs | Celery 5.4+ with Redis broker/result backend |
+| HTTP/SSE | `httpx` and `sse-starlette` |
+| Document intelligence | PyMuPDF; Docling/TableFormer integration |
+| Web intelligence | TinyFish Search/Fetch/Agent, Tavily fallback, SerpAPI |
+| AI review | Google Gemini SDK; LangChain provider fallback |
+| Cache | Redis with in-memory TTL fallback |
+| Object storage | AWS S3 or self-hosted MinIO via `boto3`; local vault fallback |
+| Database/auth | Supabase Auth + PostgreSQL + PostgREST + RLS |
+| Hosting | Vercel static frontend; FastAPI API deployment |
 | Testing | Pytest, pytest-asyncio, FastAPI TestClient, Node checks, TypeScript |
-| Package management | `uv`/`uv.lock` for Python; npm/package-lock for frontend tooling |
+| Package management | `uv`/`uv.lock` and npm/package-lock |
 
 ## Runtime architecture
 
@@ -34,7 +40,10 @@ Browser
   └─ JSON/SSE requests
         ↓
 FastAPI: backend/main.py
-  ├─ TinyFish/Tavily discovery and fetching
+  ├─ TinyFish/Tavily/SerpAPI discovery and fetching
+  ├─ Celery workers through Redis
+  ├─ Redis search/task cache
+  ├─ S3/MinIO document vault
   ├─ PyMuPDF clause extraction
   ├─ deterministic_gatekeeper.py
   ├─ precedence_rag_engine.py
@@ -45,6 +54,10 @@ FastAPI: backend/main.py
         ↓
 Supabase Auth + PostgreSQL + Row-Level Security
 ```
+
+When Redis is unavailable, the application falls back to in-memory caching.
+When S3/MinIO credentials are unavailable, documents use the local
+`.storage_vault` fallback. Celery dispatch also has an inline fallback path.
 
 ## Frontend map
 
@@ -68,10 +81,17 @@ links, and saved audit records.
 ## Backend map
 
 - `backend/main.py`: FastAPI app, request models, routes, SSE, static mounting.
+- `backend/celery_app.py`: asynchronous tender evaluation and crawling tasks.
 - `backend/config.py`: `.env` settings, provider keys, CORS, portal allowlist,
   crawl limits, cache paths.
 - `backend/services/tinyfish_service.py`: search, batch fetch, recursive ATC
-  discovery, Tavily fallback.
+  discovery, Redis caching, Tavily fallback.
+- `backend/services/redis_service.py`: Redis cache/task-broker adapter with
+  in-memory fallback.
+- `backend/services/storage_service.py`: S3/MinIO document storage with local
+  vault fallback.
+- `backend/services/serpapi_service.py`: SerpAPI search integration.
+- `backend/services/docling_service.py`: table/document extraction integration.
 - `backend/services/document_processor.py`: PDF text/blocks, tables, hidden
   links, bounding boxes, precedence ranks.
 - `backend/services/supabase_service.py`: JWT-scoped Supabase access and
@@ -116,11 +136,22 @@ POST /api/v1/strategy/preview
   → StrategyToolkitResponse
 ```
 
+### Asynchronous audit
+
+```text
+POST /api/v1/audit/evaluate-async
+  → Celery task
+  → Redis broker/result backend
+  → worker updates task progress
+  → frontend follows /api/v1/audit/stream/{task_id}
+```
+
 ### Other important routes
 
 ```text
 POST /api/v1/tenders/search
 POST /api/v1/tenders/fetch
+POST /api/v1/audit/evaluate-async
 POST /api/v1/rag/query
 POST /api/v1/rag/precedence-graph
 GET  /api/v1/strategy/forensics
@@ -187,6 +218,8 @@ node --check theme.js
 ## Remember
 
 - This is currently **static frontend + FastAPI**, not an active Next.js app.
+- The final backend operations stack includes **Celery + Redis + S3/MinIO
+  adapters**, with local fallbacks for development.
 - Sample reports, presets, partner archetypes, and recommendations are
   illustrative; verify official tender documents before acting.
 - Deterministic math handles explicit values; LLM output is supplementary.

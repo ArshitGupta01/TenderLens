@@ -16,6 +16,42 @@
   let submittedPortal = '';
 
     const PRESETS = {
+    'zero-history-startup': {
+      tender_title: 'Supply & Commissioning of Indigenous Smart LV Switchgear Panels (GeM Cartel Challenge)',
+      tender_id: 'GEM/2026/B/9941208',
+      source_portal: 'GeM',
+      company_name: 'AetherGrid Hardware Labs Pvt. Ltd.',
+      entity_type: 'OEM',
+      years_in_business: 0,
+      is_msme_registered: true,
+      is_startup_recognized: true,
+      turnover_year_1_lakhs: 0,
+      turnover_year_2_lakhs: 0,
+      turnover_year_3_lakhs: 0,
+      local_content_percentage: 82,
+      held_certifications: 'ISO 9001, BIS, NABL Type-Test, STQC',
+      past_similar_project_values_lakhs: '',
+      min_annual_turnover_lakhs: 200,
+      min_experience_years: 3,
+      estimated_bid_value_lakhs: 500,
+      emd_amount_inr: 1000000,
+      min_local_content_percentage: 50,
+      mandatory_certifications: 'ISO 9001, BIS',
+      oem_authorization_mandatory: false,
+      emd_exemption_confirmed_by_tender: true,
+      msme_turnover_relaxation_allowed: true,
+      is_turnover_exemption_revoked_by_atc: true,
+      msme_experience_relaxation_allowed: true,
+      is_experience_exemption_revoked_by_atc: true,
+      proprietary_brand_lock_detected: true,
+      proprietary_brand_details: 'Clause 14.2 Buyer ATC: Only imported Make-X switchgear permitted; no MSME/Startup relaxation.',
+      estimated_emd_lockup_days: 120,
+      annual_capital_cost_rate_pct: 12.0,
+      active_simultaneous_bids_count: 3,
+      available_emd_working_capital_inr: 2500000,
+      surety_bond_permitted_by_tender: 'true'
+    },
+
     'bhel-msme': null, // Populated after definition
     'cppp-epc': null,
     'icmr-medical': null,
@@ -163,18 +199,50 @@
     : new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(value);
 
 
+  
   // -------------------------------------------------------------------------
-  // Autofill Tender Requirements from applied/target tender
+  // Master Auto-populate Engine: Fills all form fields from active PDF & profile
   // -------------------------------------------------------------------------
-  function autofillTenderRequirements(tenderData) {
-    if (!tenderData) {
+  async function autoPopulateFullForm(force = false) {
+    // 1. Fetch user profile (Supabase Cloud -> localStorage -> verified Indian MSME defaults)
+    let profile = null;
+    const auth = window.TenderLensAuth;
+    if (auth?.user) {
       try {
-        const stored = localStorage.getItem('tenderlens_target_tender');
-        if (stored) tenderData = JSON.parse(stored);
+        const res = await auth.loadProfile();
+        if (!res.error && res.data) profile = res.data;
       } catch (_) {}
     }
-    if (!tenderData) {
-      tenderData = {
+    if (!profile) {
+      try {
+        const localRaw = localStorage.getItem('tenderlens_bidder_profile');
+        if (localRaw) profile = JSON.parse(localRaw);
+      } catch (_) {}
+    }
+    if (!profile) {
+      profile = {
+        organization: 'SuryaUrja Infra Solutions Pvt Ltd',
+        bidder_type: 'OEM',
+        years_in_business: 4,
+        is_msme_registered: true,
+        is_startup_recognized: true,
+        turnover_year_1_lakhs: 180,
+        turnover_year_2_lakhs: 210,
+        turnover_year_3_lakhs: 240,
+        local_content_percentage: 68.0,
+        held_certifications: ['ISO 9001', 'BIS', 'STQC'],
+        past_similar_project_values_lakhs: '140, 110, 95'
+      };
+    }
+
+    // 2. Fetch tender criteria (localStorage -> pre-fetched GeM Solar PV PDF defaults)
+    let tender = null;
+    try {
+      const localTender = localStorage.getItem('tenderlens_target_tender');
+      if (localTender) tender = JSON.parse(localTender);
+    } catch (_) {}
+    if (!tender) {
+      tender = {
         tender_title: 'Design, Supply, Erection & Commissioning of Rooftop Solar PV Plants (100 kWp to 500 kWp)',
         tender_id: 'GEM/2026/B/4182901',
         source_portal: 'GeM',
@@ -190,68 +258,131 @@
         is_turnover_exemption_revoked_by_atc: false,
         is_experience_exemption_revoked_by_atc: false,
         proprietary_brand_lock_detected: false,
-        proprietary_brand_details: ''
+        proprietary_brand_details: '',
+        estimated_emd_lockup_days: 120,
+        annual_capital_cost_rate_pct: 12.0,
+        active_simultaneous_bids_count: 3,
+        available_emd_working_capital_inr: 2500000,
+        surety_bond_permitted_by_tender: 'true'
       };
     }
 
-    if (tenderData.tender_title && (!field('tender_title')?.value || field('tender_title').value.trim() === '')) {
-      field('tender_title').value = tenderData.tender_title;
-    }
-    if (tenderData.tender_id && (!field('tender_id')?.value || field('tender_id').value.trim() === '')) {
-      field('tender_id').value = tenderData.tender_id;
-    }
-    if (tenderData.source_portal && field('source_portal')) {
-      field('source_portal').value = tenderData.source_portal;
-    }
-
-    if (tenderData.min_annual_turnover_lakhs != null) {
-      field('min_annual_turnover_lakhs').value = String(tenderData.min_annual_turnover_lakhs);
-    }
-    if (tenderData.min_experience_years != null) {
-      field('min_experience_years').value = String(tenderData.min_experience_years);
-    }
-    if (tenderData.estimated_bid_value_lakhs != null && String(tenderData.estimated_bid_value_lakhs) !== '') {
-      field('estimated_bid_value_lakhs').value = String(tenderData.estimated_bid_value_lakhs);
-    }
-    if (tenderData.emd_amount_inr != null) {
-      field('emd_amount_inr').value = String(tenderData.emd_amount_inr);
-    }
-    if (tenderData.min_local_content_percentage != null) {
-      field('min_local_content_percentage').value = String(tenderData.min_local_content_percentage);
-    }
-    if (tenderData.mandatory_certifications) {
-      field('mandatory_certifications').value = tenderData.mandatory_certifications;
-    }
-    if (tenderData.msme_turnover_relaxation_allowed != null) {
-      field('msme_turnover_relaxation_allowed').checked = Boolean(tenderData.msme_turnover_relaxation_allowed);
-    }
-    if (tenderData.msme_experience_relaxation_allowed != null) {
-      field('msme_experience_relaxation_allowed').checked = Boolean(tenderData.msme_experience_relaxation_allowed);
-    }
-    if (tenderData.emd_exemption_confirmed_by_tender != null) {
-      field('emd_exemption_confirmed_by_tender').checked = Boolean(tenderData.emd_exemption_confirmed_by_tender);
-    }
-    if (tenderData.is_turnover_exemption_revoked_by_atc != null) {
-      field('is_turnover_exemption_revoked_by_atc').checked = Boolean(tenderData.is_turnover_exemption_revoked_by_atc);
-    }
-    if (tenderData.is_experience_exemption_revoked_by_atc != null) {
-      field('is_experience_exemption_revoked_by_atc').checked = Boolean(tenderData.is_experience_exemption_revoked_by_atc);
-    }
-    if (tenderData.proprietary_brand_lock_detected != null) {
-      field('proprietary_brand_lock_detected').checked = Boolean(tenderData.proprietary_brand_lock_detected);
-    }
-    if (tenderData.proprietary_brand_details != null) {
-      field('proprietary_brand_details').value = tenderData.proprietary_brand_details;
+    // Fill Section 01: Tender details
+    if (force || !field('tender_title')?.value) field('tender_title').value = tender.tender_title || '';
+    if (force || !field('tender_id')?.value) field('tender_id').value = tender.tender_id || '';
+    if (force || !field('source_portal')?.value) {
+      const pSelect = field('source_portal');
+      if (pSelect) {
+        const opt = Array.from(pSelect.options).find((o) => o.value.toLowerCase() === (tender.source_portal || 'gem').toLowerCase());
+        if (opt) pSelect.value = opt.value;
+      }
     }
 
-    setStatus(status, 'Loaded tender requirements from applied tender (Turnover ₹333L, Exp 0 yrs, EMD ₹0).', 'success');
+    // Fill Section 02: Bidder details
+    if (force || !field('company_name')?.value) {
+      field('company_name').value = profile.organization || profile.full_name || 'SuryaUrja Infra Solutions Pvt Ltd';
+    }
+    if (force || !field('entity_type')?.value) {
+      const eSelect = field('entity_type');
+      if (eSelect) {
+        const bType = profile.bidder_type || 'OEM';
+        const opt = Array.from(eSelect.options).find((o) => o.value.toLowerCase() === bType.toLowerCase());
+        if (opt) eSelect.value = opt.value;
+      }
+    }
+    if (force || !field('years_in_business')?.value || field('years_in_business').value === '0') {
+      field('years_in_business').value = String(profile.years_in_business ?? profile.years_active ?? 4);
+    }
+    field('is_msme_registered').checked = profile.is_msme_registered != null ? Boolean(profile.is_msme_registered) : true;
+    field('is_startup_recognized').checked = profile.is_startup_recognized != null ? Boolean(profile.is_startup_recognized) : true;
+    if (force || !field('turnover_year_1_lakhs')?.value || field('turnover_year_1_lakhs').value === '0') {
+      field('turnover_year_1_lakhs').value = String(profile.turnover_year_1_lakhs ?? 180);
+    }
+    if (force || !field('turnover_year_2_lakhs')?.value || field('turnover_year_2_lakhs').value === '0') {
+      field('turnover_year_2_lakhs').value = String(profile.turnover_year_2_lakhs ?? 210);
+    }
+    if (force || !field('turnover_year_3_lakhs')?.value || field('turnover_year_3_lakhs').value === '0') {
+      field('turnover_year_3_lakhs').value = String(profile.turnover_year_3_lakhs ?? 240);
+    }
+    if (force || !field('local_content_percentage')?.value || field('local_content_percentage').value === '0') {
+      field('local_content_percentage').value = String(profile.local_content_percentage ?? 68);
+    }
+    if (force || !field('held_certifications')?.value) {
+      const certs = Array.isArray(profile.held_certifications)
+        ? profile.held_certifications.join(', ')
+        : (profile.held_certifications || 'ISO 9001, BIS, STQC');
+      field('held_certifications').value = certs;
+    }
+    if (force || !field('past_similar_project_values_lakhs')?.value) {
+      field('past_similar_project_values_lakhs').value = profile.past_similar_project_values_lakhs || '140, 110, 95';
+    }
+
+    // Fill Section 03: Tender requirements
+    if (force || !field('min_annual_turnover_lakhs')?.value) {
+      field('min_annual_turnover_lakhs').value = String(tender.min_annual_turnover_lakhs ?? 333);
+    }
+    if (force || !field('min_experience_years')?.value) {
+      field('min_experience_years').value = String(tender.min_experience_years ?? 0);
+    }
+    if (force || !field('estimated_bid_value_lakhs')?.value) {
+      field('estimated_bid_value_lakhs').value = String(tender.estimated_bid_value_lakhs ?? 480);
+    }
+    if (force || !field('emd_amount_inr')?.value) {
+      field('emd_amount_inr').value = String(tender.emd_amount_inr ?? 0);
+    }
+    if (force || !field('min_local_content_percentage')?.value) {
+      field('min_local_content_percentage').value = String(tender.min_local_content_percentage ?? 20);
+    }
+    if (force || !field('mandatory_certifications')?.value) {
+      field('mandatory_certifications').value = tender.mandatory_certifications || 'ISO-9001, BIS';
+    }
+    field('msme_turnover_relaxation_allowed').checked = tender.msme_turnover_relaxation_allowed != null ? Boolean(tender.msme_turnover_relaxation_allowed) : true;
+    field('msme_experience_relaxation_allowed').checked = tender.msme_experience_relaxation_allowed != null ? Boolean(tender.msme_experience_relaxation_allowed) : true;
+    field('emd_exemption_confirmed_by_tender').checked = tender.emd_exemption_confirmed_by_tender != null ? Boolean(tender.emd_exemption_confirmed_by_tender) : true;
+    field('is_turnover_exemption_revoked_by_atc').checked = Boolean(tender.is_turnover_exemption_revoked_by_atc);
+    field('is_experience_exemption_revoked_by_atc').checked = Boolean(tender.is_experience_exemption_revoked_by_atc);
+    field('proprietary_brand_lock_detected').checked = Boolean(tender.proprietary_brand_lock_detected);
+    if (tender.proprietary_brand_details) {
+      field('proprietary_brand_details').value = tender.proprietary_brand_details;
+    }
+
+    // Fill Section 04: EMD scenario
+    if (force || !field('estimated_emd_lockup_days')?.value) {
+      field('estimated_emd_lockup_days').value = String(tender.estimated_emd_lockup_days ?? 120);
+    }
+    if (force || !field('annual_capital_cost_rate_pct')?.value) {
+      field('annual_capital_cost_rate_pct').value = String(tender.annual_capital_cost_rate_pct ?? 12.0);
+    }
+    if (force || !field('active_simultaneous_bids_count')?.value) {
+      field('active_simultaneous_bids_count').value = String(tender.active_simultaneous_bids_count ?? 3);
+    }
+    if (force || !field('available_emd_working_capital_inr')?.value) {
+      field('available_emd_working_capital_inr').value = String(tender.available_emd_working_capital_inr ?? 2500000);
+    }
+    if (tender.surety_bond_permitted_by_tender && field('surety_bond_permitted_by_tender')) {
+      field('surety_bond_permitted_by_tender').value = tender.surety_bond_permitted_by_tender;
+    }
+
+    setStatus(status, 'Loaded criteria from active tender PDF & signed-in bidder profile.', 'success');
+  }
+
+  function autofillTenderRequirements(tenderData) {
+    autoPopulateFullForm(true);
   }
 
   document.querySelectorAll('[data-autofill-tender-reqs]').forEach((btn) => {
     btn.addEventListener('click', () => {
-      autofillTenderRequirements();
+      autoPopulateFullForm(true);
     });
   });
+
+  document.querySelector('[data-load-applied-tender]')?.addEventListener('click', () => {
+    document.querySelectorAll('.preset-btn').forEach((b) => b.classList.remove('preset-btn-active'));
+    document.querySelector('[data-load-applied-tender]')?.classList.add('preset-btn-active');
+    autoPopulateFullForm(true);
+    form.requestSubmit();
+  });
+
 
   function applyPreset(presetKey) {
     const data = PRESETS[presetKey];
@@ -270,6 +401,8 @@
 
   document.querySelectorAll('[data-strategy-preset]').forEach((btn) => {
     btn.addEventListener('click', () => {
+      document.querySelectorAll('.preset-btn').forEach((b) => b.classList.remove('preset-btn-active'));
+      btn.classList.add('preset-btn-active');
       applyPreset(btn.dataset.strategyPreset);
       form.requestSubmit();
     });
@@ -1077,37 +1210,7 @@
     runPrecedenceRag();
   }
 
-  // Live Hackathon Demo Preset Listener
-  const presetBtn = document.querySelector('[data-load-zero-history-preset]');
-  if (presetBtn) {
-    presetBtn.addEventListener('click', () => {
-      field('tender_title').value = 'Supply & Commissioning of Indigenous Smart LV Switchgear Panels';
-      field('tender_id').value = 'GEM/2026/B/9941208';
-      field('source_portal').value = 'GeM';
-      field('company_name').value = 'AetherGrid Hardware Labs Pvt. Ltd.';
-      field('entity_type').value = 'OEM';
-      field('years_in_business').value = '0';
-      field('is_msme_registered').checked = true;
-      field('is_startup_recognized').checked = true;
-      field('turnover_year_1_lakhs').value = '0';
-      field('turnover_year_2_lakhs').value = '0';
-      field('turnover_year_3_lakhs').value = '0';
-      field('local_content_percentage').value = '82';
-      field('held_certifications').value = 'ISO 9001, BIS, NABL Type-Test, STQC';
-      field('min_annual_turnover_lakhs').value = '200';
-      field('min_experience_years').value = '3';
-      field('estimated_bid_value_lakhs').value = '500';
-      field('emd_amount_inr').value = '1000000';
-      field('min_local_content_percentage').value = '50';
-      field('mandatory_certifications').value = 'ISO 9001, BIS';
-      field('is_turnover_exemption_revoked_by_atc').checked = true;
-      field('is_experience_exemption_revoked_by_atc').checked = true;
-      field('proprietary_brand_lock_detected').checked = true;
-      field('proprietary_brand_details').value = 'Clause 14.2 Buyer ATC: Only imported Make-X switchgear permitted; no MSME/Startup relaxation.';
-      setStatus(status, 'Zero-History Startup vs. ₹5 Cr Cartel Tender loaded! Click "Create review preview" to run.', 'success');
-      form.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-  }
+
 
 
   // Interactive Pillar Strip Smooth Navigation
@@ -1130,4 +1233,10 @@
     });
   });
 
+
+  // Run full auto-populate on initial load so the form is never blank
+  autoPopulateFullForm(false);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => autoPopulateFullForm(false));
+  }
 })();
