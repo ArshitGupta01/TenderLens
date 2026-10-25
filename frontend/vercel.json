@@ -49,6 +49,10 @@
   ],
   "rewrites": [
     {
+      "source": "/api/(.*)",
+      "destination": "/api/index.py"
+    },
+    {
       "source": "/strategy",
       "destination": "/strategy.html"
     },
