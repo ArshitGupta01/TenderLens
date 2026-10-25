@@ -1,7 +1,7 @@
 """
 TenderLens - Startup Statutory Shield Engine (v2.0.0)
 =====================================================
-THE HACKATHON DIFFERENTIATOR: India's first Zero-History-to-First-Win
+Statutory Zero-History Competency & Exemption Shield:
 procurement eligibility engine for DPIIT-recognized startups.
 
 PROBLEM SOLVED:

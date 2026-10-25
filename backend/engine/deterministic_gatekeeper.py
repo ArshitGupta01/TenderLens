@@ -1,7 +1,7 @@
 """
 TenderLens - Qualification Engine: Deterministic Gatekeeper (v1.0.1)
 ==================================================================
-Executes pure-Python mathematical and statutory checks with zero hallucination:
+Executes pure-Python mathematical and statutory checks with deterministic verification:
 1. 3-Year Average Turnover + MSE PPP-2012 / GFR 173(i) exemption (with JV aggregation)
 2. Years of Experience & Similar Work (CPWD 80/50/40 ratio)
 3. EMD Exemption under GFR 2017 Rule 170(i)

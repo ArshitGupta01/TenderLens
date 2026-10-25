@@ -152,7 +152,7 @@
 
     const PRESETS = {
     'zero-history-startup': {
-      tender_title: 'Supply & Commissioning of Indigenous Smart LV Switchgear Panels (GeM Cartel Challenge)',
+      tender_title: 'Supply & Commissioning of Indigenous Smart LV Switchgear Panels (GeM Exemption Challenge)',
       tender_id: 'GEM/2026/B/9941208',
       source_portal: 'GeM',
       company_name: 'AetherGrid Hardware Labs Pvt. Ltd.',
@@ -901,7 +901,7 @@
         alertsList.replaceChildren();
         const violations = shield.active_violations || data.fair_play_violations || [];
         if (!violations.length) {
-          alertsList.append(textNode('li', 'Zero illegal cartel restrictions detected. All statutory exemptions intact.'));
+          alertsList.append(textNode('li', 'Zero illegal buyer restrictions detected. All statutory exemptions intact.'));
         } else {
           for (const alert of violations) {
             const li = document.createElement('li');

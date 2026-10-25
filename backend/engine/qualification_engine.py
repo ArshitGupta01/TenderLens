@@ -3,7 +3,7 @@ TenderLens - Qualification Engine: Hybrid Scorecard & 5-Pillar Synthesizer (v1.0
 =================================================================================
 Synthesizes:
 1. Precedence DAG conflict resolution (Rank 1 Corr -> Rank 5 Main PDF)
-2. Deterministic mathematical gates (zero math hallucination)
+2. Deterministic mathematical gates (pure statutory logic)
 3. Safe Uncertainty triage (ambiguous/conflicting clauses -> AMBIGUOUS_MANUAL_REVIEW)
 4. Evidence-backed ClauseCitation generation with exact document coordinates
 5. Active Execution Pillars A, B, C, D, and E.

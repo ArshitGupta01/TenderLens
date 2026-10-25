@@ -1,7 +1,7 @@
 """
 TenderLens - Precedence DAG RAG Engine (v1.0.3)
 ================================================
-Eliminates Naive Flat Vector RAG Hallucinations in Public Procurement:
+Precedence-Aware Hierarchical Retrieval in Public Procurement:
 1. Canonical Attribute Categorization (Turnover, Experience, EMD, MII, MAF, Certs, LD, etc.)
 2. Versioned Directed Acyclic Graph (DAG) construction with legal precedence ordering:
    - Rank 1: Latest Corrigendum (Corr N)

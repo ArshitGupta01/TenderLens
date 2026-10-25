@@ -187,7 +187,7 @@ class TinyFishService:
         logger.info("Providing verified stage presentation fallback tenders for query: '%s'", query)
         all_tenders = [
             DiscoveredTender(
-                title="Supply, Testing & Commissioning of Indigenous Smart LV Switchgear Panels (GeM Cartel Challenge)",
+                title="Supply, Testing & Commissioning of Indigenous Smart LV Switchgear Panels (GeM Exemption Challenge)",
                 url="https://mkp.gem.gov.in/catalog_data/catalog_support_document/08/40/887/SpecificationDocument/2026/01/smart_switchgear_spec.pdf",
                 snippet="GeM Bid GEM/2026/B/9941208. Contains Buyer ATC revoking startup turnover exemption under GFR 173(i) and proprietary brand-lock specifications.",
                 source_portal="GeM (gem.gov.in)"

@@ -257,7 +257,7 @@ async def evaluate_tender_endpoint(payload: AuditEvaluationRequest, background_t
     Stage 3 & 4: Full hybrid audit pipeline:
     1. Ingests tender documents and linked ATCs via TinyFetch
     2. Parses clause structure and precedence hierarchy
-    3. Executes deterministic mathematical gates (zero hallucination)
+    3. Executes deterministic mathematical gates (pure statutory logic)
     4. Evaluates compliance and returns full QualificationScorecard.
     """
     tender_id = payload.tender_id or f"BID-{uuid.uuid4().hex[:8].upper()}"

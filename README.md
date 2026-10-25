@@ -3,7 +3,7 @@
 > **Deterministic Qualification · Precedence Directed Acyclic Graph (DAG) · Statutory Exemption Shield · 5-Pillar Strategy Studio**  
 > Built for the ₹40 Lakh Crore Indian Public Procurement Ecosystem (GeM, CPPP, State e-Procurement Portals).
 
-[![FastAPI](https://img.shields.io/badge/FastAPI-2.0.2-009688.svg?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688.svg?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![Next.js](https://img.shields.io/badge/Next.js-14_App_Router-black.svg?logo=next.js&logoColor=white)](https://nextjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS_v4-38B2AC.svg?logo=tailwind-css&logoColor=white)](https://tailwindcss.com)

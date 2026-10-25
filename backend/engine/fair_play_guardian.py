@@ -1,7 +1,7 @@
 """
 TenderLens - Fair Play Guardian & Zero-History Equalizer Engine (v1.1.0)
 ========================================================================
-Implements the 3 Hackathon-Winning Differentiators:
+Implements Statutory Procurement Safeguards:
 1. Startup Statutory Shield (StartupExemptionAudit & FairPlayViolationAlert)
 2. Zero-History Competency Engine (TechnicalEquivalenceProof & Equipment/QC Proforma)
 3. Mandatory 25% MSE Subcontracting & Split-Order Quota Gateway (MSESubcontractingMatch)
