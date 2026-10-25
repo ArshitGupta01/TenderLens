@@ -121,14 +121,6 @@
         <p>Enter the requirements you see in a tender and your bidder figures — or load a sample scenario in one click.
           TenderLens runs deterministic mathematical gates, drafts pre-bid clarification packs, models JV capability
           gaps, builds a CSV compliance matrix with statutory declaration templates, and optimizes EMD liquidity.</p>
-        <div class="strategy-pillar-strip" aria-label="Included tools">
-          <a href="#pillar-1-prebid" class="strategy-pillar-anchor">01 · Pre-Bid Legal Pack</a>
-          <a href="#pillar-2-jv" class="strategy-pillar-anchor">02 · JV Matchmaker</a>
-          <a href="#pillar-3-matrix" class="strategy-pillar-anchor">03 · Compliance Matrix</a>
-          <a href="#pillar-4-emd" class="strategy-pillar-anchor">04 · EMD Optimizer</a>
-          <a href="#pillar-5-forensics" class="strategy-pillar-anchor">05 · Rejection Forensics</a>
-          <a href="#precedence-rag-workbench" class="strategy-pillar-anchor">06 · Precedence DAG RAG ↓</a>
-        </div>
       </div>
     </section>
 
@@ -232,7 +224,12 @@
           </fieldset>
 
           <fieldset class="strategy-fieldset">
-            <legend><span>03</span> Tender requirements</legend>
+            <legend class="strategy-legend-header">
+              <span><span>03</span> Tender requirements</span>
+              <button class="preset-pill-action" id="autofill-tender-reqs" data-autofill-tender-reqs type="button" title="Autofill from target tender you are applying for">
+                ⚡ Autofill Applied Tender Requirements
+              </button>
+            </legend>
             <div class="strategy-input-grid strategy-input-grid-three">
               <label class="profile-field" for="min-turnover">Minimum turnover · ₹ lakh<input id="min-turnover"
                   name="min_annual_turnover_lakhs" type="number" min="0" step="0.01" required placeholder="0"></label>
@@ -273,9 +270,8 @@
           </fieldset>
 
           <fieldset class="strategy-fieldset">
-            <legend><span>04</span> Optional EMD scenario</legend>
-            <p class="strategy-field-help">These assumptions estimate working-capital lock-up across concurrent bids and
-              evaluate GFR Rule 170(i) / IRDAI Insurance Surety Bond options.</p>
+            <legend><span>04</span> Optional EMD &amp; Working Capital Optimizer</legend>
+            <p class="strategy-field-help">Purpose: Evaluates working capital locked in bid security across concurrent tenders. Estimates liquidity unlocked by switching from cash Fixed Deposits to GFR Rule 170(i) MSME exemptions or IRDAI Insurance Surety Bonds.</p>
             <div class="strategy-input-grid strategy-input-grid-three">
               <label class="profile-field" for="lockup-days">Lock-up period · days<input id="lockup-days"
                   name="estimated_emd_lockup_days" type="number" min="1" max="3650" step="1" placeholder="120"></label>
@@ -330,7 +326,6 @@
         </div>
         <button class="strategy-reset" type="button" data-new-preview>Edit inputs ↑</button>
       </div>
-      <p class="strategy-output-note" data-limitations></p>
 
       <div class="strategy-gates-overview">
         <div class="strategy-card-heading">

@@ -869,6 +869,29 @@ function setupInteractivePipelineBench() {
   benchFetchBtn.addEventListener('click', async () => {
     const rawQuery = (benchQuery?.value || '').trim() || 'solar rooftop installation haryana';
     benchOutput.hidden = false;
+    // Save target tender to localStorage for Strategy Studio autofill
+    try {
+      const targetTender = {
+        tender_title: tenderTitle || 'Design, Supply, Erection & Commissioning of Rooftop Solar PV Plants (100 kWp to 500 kWp)',
+        tender_id: 'GEM/2026/B/4182901',
+        source_portal: 'GeM',
+        min_annual_turnover_lakhs: 333,
+        min_experience_years: 0,
+        estimated_bid_value_lakhs: 480,
+        emd_amount_inr: 0,
+        min_local_content_percentage: 20,
+        mandatory_certifications: 'ISO-9001, BIS',
+        msme_turnover_relaxation_allowed: true,
+        msme_experience_relaxation_allowed: true,
+        emd_exemption_confirmed_by_tender: true,
+        is_turnover_exemption_revoked_by_atc: false,
+        is_experience_exemption_revoked_by_atc: false,
+        proprietary_brand_lock_detected: false,
+        proprietary_brand_details: ''
+      };
+      localStorage.setItem('tenderlens_target_tender', JSON.stringify(targetTender));
+    } catch (_) {}
+
     setStepperActive(2);
 
     benchConsole.innerHTML = `
@@ -1107,7 +1130,7 @@ function setupInteractivePipelineBench() {
           </div>
 
           <div class="scorecard-footer-actions">
-            <a href="strategy.html" class="button button-primary button-sm">
+            <a href="strategy.html?autofill=true" class="button button-primary button-sm">
               <span>⚡</span> Open 5-Pillar Strategy Studio
             </a>
             <a href="saved-tenders.html" class="button button-secondary button-sm">

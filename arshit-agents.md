@@ -432,5 +432,21 @@ ound1_qa.txt).
 - [x] Implemented clean live progress bar with exact label "Progress bar" on `index.html` live search, with animated progress track (0% → 100%) and stage telemetry.
 - [x] Added verified stage fallback tenders in `backend/services/tinyfish_service.py` to ensure live stage demos never fail even during Wi-Fi drops or API rate limits.
 - [x] Verified full end-to-end stage demonstration flows with automated Playwright browser tests.
-- [ ] Next milestone: Live on-stage presentation and Q&A defense.
+### Strategy Studio Stage Refinement, Section 03 Tender Autofill & Precedence DAG Fix - 2026-10-25
+- [x] Removed Hero Tool Strip: Completely removed the `[01 · Pre-Bid Legal Pack]...[06 · Precedence DAG RAG ↓]` button strip from `strategy.html` and `frontend/strategy.html`.
+- [x] Purged Debug Pill: Removed robotic `"Fair Play Equalizer Active: EXEMPTION_GRANTED_CLEAN | Zero-History Competency: 85.0/100 | 25% MSE Quota: ₹208.12 Lakhs."` pill `<p class="strategy-output-note" data-limitations></p>` from `strategy.html` and `frontend/strategy.html`, and sanitized backend `limitations_note` in `backend/main.py`.
+- [x] Fixed Applied Tender Requirements Autofill (Section 03):
+  - Solved key mismatch bug where 1-click scenario presets (`bhel-msme`, `cppp-epc`, `icmr-medical`) failed silently due to key discrepancy with `PRESETS`.
+  - Added "⚡ Autofill Applied Tender Requirements" action button to Section 03 header.
+  - Connected homepage evaluation pipeline in `app.js` to persist active tender criteria in `localStorage` (`tenderlens_target_tender`) and automatically populate Section 01 (Tender details) and Section 03 (Turnover ₹333L, Exp 0 yrs, EMD ₹0, Local content 20%, MSME relief checked) upon navigating to `strategy.html`.
+  - Fixed "Sync My Bidder Profile ↗" to also autofill Section 03 if empty, ensuring the review preview can be generated in 1 click.
+- [x] Clarified & Streamlined Section 04: Renamed to `04 Optional EMD & Working Capital Optimizer` with clear statutory purpose explaining working capital liquidity unlocked via IRDAI Insurance Surety Bonds and GFR Rule 170(i) MSME waivers.
+- [x] Fixed Precedence DAG Conflict Resolver ("Test how a later Corrigendum overrides an earlier clause."):
+  - Fixed syntax error in `strategy.js` and `frontend/strategy.js`.
+  - Fixed backend retrieval in `backend/engine/precedence_rag_engine.py` where superseded clauses were erroneously excluded from `audit_trail` due to negative scoring penalties.
+  - Added direct click event handler on `#rag-submit-btn` ("Resolve Precedence DAG ↗") with smooth scrolling to `#rag-output-panel` and glowing pulse animation (`.rag-pulse-update`).
+  - Added active button highlighting for Scenario A and Scenario B.
+  - Pre-resolved Scenario A on page load so governing vs. superseded cards are visible from the start.
+- [x] Verified complete flow with Playwright end-to-end tests across port 8000 (FastAPI) and port 4177 (static server).
+- [ ] Next milestone: Final stage dry-run and hackathon live presentation defense.
 

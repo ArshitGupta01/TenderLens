@@ -3968,3 +3968,37 @@ body.is-recovery-mode [data-recovery-footer] {
   color: #ffffff !important;
   box-shadow: 0 0 10px rgba(16, 185, 129, 0.25);
 }
+
+/* Section 03 Autofill Header & Interaction Polish */
+.strategy-legend-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  gap: 12px !important;
+}
+.preset-pill-action {
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 6px;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: #38bdf8;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.preset-pill-action:hover {
+  background: rgba(56, 189, 248, 0.25);
+  border-color: #38bdf8;
+  transform: translateY(-1px);
+}
+@keyframes ragPulseGlow {
+  0% { box-shadow: 0 0 0 rgba(16, 185, 129, 0); }
+  50% { box-shadow: 0 0 24px rgba(16, 185, 129, 0.45); border-color: #10b981; }
+  100% { box-shadow: 0 0 0 rgba(16, 185, 129, 0); }
+}
+.rag-pulse-update {
+  animation: ragPulseGlow 1.2s ease-out;
+}

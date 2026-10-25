@@ -202,9 +202,6 @@ class PrecedenceRAGEngine:
             score += overlap * 5.0
             # Precedence boost: Lower rank gets higher priority
             score += (6 - cit.precedence_rank) * 10.0
-            # Superseded penalty for final answer selection
-            if cit.is_superseded:
-                score -= 25.0
             return score
 
         scored = [(score_citation(c), c) for c in resolved_citations]
@@ -222,17 +219,19 @@ class PrecedenceRAGEngine:
         precedence_applied = False
 
         if matching_citations:
-            # Find the top un-superseded citation for the category
+            # Find the top un-superseded citation with highest precedence (lowest rank)
             un_superseded = [c for c in matching_citations if not c.is_superseded]
+            un_superseded.sort(key=lambda x: x.precedence_rank)
             winning_citation = un_superseded[0] if un_superseded else matching_citations[0]
 
-            # Audit trail consists of matching category clauses ordered by rank
-            same_category = [c for c in matching_citations if c.category == winning_citation.category]
+            # Audit trail consists of all related clauses ordered by rank to display supersession
+            same_category = [c for c in resolved_citations if c.category == winning_citation.category]
+            if len(same_category) <= 1 and len(resolved_citations) > 1:
+                same_category = resolved_citations
             audit_trail = sorted(same_category, key=lambda x: x.precedence_rank)
 
             if len(audit_trail) > 1:
                 precedence_applied = True
-                # Check for conflict at same rank
                 ranks = [c.precedence_rank for c in audit_trail]
                 if len(ranks) != len(set(ranks)):
                     conflict_detected = True

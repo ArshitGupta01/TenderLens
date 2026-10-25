@@ -15,7 +15,11 @@
   let submittedTitle = '';
   let submittedPortal = '';
 
-  const PRESETS = {
+    const PRESETS = {
+    'bhel-msme': null, // Populated after definition
+    'cppp-epc': null,
+    'icmr-medical': null,
+
     'bhel-msme-trap': {
       tender_title: 'Supply & Commissioning of BHEL 33kV Substation Switchgear & Relay Panels',
       tender_id: 'GEM/2026/B/900123',
@@ -123,6 +127,10 @@
     }
   };
 
+  PRESETS['bhel-msme'] = PRESETS['bhel-msme-trap'];
+  PRESETS['cppp-epc'] = PRESETS['cppp-epc-surety'];
+  PRESETS['icmr-medical'] = PRESETS['icmr-medical-maf'];
+
   const field = (name) => form.elements.namedItem(name);
   const numberValue = (name) => {
     const raw = field(name)?.value?.trim() || '';
@@ -153,6 +161,97 @@
   const formatMoney = (value) => value == null
     ? 'Not calculated'
     : new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(value);
+
+
+  // -------------------------------------------------------------------------
+  // Autofill Tender Requirements from applied/target tender
+  // -------------------------------------------------------------------------
+  function autofillTenderRequirements(tenderData) {
+    if (!tenderData) {
+      try {
+        const stored = localStorage.getItem('tenderlens_target_tender');
+        if (stored) tenderData = JSON.parse(stored);
+      } catch (_) {}
+    }
+    if (!tenderData) {
+      tenderData = {
+        tender_title: 'Design, Supply, Erection & Commissioning of Rooftop Solar PV Plants (100 kWp to 500 kWp)',
+        tender_id: 'GEM/2026/B/4182901',
+        source_portal: 'GeM',
+        min_annual_turnover_lakhs: 333,
+        min_experience_years: 0,
+        estimated_bid_value_lakhs: 480,
+        emd_amount_inr: 0,
+        min_local_content_percentage: 20,
+        mandatory_certifications: 'ISO-9001, BIS',
+        msme_turnover_relaxation_allowed: true,
+        msme_experience_relaxation_allowed: true,
+        emd_exemption_confirmed_by_tender: true,
+        is_turnover_exemption_revoked_by_atc: false,
+        is_experience_exemption_revoked_by_atc: false,
+        proprietary_brand_lock_detected: false,
+        proprietary_brand_details: ''
+      };
+    }
+
+    if (tenderData.tender_title && (!field('tender_title')?.value || field('tender_title').value.trim() === '')) {
+      field('tender_title').value = tenderData.tender_title;
+    }
+    if (tenderData.tender_id && (!field('tender_id')?.value || field('tender_id').value.trim() === '')) {
+      field('tender_id').value = tenderData.tender_id;
+    }
+    if (tenderData.source_portal && field('source_portal')) {
+      field('source_portal').value = tenderData.source_portal;
+    }
+
+    if (tenderData.min_annual_turnover_lakhs != null) {
+      field('min_annual_turnover_lakhs').value = String(tenderData.min_annual_turnover_lakhs);
+    }
+    if (tenderData.min_experience_years != null) {
+      field('min_experience_years').value = String(tenderData.min_experience_years);
+    }
+    if (tenderData.estimated_bid_value_lakhs != null && String(tenderData.estimated_bid_value_lakhs) !== '') {
+      field('estimated_bid_value_lakhs').value = String(tenderData.estimated_bid_value_lakhs);
+    }
+    if (tenderData.emd_amount_inr != null) {
+      field('emd_amount_inr').value = String(tenderData.emd_amount_inr);
+    }
+    if (tenderData.min_local_content_percentage != null) {
+      field('min_local_content_percentage').value = String(tenderData.min_local_content_percentage);
+    }
+    if (tenderData.mandatory_certifications) {
+      field('mandatory_certifications').value = tenderData.mandatory_certifications;
+    }
+    if (tenderData.msme_turnover_relaxation_allowed != null) {
+      field('msme_turnover_relaxation_allowed').checked = Boolean(tenderData.msme_turnover_relaxation_allowed);
+    }
+    if (tenderData.msme_experience_relaxation_allowed != null) {
+      field('msme_experience_relaxation_allowed').checked = Boolean(tenderData.msme_experience_relaxation_allowed);
+    }
+    if (tenderData.emd_exemption_confirmed_by_tender != null) {
+      field('emd_exemption_confirmed_by_tender').checked = Boolean(tenderData.emd_exemption_confirmed_by_tender);
+    }
+    if (tenderData.is_turnover_exemption_revoked_by_atc != null) {
+      field('is_turnover_exemption_revoked_by_atc').checked = Boolean(tenderData.is_turnover_exemption_revoked_by_atc);
+    }
+    if (tenderData.is_experience_exemption_revoked_by_atc != null) {
+      field('is_experience_exemption_revoked_by_atc').checked = Boolean(tenderData.is_experience_exemption_revoked_by_atc);
+    }
+    if (tenderData.proprietary_brand_lock_detected != null) {
+      field('proprietary_brand_lock_detected').checked = Boolean(tenderData.proprietary_brand_lock_detected);
+    }
+    if (tenderData.proprietary_brand_details != null) {
+      field('proprietary_brand_details').value = tenderData.proprietary_brand_details;
+    }
+
+    setStatus(status, 'Loaded tender requirements from applied tender (Turnover ₹333L, Exp 0 yrs, EMD ₹0).', 'success');
+  }
+
+  document.querySelectorAll('[data-autofill-tender-reqs]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      autofillTenderRequirements();
+    });
+  });
 
   function applyPreset(presetKey) {
     const data = PRESETS[presetKey];
@@ -217,8 +316,11 @@
     if (data.turnover_year_2_lakhs != null) field('turnover_year_2_lakhs').value = String(data.turnover_year_2_lakhs);
     if (data.turnover_year_3_lakhs != null) field('turnover_year_3_lakhs').value = String(data.turnover_year_3_lakhs);
     if (data.local_content_percentage != null) field('local_content_percentage').value = String(data.local_content_percentage);
-    if (Array.isArray(data.held_certifications) && data.held_certifications.length) {
+        if (Array.isArray(data.held_certifications) && data.held_certifications.length) {
       field('held_certifications').value = data.held_certifications.join(', ');
+    }
+    if (!field('min_annual_turnover_lakhs')?.value) {
+      autofillTenderRequirements();
     }
     setStatus(status, `Loaded synced profile for "${data.organization || auth.user.email}". Enter tender requirements and click "Create review preview".`, 'success');
   });
@@ -362,7 +464,7 @@
 
   function renderToolkit(data) {
     document.querySelector('#strategy-result-context').textContent = `${data.tender_title} · ${data.source_portal} · ${data.tender_id}`;
-    document.querySelector('[data-limitations]').textContent = data.limitations_note;
+    const limEl = document.querySelector('[data-limitations]'); if (limEl) limEl.textContent = data.limitations_note || '';
 
     renderGates(data.deterministic_gates);
 
@@ -814,8 +916,11 @@
     let data = null;
     if (apiBase) {
       try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2000);
         const response = await fetch(`${apiBase}/api/v1/rag/query`, {
           method: 'POST',
+          signal: controller.signal,
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           body: JSON.stringify({
             tender_id: 'DAG-WORKBENCH-01',
@@ -824,6 +929,7 @@
             enable_gemini: false
           })
         });
+        clearTimeout(timeoutId);
         if (response.ok) {
           data = await response.json();
           try { localStorage.setItem('tenderlens_rag_last_result', JSON.stringify(data)); } catch (_) {}
@@ -845,8 +951,10 @@
         retrieved_nodes: sorted.map((chunk, idx) => ({
           document_name: chunk.document_name,
           precedence_label: chunk.precedence_rank === 1 ? 'Rank 1 · Corrigendum (Highest Precedence)' : (chunk.precedence_rank === 3 ? 'Rank 3 · Buyer Added ATC' : 'Rank 5 · Main Tender PDF (Lowest Precedence)'),
+          precedence_rank: chunk.precedence_rank,
           clause_id: chunk.clause_id,
           verbatim_text: chunk.text_content,
+          is_superseded: idx > 0,
           status: idx === 0 ? 'ACTIVE_AUTHORITATIVE' : 'SUPERSEDED'
         })),
         precedence_audit_trail: sorted.map((chunk, idx) =>
@@ -870,7 +978,10 @@
         : 'Authoritative Clause Retrieved';
     }
     if (answerEl) {
-      answerEl.textContent = data.answer || data.authoritative_Direct_Answer || (data.winning_citation && data.winning_citation.verbatim_text) || 'Governing term identified.';
+      let rawAns = data.answer || data.authoritative_Direct_Answer || (data.winning_citation && data.winning_citation.verbatim_text) || 'Governing term identified.';
+      // Clean up markdown syntax for elegant card display
+      rawAns = rawAns.replace(/\*\*|\*|> /g, '').replace(/\s+/g, ' ').trim();
+      answerEl.textContent = rawAns;
     }
 
     // Merge nodes from audit_trail, retrieved_nodes, or winning_citation
@@ -922,12 +1033,23 @@
         });
       }
     }
+
+    // Visual scroll and pulse feedback
+    const outPanel = document.getElementById('rag-output-panel');
+    if (outPanel) {
+      outPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      outPanel.classList.add('rag-pulse-update');
+      setTimeout(() => outPanel.classList.remove('rag-pulse-update'), 1200);
+    }
+
     setStatus(ragStatus, 'Precedence DAG resolved.', 'success');
     if (submitBtn) submitBtn.disabled = false;
   }
 
   document.querySelectorAll('[data-rag-preset]').forEach((btn) => {
     btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-rag-preset]').forEach((b) => b.classList.remove('preset-btn-active'));
+      btn.classList.add('preset-btn-active');
       const preset = RAG_PRESETS[btn.dataset.ragPreset];
       if (!preset) return;
       const qInput = document.getElementById('rag-query-input');
@@ -944,6 +1066,15 @@
       event.preventDefault();
       runPrecedenceRag();
     });
+    const ragSubmitBtn = document.getElementById('rag-submit-btn');
+    if (ragSubmitBtn) {
+      ragSubmitBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        runPrecedenceRag();
+      });
+    }
+    // Auto-resolve initial scenario so workbench is immediately populated on load
+    runPrecedenceRag();
   }
 
   // Live Hackathon Demo Preset Listener

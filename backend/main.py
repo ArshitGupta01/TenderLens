@@ -616,11 +616,7 @@ async def create_strategy_preview_endpoint(payload: StrategyPreviewRequest):
         tender_id=t_id,
         tender_title=payload.tender_title,
         source_portal=payload.source_portal,
-        limitations_note=(
-            f"Fair Play Equalizer Active: {shield_audit.audit_verdict} | "
-            f"Zero-History Competency: {tech_proof.overall_competency_score}/100 | "
-            f"25% MSE Quota: ₹{mse_match.mandatory_25pct_allocation_lakhs:.2f} Lakhs."
-        ),
+        limitations_note="",
         deterministic_gates=gates,
         prebid_legal_pack=prebid_pack,
         consortium_recommendation=consortium_rec,
