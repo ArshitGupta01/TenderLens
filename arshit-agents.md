@@ -346,7 +346,9 @@ ode --check) across all frontend scripts in both root and rontend/.
 ### Codebase Branding Harmonization - 2026-10-24
 - [x] Removed all associations and references to 'Team Traxo' and 'IIITD' across entire codebase:
   - Cleaned all HTML templates (index.html, 404.html, 500.html, guide.html, privacy.html, 	erms.html, and their rontend/ counterparts).
-  - Cleaned all Markdown guides and reports (README.md, PROJECT_INFO.md, FINAL_IMPLEMENTATION_PLAN.md, rgon.md, esearch/argon_report.md, ound1_qa.txt).
+  - Cleaned all Markdown guides and reports (README.md, PROJECT_INFO.md, FINAL_IMPLEMENTATION_PLAN.md, rgon.md, 
+esearch/argon_report.md, 
+ound1_qa.txt).
   - Cleaned single.xml and memory trackers (rshit-agents.md, MOhit-Agents.md).
   - Replaced all footers, hero rulers, eyebrows, and credits with pure **TenderLens** branding.
   - Verified 0 remaining occurrences of 'traxo' or 'iiitd' across workspace.
@@ -412,4 +414,13 @@ ode --check) across all frontend scripts in both root and rontend/.
 - [x] Rebuilt production bundle `doodle-hero.bundle.js` across root, `frontend/`, and `public/`.
 - [x] Replaced all emojis in drawer navigation menu across all 18 HTML pages with crisp, 15x15 vector SVGs for enterprise consistency across devices.
 - [x] Verified zero 'AI' mentions in navigation menu options.
+### Enterprise Supabase Authentication Email Suite - 2026-10-25
+- [x] Designed responsive, dark/light compatible, enterprise-grade HTML email templates in `supabase/templates/`:
+  - `confirm_signup.html`: "Confirm your TenderLens account" with official TL monogram badge, primary CTA button (`{{ .ConfirmationURL }}`), 6-digit backup security code block (`{{ .Token }}`), security advisory, and compliance footer.
+  - `reset_password.html`: "Reset your TenderLens password" with recovery button, one-time reset token, and phishing warning.
+  - `magic_link.html`: "Your TenderLens sign-in link" for one-click passwordless login.
+  - `email_change.html`: "Confirm your email change" with verification code and security alerts.
+- [x] Created `supabase/config.toml` binding GoTrue template paths, subjects, and redirect URLs to Supabase project `qiwpkvjzqdyguygowzci`.
+- [x] Created interactive visual previewer `email-preview.html` (and `frontend/email-preview.html`) allowing instantaneous side-by-side preview with simulated recipient and token data, 1-click HTML clipboard copy, and direct navigation to Supabase dashboard.
+- [x] Updated `supabase/README.md` with complete template reference table, variable mapping, and step-by-step dashboard installation instructions.
 - [ ] Next milestone: Address Wave 1 high-priority remediations from the audit report.

@@ -1,0 +1,45 @@
+# Supabase Configuration for TenderLens
+# Project Ref: qiwpkvjzqdyguygowzci
+project_id = "qiwpkvjzqdyguygowzci"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "auth"]
+
+[auth]
+enabled = true
+site_url = "http://127.0.0.1:4177"
+additional_redirect_urls = [
+  "http://127.0.0.1:4177/account.html",
+  "http://127.0.0.1:8000/account.html",
+  "http://localhost:4177/account.html",
+  "http://localhost:8000/account.html"
+]
+jwt_expiry = 3600
+enable_signup = true
+
+[auth.email]
+enable_signup = true
+double_confirm_changes = true
+enable_confirmations = true
+
+# ==============================================================================
+# TenderLens Custom Branded Authentication Email Templates
+# ==============================================================================
+
+[auth.email.template.confirmation]
+subject = "Confirm your TenderLens account"
+content_path = "./supabase/templates/confirm_signup.html"
+
+[auth.email.template.recovery]
+subject = "Reset your TenderLens password"
+content_path = "./supabase/templates/reset_password.html"
+
+[auth.email.template.magic_link]
+subject = "Your TenderLens sign-in link"
+content_path = "./supabase/templates/magic_link.html"
+
+[auth.email.template.email_change]
+subject = "Confirm your email change"
+content_path = "./supabase/templates/email_change.html"

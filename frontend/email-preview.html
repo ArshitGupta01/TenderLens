@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TenderLens - Supabase Auth Email Templates</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: var(--paper, #0b1320);
+      color: var(--ink, #f8fafc);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .preview-header {
+      padding: 24px 32px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .preview-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .preview-badge {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .tabs-nav {
+      display: flex;
+      gap: 8px;
+      background: rgba(30, 41, 59, 0.7);
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .tab-btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: #94a3b8;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tab-btn:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .tab-btn.active {
+      background: #10b981;
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    }
+    .actions-bar {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .btn-action {
+      padding: 9px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .btn-copy {
+      background: #1e293b;
+      color: #f8fafc;
+      border: 1px solid #334155;
+    }
+    .btn-copy:hover {
+      background: #334155;
+      border-color: #475569;
+    }
+    .btn-supabase {
+      background: #059669;
+      color: #ffffff;
+      border: 1px solid #10b981;
+    }
+    .btn-supabase:hover {
+      background: #10b981;
+      transform: translateY(-1px);
+    }
+    .preview-layout {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      min-height: calc(100vh - 89px);
+    }
+    @media (max-width: 1024px) {
+      .preview-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    .preview-frame-container {
+      padding: 32px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #060b14;
+      overflow-y: auto;
+    }
+    .preview-iframe {
+      width: 100%;
+      max-width: 650px;
+      height: 780px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      background: #0b1320;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    }
+    .sidebar-details {
+      padding: 32px 24px;
+      border-left: 1px solid rgba(255, 255, 255, 0.08);
+      background: #0f172a;
+      overflow-y: auto;
+    }
+    .meta-card {
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+    .meta-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #94a3b8;
+      margin-bottom: 8px;
+    }
+    .meta-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: #38bdf8;
+      word-break: break-all;
+    }
+    .code-preview {
+      background: #020617;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 8px;
+      padding: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #94a3b8;
+      max-height: 280px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+  <div class="preview-header">
+    <div class="preview-title">
+      <h2 style="margin: 0; font-size: 18px; font-weight: 800; letter-spacing: 0.5px;">TenderLens Auth Emails</h2>
+      <span class="preview-badge">Production Ready</span>
+    </div>
+
+    <div class="tabs-nav">
+      <button class="tab-btn active" onclick="switchTab('confirm_signup')">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        1. Confirm Signup
+      </button>
+      <button class="tab-btn" onclick="switchTab('reset_password')">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
+        2. Reset Password
+      </button>
+      <button class="tab-btn" onclick="switchTab('magic_link')">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        3. Magic Link
+      </button>
+      <button class="tab-btn" onclick="switchTab('email_change')">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        4. Email Change
+      </button>
+    </div>
+
+    <div class="actions-bar">
+      <button class="btn-action btn-copy" onclick="copyTemplateSource()" id="copyBtn">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/></svg>
+        Copy HTML
+      </button>
+      <a href="https://supabase.com/dashboard/project/qiwpkvjzqdyguygowzci/auth/templates" target="_blank" class="btn-action btn-supabase">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        Open Supabase Templates
+      </a>
+    </div>
+  </div>
+
+  <div class="preview-layout">
+    <!-- Main Frame -->
+    <div class="preview-frame-container">
+      <iframe id="previewIframe" class="preview-iframe" title="Email Preview"></iframe>
+    </div>
+
+    <!-- Sidebar Details -->
+    <div class="sidebar-details">
+      <div class="meta-card">
+        <div class="meta-title">Supabase Template Target</div>
+        <div class="meta-val" id="supabaseTargetName">Confirm signup</div>
+      </div>
+
+      <div class="meta-card">
+        <div class="meta-title">Recommended Subject Line</div>
+        <div class="meta-val" id="recommendedSubject" style="color: #10b981;">Confirm your TenderLens account</div>
+      </div>
+
+      <div class="meta-card">
+        <div class="meta-title">GoTrue Interpolation Variables</div>
+        <div style="font-size: 12px; color: #94a3b8; line-height: 1.6;">
+          &bull; <code>{{ .ConfirmationURL }}</code> &mdash; Dynamic verification link<br>
+          &bull; <code>{{ .Token }}</code> &mdash; 6-digit one-time code (OTP)<br>
+          &bull; <code>{{ .Email }}</code> &mdash; Recipient email address<br>
+          &bull; <code>{{ .SiteURL }}</code> &mdash; Application root URL
+        </div>
+      </div>
+
+      <div class="meta-card">
+        <div class="meta-title">File Location in Project</div>
+        <div class="meta-val" id="localFilePath" style="font-size: 12px; color: #a5b4fc;">supabase/templates/confirm_signup.html</div>
+      </div>
+
+      <div class="meta-card">
+        <div class="meta-title">Quick Installation Instructions</div>
+        <div style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">
+          1. Click <strong>"Copy HTML"</strong> above.<br>
+          2. Click <strong>"Open Supabase Templates"</strong> to open the dashboard.<br>
+          3. Select the matching template tab.<br>
+          4. Paste into the <strong>"Body"</strong> editor, update Subject, and click <strong>Save</strong>!
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const templates = {
+      confirm_signup: {
+        path: '/supabase/templates/confirm_signup.html',
+        target: 'Confirm signup',
+        subject: 'Confirm your TenderLens account',
+        sampleUrl: 'https://qiwpkvjzqdyguygowzci.supabase.co/auth/v1/verify?token=pk_demo_749216&type=signup&redirect_to=http://127.0.0.1:4177/account.html',
+        sampleToken: '849 203',
+        sampleEmail: 'bidder@defence-aerospace.in'
+      },
+      reset_password: {
+        path: '/supabase/templates/reset_password.html',
+        target: 'Reset password',
+        subject: 'Reset your TenderLens password',
+        sampleUrl: 'https://qiwpkvjzqdyguygowzci.supabase.co/auth/v1/verify?token=pk_demo_982143&type=recovery&redirect_to=http://127.0.0.1:4177/account.html',
+        sampleToken: '492 815',
+        sampleEmail: 'procurement-officer@aerospace.in'
+      },
+      magic_link: {
+        path: '/supabase/templates/magic_link.html',
+        target: 'Magic Link',
+        subject: 'Your TenderLens sign-in link',
+        sampleUrl: 'https://qiwpkvjzqdyguygowzci.supabase.co/auth/v1/verify?token=pk_demo_384729&type=magiclink&redirect_to=http://127.0.0.1:4177/account.html',
+        sampleToken: '620 918',
+        sampleEmail: 'analyst@enterprise-tenders.com'
+      },
+      email_change: {
+        path: '/supabase/templates/email_change.html',
+        target: 'Change email address',
+        subject: 'Confirm your email change',
+        sampleUrl: 'https://qiwpkvjzqdyguygowzci.supabase.co/auth/v1/verify?token=pk_demo_552194&type=email_change&redirect_to=http://127.0.0.1:4177/account.html',
+        sampleToken: '319 402',
+        sampleEmail: 'new-officer@defence-aerospace.in'
+      }
+    };
+
+    let activeKey = 'confirm_signup';
+    let currentRawHtml = '';
+
+    async function loadTemplate(key) {
+      activeKey = key;
+      const conf = templates[key];
+      document.getElementById('supabaseTargetName').textContent = conf.target;
+      document.getElementById('recommendedSubject').textContent = conf.subject;
+      document.getElementById('localFilePath').textContent = conf.path;
+
+      try {
+        const res = await fetch(conf.path);
+        currentRawHtml = await res.text();
+        
+        // Render with preview sample variables
+        const rendered = currentRawHtml
+          .replace(/\{\{\s*\.ConfirmationURL\s*\}\}/g, conf.sampleUrl)
+          .replace(/\{\{\s*\.Token\s*\}\}/g, conf.sampleToken)
+          .replace(/\{\{\s*\.Email\s*\}\}/g, conf.sampleEmail)
+          .replace(/\{\{\s*\.SiteURL\s*\}\}/g, 'http://127.0.0.1:4177');
+
+        const iframe = document.getElementById('previewIframe');
+        iframe.srcdoc = rendered;
+      } catch (err) {
+        console.error('Failed to load template:', err);
+      }
+    }
+
+    function switchTab(key) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick').includes(key));
+      if (activeBtn) activeBtn.classList.add('active');
+      loadTemplate(key);
+    }
+
+    function copyTemplateSource() {
+      if (!currentRawHtml) return;
+      navigator.clipboard.writeText(currentRawHtml).then(() => {
+        const btn = document.getElementById('copyBtn');
+        const original = btn.innerHTML;
+        btn.innerHTML = `<svg width="14" height="14" fill="none" stroke="#10b981" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> Copied to Clipboard!`;
+        btn.style.borderColor = '#10b981';
+        setTimeout(() => {
+          btn.innerHTML = original;
+          btn.style.borderColor = '';
+        }, 2200);
+      });
+    }
+
+    // Initial load
+    loadTemplate('confirm_signup');
+  </script>
+</body>
+</html>

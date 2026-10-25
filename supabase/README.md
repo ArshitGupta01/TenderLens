@@ -77,3 +77,23 @@ This creates three tables with Row-Level Security enabled:
    - Click **Sign Up** to create an account.
    - Save a bidder profile or bookmark a live tender notice.
    - Everything syncs automatically to your cloud Supabase database!
+
+
+---
+
+## 📧 Supabase Authentication Email Templates
+
+TenderLens includes responsive, enterprise-grade HTML email templates for all Supabase GoTrue authentication flows in `supabase/templates/`:
+
+| Flow | Template File | Supabase Dashboard Section | Variables Supported |
+| :--- | :--- | :--- | :--- |
+| **Confirm Signup** | [`supabase/templates/confirm_signup.html`](templates/confirm_signup.html) | Authentication > Email Templates > Confirm signup | `{{ .ConfirmationURL }}`, `{{ .Token }}`, `{{ .Email }}`, `{{ .SiteURL }}` |
+| **Reset Password** | [`supabase/templates/reset_password.html`](templates/reset_password.html) | Authentication > Email Templates > Reset password | `{{ .ConfirmationURL }}`, `{{ .Token }}`, `{{ .Email }}`, `{{ .SiteURL }}` |
+| **Magic Link** | [`supabase/templates/magic_link.html`](templates/magic_link.html) | Authentication > Email Templates > Magic Link | `{{ .ConfirmationURL }}`, `{{ .Token }}`, `{{ .Email }}`, `{{ .SiteURL }}` |
+| **Email Change** | [`supabase/templates/email_change.html`](templates/email_change.html) | Authentication > Email Templates > Change email address | `{{ .ConfirmationURL }}`, `{{ .Token }}`, `{{ .Email }}`, `{{ .SiteURL }}` |
+
+### 🛠️ Interactive Preview & Deployment
+1. Open the interactive visual previewer at `http://127.0.0.1:4177/email-preview.html`.
+2. Select any template and click **"Copy HTML"**.
+3. Click **"Open Supabase Templates"** (or visit [Supabase Auth Templates Dashboard](https://supabase.com/dashboard/project/qiwpkvjzqdyguygowzci/auth/templates)).
+4. Paste into the respective template body and click **Save**.

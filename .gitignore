@@ -64,3 +64,4 @@ tenderlens back/
 *backup*/
 tenderlens_back*/
 *.bundle
+supabase/.temp/
