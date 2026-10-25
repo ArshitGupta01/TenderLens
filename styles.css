@@ -4345,3 +4345,336 @@ body.is-recovery-mode [data-recovery-footer] {
     width: 100% !important;
   }
 }
+
+
+/* ==========================================================================
+   EASY GUIDE & STATUTORY PLAYBOOK ENHANCEMENTS
+   ========================================================================== */
+.guide-hero-actions {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 12px !important;
+  margin-top: 24px !important;
+}
+
+.guide-section-header {
+  margin-bottom: 32px !important;
+}
+
+.guide-section-intro {
+  max-width: 680px !important;
+  margin: 10px 0 0 !important;
+  color: var(--muted) !important;
+  font-size: 16px !important;
+  line-height: 1.6 !important;
+}
+
+/* 6-Step Grid (3x2 Balanced Layout) */
+.guide-step-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 18px !important;
+}
+
+.guide-step-card {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  min-height: 270px !important;
+  padding: 24px !important;
+  border-radius: 12px !important;
+  border: 1px solid var(--line) !important;
+  background: var(--surface) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03) !important;
+  transition: all 0.22s var(--primitive-ease, cubic-bezier(0.23, 1, 0.32, 1)) !important;
+}
+
+.guide-step-card:hover {
+  transform: translateY(-3px) !important;
+  border-color: var(--green) !important;
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.12) !important;
+}
+
+.guide-step-card-top {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin-bottom: 16px !important;
+}
+
+.guide-step-num {
+  display: inline-grid !important;
+  width: 32px !important;
+  height: 32px !important;
+  place-items: center !important;
+  border-radius: 50% !important;
+  color: #fff !important;
+  background: var(--green) !important;
+  font: 700 14px var(--mono) !important;
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3) !important;
+}
+
+.guide-step-tag {
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  padding: 4px 8px !important;
+  border-radius: 6px !important;
+  color: var(--green) !important;
+  background: var(--green-pale) !important;
+  border: 1px solid rgba(16, 185, 129, 0.2) !important;
+}
+
+.guide-step-card h3 {
+  margin: 0 0 10px !important;
+  font: 500 22px/1.2 var(--serif) !important;
+  color: var(--ink) !important;
+}
+
+.guide-step-card p {
+  margin: 0 !important;
+  color: var(--muted) !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+  flex-grow: 1 !important;
+}
+
+.guide-step-card-footer {
+  margin-top: 18px !important;
+  padding-top: 14px !important;
+  border-top: 1px solid var(--line) !important;
+}
+
+.guide-step-card-footer .text-link {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: var(--green) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  transition: transform 0.18s ease !important;
+}
+
+.guide-step-card-footer .text-link:hover {
+  transform: translateX(3px) !important;
+}
+
+/* Precedence Hierarchy Map */
+.guide-hierarchy-card {
+  padding: 24px !important;
+  border-radius: 12px !important;
+  border: 1px solid var(--line) !important;
+  background: var(--surface) !important;
+}
+
+.hierarchy-item {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 16px !important;
+  padding: 14px 16px !important;
+  border-radius: 8px !important;
+  border: 1px solid var(--line) !important;
+  background: var(--paper-deep) !important;
+  transition: transform 0.18s ease !important;
+}
+
+.hierarchy-item:hover {
+  transform: translateX(4px) !important;
+}
+
+.hierarchy-badge {
+  flex-shrink: 0 !important;
+  font: 700 11px var(--mono) !important;
+  padding: 4px 8px !important;
+  border-radius: 6px !important;
+  letter-spacing: 0.05em !important;
+}
+
+.hierarchy-rank-1 .hierarchy-badge {
+  background: rgba(16, 185, 129, 0.15) !important;
+  color: #10b981 !important;
+  border: 1px solid rgba(16, 185, 129, 0.3) !important;
+}
+
+.hierarchy-rank-2 .hierarchy-badge {
+  background: rgba(59, 130, 246, 0.15) !important;
+  color: #3b82f6 !important;
+  border: 1px solid rgba(59, 130, 246, 0.3) !important;
+}
+
+.hierarchy-rank-3 .hierarchy-badge {
+  background: rgba(139, 92, 246, 0.15) !important;
+  color: #8b5cf6 !important;
+  border: 1px solid rgba(139, 92, 246, 0.3) !important;
+}
+
+.hierarchy-rank-4 .hierarchy-badge {
+  background: rgba(245, 158, 11, 0.15) !important;
+  color: #f59e0b !important;
+  border: 1px solid rgba(245, 158, 11, 0.3) !important;
+}
+
+.hierarchy-rank-5 .hierarchy-badge {
+  background: rgba(100, 116, 139, 0.15) !important;
+  color: #94a3b8 !important;
+  border: 1px solid rgba(100, 116, 139, 0.3) !important;
+}
+
+.hierarchy-content h4 {
+  margin: 0 0 4px !important;
+  font-size: 14.5px !important;
+  font-weight: 600 !important;
+  color: var(--ink) !important;
+}
+
+.hierarchy-content p {
+  margin: 0 !important;
+  font-size: 13px !important;
+  color: var(--muted) !important;
+  line-height: 1.5 !important;
+}
+
+.hierarchy-connector {
+  text-align: center !important;
+  font: 700 11px var(--mono) !important;
+  color: var(--green) !important;
+  padding: 6px 0 !important;
+  letter-spacing: 0.05em !important;
+}
+
+/* 5 Pillars Grid */
+.guide-pillar-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+  gap: 16px !important;
+}
+
+.guide-pillar-card {
+  padding: 22px !important;
+  border-radius: 10px !important;
+  border: 1px solid var(--line) !important;
+  background: var(--surface) !important;
+}
+
+.pillar-num {
+  font: 700 13px var(--mono) !important;
+  color: var(--green) !important;
+  margin-bottom: 8px !important;
+}
+
+.guide-pillar-card h3 {
+  margin: 0 0 8px !important;
+  font: 500 20px/1.2 var(--serif) !important;
+  color: var(--ink) !important;
+}
+
+.guide-pillar-card p {
+  margin: 0 !important;
+  color: var(--muted) !important;
+  font-size: 13.5px !important;
+  line-height: 1.6 !important;
+}
+
+/* Redesigned Final Advisory Card */
+.guide-final-card {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 36px !important;
+  padding: 36px 40px !important;
+  border-radius: 14px !important;
+  border: 1px solid var(--line) !important;
+  background: var(--surface) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04) !important;
+}
+
+.guide-final-card-body {
+  max-width: 660px !important;
+}
+
+.guide-final-card-body h2 {
+  margin: 8px 0 12px !important;
+  font: 400 clamp(28px, 3.5vw, 42px)/1.1 var(--serif) !important;
+  color: var(--ink) !important;
+}
+
+.guide-final-card-body p:not(.eyebrow) {
+  margin: 0 !important;
+  color: var(--muted) !important;
+  font-size: 15px !important;
+  line-height: 1.6 !important;
+}
+
+.guide-final-actions {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  flex-shrink: 0 !important;
+  min-width: 240px !important;
+}
+
+.guide-final-actions .button {
+  width: 100% !important;
+  justify-content: center !important;
+}
+
+.guide-final-links-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  font-size: 12.5px !important;
+  color: var(--muted) !important;
+  margin-top: 4px !important;
+}
+
+.guide-final-links-row a {
+  color: var(--muted) !important;
+  text-decoration: underline !important;
+}
+
+.guide-final-links-row a:hover {
+  color: var(--green) !important;
+}
+
+/* Dark Mode Overrides */
+:root[data-theme="dark"] .guide-step-card,
+:root[data-theme="dark"] .guide-hierarchy-card,
+:root[data-theme="dark"] .guide-pillar-card,
+:root[data-theme="dark"] .guide-final-card {
+  background: rgba(255, 255, 255, 0.02) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+:root[data-theme="dark"] .hierarchy-item {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+:root[data-theme="dark"] .guide-step-tag {
+  background: rgba(16, 185, 129, 0.12) !important;
+  color: #34d399 !important;
+  border-color: rgba(16, 185, 129, 0.25) !important;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 1024px) {
+  .guide-step-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .guide-step-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  .guide-final-card {
+    flex-direction: column !important;
+    padding: 24px 20px !important;
+    gap: 24px !important;
+  }
+  .guide-final-actions {
+    width: 100% !important;
+  }
+}
