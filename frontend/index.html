@@ -259,6 +259,16 @@
                 <label class="live-portal-field" for="live-search-portal"><span>Where should we look?</span><select id="live-search-portal" name="portal"><option value="">All supported portals</option><option value="gem.gov.in">GeM</option><option value="eprocure.gov.in">CPPP / eProcure</option><option value="tenders.bhel.com">BHEL</option><option value="icmr.nic.in">ICMR</option></select></label>
                 <button class="button button-dark live-search-submit" type="submit"><span class="live-search-button-label">Search live tenders</span><span aria-hidden="true">↗</span></button>
               </form>
+              <div class="live-progress-container" id="live-progress-container" hidden>
+                <div class="live-progress-header">
+                  <span class="live-progress-label">Progress bar</span>
+                  <span class="live-progress-pct" id="live-progress-pct">0%</span>
+                </div>
+                <div class="live-progress-track">
+                  <div class="live-progress-fill" id="live-progress-fill" style="width: 0%;"></div>
+                </div>
+                <div class="live-progress-status" id="live-progress-status-text">Connecting to TinyFish gateway...</div>
+              </div>
               <p class="live-search-status" id="live-search-status" role="status" aria-live="polite">The sample explorer works without a service. See the <a href="guide.html#live-search">easy guide</a> to turn on live search.</p>
               <div class="live-search-results" id="live-search-results" aria-live="polite"></div>
             </div>

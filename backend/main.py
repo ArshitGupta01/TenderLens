@@ -470,15 +470,6 @@ async def get_precedence_dag_graph_endpoint(payload: PrecedenceGraphRequest):
 # ---------------------------------------------------------------------------
 # Supabase Cloud Database Persistence & Auth Endpoints (Free Tier)
 # ---------------------------------------------------------------------------
-@app.get("/api/v1/auth/config")
-async def get_auth_config_endpoint():
-    """Returns safe, public Supabase configuration for browser clients."""
-    return {
-        "configured": settings.is_supabase_configured,
-        "supabase_url": settings.SUPABASE_URL,
-        "publishable_key": settings.supabase_public_key,
-    }
-
 
 @app.post("/api/v1/audits/save")
 async def save_audit_endpoint(payload: SaveAuditRequest):

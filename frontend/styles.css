@@ -3793,3 +3793,178 @@ body.is-recovery-mode [data-recovery-footer] {
   background: #ea580c !important;
   transform: translateY(-1px);
 }
+
+
+/* ==========================================================================
+   Stage Demo Polish: Live Progress Bar & Precedence DAG RAG Workbench
+   ========================================================================== */
+
+/* Progress bar (Minimalist, high-impact) */
+.live-progress-container {
+  margin: 18px 0 14px 0;
+  padding: 16px 20px;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(16, 185, 129, 0.28);
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+}
+.live-progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.live-progress-label {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #f8fafc;
+}
+.live-progress-pct {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: #10b981;
+}
+.live-progress-track {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  overflow: hidden;
+  position: relative;
+}
+.live-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981 0%, #06b6d4 50%, #3b82f6 100%);
+  border-radius: 9999px;
+  transition: width 0.35s ease;
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
+}
+.live-progress-status {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #94a3b8;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Precedence DAG Workbench Polish */
+.strategy-rag-section {
+  margin: 40px auto;
+  padding: 32px 28px;
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+}
+.strategy-rag-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: 28px;
+  margin-top: 24px;
+}
+@media (max-width: 900px) {
+  .strategy-rag-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.strategy-rag-chunk-box {
+  background: #070d18;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 14px;
+  transition: border-color 0.2s ease;
+}
+.strategy-rag-chunk-box:focus-within {
+  border-color: #10b981;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.15);
+}
+.strategy-rag-chunk-header {
+  font-size: 12px;
+  font-weight: 700;
+  color: #38bdf8;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.strategy-rag-chunk-box textarea {
+  width: 100%;
+  min-height: 70px;
+  background: transparent;
+  border: none;
+  color: #cbd5e1;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  resize: vertical;
+  outline: none;
+}
+.strategy-rag-node-card {
+  background: #09101d;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.25s ease;
+}
+.strategy-rag-node-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.strategy-rag-node-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #e2e8f0;
+}
+.node-authoritative {
+  border-color: #10b981 !important;
+  background: rgba(16, 185, 129, 0.06) !important;
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.15);
+}
+.node-superseded {
+  border-color: rgba(239, 68, 68, 0.35) !important;
+  background: rgba(239, 68, 68, 0.03) !important;
+  opacity: 0.75;
+}
+.text-authoritative {
+  color: #f1f5f9;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.text-superseded {
+  color: #94a3b8;
+  text-decoration: line-through;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.pill-pass {
+  background: rgba(16, 185, 129, 0.18);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 9999px;
+}
+.pill-fail {
+  background: rgba(239, 68, 68, 0.18);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 9999px;
+}
+.preset-btn-active {
+  background: rgba(16, 185, 129, 0.2) !important;
+  border-color: #10b981 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.25);
+}

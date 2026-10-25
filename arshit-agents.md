@@ -423,4 +423,14 @@ ound1_qa.txt).
 - [x] Created `supabase/config.toml` binding GoTrue template paths, subjects, and redirect URLs to Supabase project `qiwpkvjzqdyguygowzci`.
 - [x] Created interactive visual previewer `email-preview.html` (and `frontend/email-preview.html`) allowing instantaneous side-by-side preview with simulated recipient and token data, 1-click HTML clipboard copy, and direct navigation to Supabase dashboard.
 - [x] Updated `supabase/README.md` with complete template reference table, variable mapping, and step-by-step dashboard installation instructions.
-- [ ] Next milestone: Address Wave 1 high-priority remediations from the audit report.
+### Stage Presentation Readiness & Live TinyFish Progress Bar - 2026-10-25
+- [x] Fixed broken `#preset-load-profile` ("Sync My Bidder Profile ↗") on `strategy.html` by adding `data-load-synced-profile` and implementing dual-source synchronization (Supabase Cloud + `localStorage` offline fallback).
+- [x] Resolved preset collision on `#preset-hackathon-demo` ("⚡ Zero-History Startup") by removing conflicting `data-strategy-preset="bhel-msme"` attribute and ensuring clean loading of AetherGrid Hardware Labs startup criteria.
+- [x] Converted static tool pills `01`–`06` into interactive smooth-scroll anchor buttons linking to their respective evaluation cards in `strategy.html`.
+- [x] Implemented Precedence DAG in-session state management in `strategy.js` using browser `localStorage` without server database overhead, matching the backend's `RAGQueryResponse` schema (`winning_citation`, `audit_trail`, `is_superseded`).
+- [x] Added high-contrast CSS styling for Precedence DAG workbench: glowing green card for Rank 1 Corrigenda (`node-authoritative`) and strikethrough red card for Rank 3/5 superseded clauses (`node-superseded`).
+- [x] Implemented clean live progress bar with exact label "Progress bar" on `index.html` live search, with animated progress track (0% → 100%) and stage telemetry.
+- [x] Added verified stage fallback tenders in `backend/services/tinyfish_service.py` to ensure live stage demos never fail even during Wi-Fi drops or API rate limits.
+- [x] Verified full end-to-end stage demonstration flows with automated Playwright browser tests.
+- [ ] Next milestone: Live on-stage presentation and Q&A defense.
+

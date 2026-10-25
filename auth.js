@@ -127,6 +127,7 @@
     const { data, error } = await supabaseClient.from('profiles').upsert(row, { onConflict: 'user_id' }).select().single();
     if (!error) {
       profileCache = data;
+      try { localStorage.setItem('tenderlens_bidder_profile', JSON.stringify(data)); } catch (_) {}
       updateHeader();
     }
     return { data, error };
@@ -242,6 +243,7 @@
       if (fields.has('held_certifications')) {
         payload.held_certifications = fields.get('held_certifications');
       }
+      try { localStorage.setItem('tenderlens_bidder_profile', JSON.stringify(payload)); } catch (_) {}
       const saved = await saveProfile(payload);
       if (button) button.disabled = false;
       setStatus(status, saved.error ? profileErrorMessage(saved.error) : 'Profile saved to Supabase Postgres (RLS protected). Ready across devices and Strategy Studio.', saved.error ? 'error' : 'success');
