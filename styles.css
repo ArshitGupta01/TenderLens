@@ -4189,3 +4189,159 @@ body.is-recovery-mode [data-recovery-footer] {
 .auth-submit:active {
   transform: scale(0.98) !important;
 }
+
+
+/* ==========================================================================
+   SCENARIO PRESET TOOLBAR & BUTTONS (Unified 3x2 Grid & Tactile Styling)
+   ========================================================================== */
+.strategy-preset-bar {
+  margin: 24px auto 32px !important;
+  padding: 20px 24px !important;
+  border-radius: 14px !important;
+  border: 1px solid var(--line) !important;
+  background: var(--surface) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03) !important;
+}
+
+.preset-label {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  font-size: 13px !important;
+  color: var(--ink-soft) !important;
+  margin-bottom: 16px !important;
+  line-height: 1.5 !important;
+}
+
+.preset-label strong {
+  color: var(--ink) !important;
+  font-weight: 700 !important;
+  font-size: 13.5px !important;
+  letter-spacing: -0.01em !important;
+}
+
+.preset-buttons {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+}
+
+.preset-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  padding: 0 16px !important;
+  font-size: 12.5px !important;
+  font-weight: 500 !important;
+  text-align: center !important;
+  border-radius: 9px !important;
+  border: 1px solid var(--line-strong) !important;
+  background: var(--paper-deep) !important;
+  color: var(--ink) !important;
+  cursor: pointer !important;
+  transition: all 0.18s cubic-bezier(0.23, 1, 0.32, 1) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+  user-select: none !important;
+  touch-action: manipulation !important;
+}
+
+.preset-btn:hover {
+  border-color: var(--green) !important;
+  color: var(--green) !important;
+  background: var(--green-pale) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 3px 10px rgba(16, 185, 129, 0.15) !important;
+}
+
+.preset-btn:active {
+  transform: scale(0.97) !important;
+  transition-duration: 0.08s !important;
+}
+
+/* Active Selected Preset Button */
+.preset-btn.preset-btn-active,
+.preset-btn-active {
+  background: var(--green-pale) !important;
+  border: 1.5px solid var(--green) !important;
+  color: var(--green) !important;
+  font-weight: 600 !important;
+  box-shadow: 0 0 0 1px var(--green), 0 2px 8px rgba(16, 185, 129, 0.2) !important;
+}
+
+/* Sync Profile Action Button Accent */
+#preset-load-profile {
+  border-color: rgba(56, 189, 248, 0.4) !important;
+  color: #0284c7 !important;
+  background: rgba(56, 189, 248, 0.06) !important;
+}
+
+#preset-load-profile:hover {
+  border-color: #0284c7 !important;
+  background: rgba(56, 189, 248, 0.14) !important;
+  color: #0369a1 !important;
+  box-shadow: 0 3px 10px rgba(2, 132, 199, 0.18) !important;
+}
+
+/* Dark Mode Palette */
+:root[data-theme="dark"] .strategy-preset-bar {
+  background: rgba(255, 255, 255, 0.02) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+:root[data-theme="dark"] .preset-btn {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #e2e8f0 !important;
+}
+
+:root[data-theme="dark"] .preset-btn:hover {
+  background: rgba(16, 185, 129, 0.12) !important;
+  border-color: #10b981 !important;
+  color: #34d399 !important;
+}
+
+:root[data-theme="dark"] .preset-btn.preset-btn-active,
+:root[data-theme="dark"] .preset-btn-active {
+  background: rgba(16, 185, 129, 0.18) !important;
+  border-color: #10b981 !important;
+  color: #34d399 !important;
+  box-shadow: 0 0 0 1px #10b981, 0 0 12px rgba(16, 185, 129, 0.28) !important;
+}
+
+:root[data-theme="dark"] #preset-load-profile {
+  border-color: rgba(56, 189, 248, 0.35) !important;
+  color: #38bdf8 !important;
+  background: rgba(56, 189, 248, 0.08) !important;
+}
+
+:root[data-theme="dark"] #preset-load-profile:hover {
+  border-color: #38bdf8 !important;
+  background: rgba(56, 189, 248, 0.18) !important;
+  color: #7dd3fc !important;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.25) !important;
+}
+
+/* Responsive Media Queries */
+@media (max-width: 960px) {
+  .preset-buttons {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .strategy-preset-bar {
+    padding: 16px 14px !important;
+  }
+  .preset-buttons {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  .preset-btn {
+    width: 100% !important;
+  }
+}
